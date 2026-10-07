@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>스케치 전투 · 동작과 실루엣 개선</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#f3f0e7;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:fixed;left:12px;top:12px;z-index:3;background:rgba(255,255,255,.76);border:1px solid rgba(0,0,0,.15);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.5;max-width:390px}.hud b{font-size:13px}.status{margin-top:4px;font-weight:700}
+.buttons{position:fixed;right:12px;bottom:14px;z-index:4;display:grid;grid-template-columns:repeat(2,86px);gap:8px}button{height:44px;border-radius:12px;border:1px solid rgba(0,0,0,.2);background:rgba(255,255,255,.84);font-weight:700}.joy{position:fixed;left:20px;bottom:20px;width:118px;height:118px;border-radius:50%;border:2px solid rgba(0,0,0,.18);z-index:4;touch-action:none}.knob{position:absolute;left:39px;top:39px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.16);border:2px solid rgba(0,0,0,.24)}
+@media (pointer:fine){.joy{opacity:.36}.buttons{bottom:12px}}
+
+.inspect{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.inspect button{height:30px;font:600 11px system-ui;padding:0 9px;border-radius:7px;cursor:pointer}.inspect button[aria-pressed="true"]{background:#222;color:#fff}
+.fxbar{position:fixed;z-index:4;bottom:25px;left:50%;transform:translateX(-50%);display:flex;gap:8px}.fxbar button{height:46px;padding:0 16px;cursor:pointer;background:#faf8f0;border-radius:9px;font:650 13px system-ui;box-shadow:0 2px 0 #bdb9ad}.fxbar kbd{display:inline-block;margin-right:7px;font:600 12px system-ui;border-right:1px solid #c8c3b5;padding-right:8px;color:#777}
+button{touch-action:manipulation;color:#242320;-webkit-tap-highlight-color:transparent}button:active{transform:translateY(1px);background:#e8e3d6}button:focus-visible{outline:2px solid #756444;outline-offset:2px}
+@media(max-width:700px){.hud{left:8px;top:8px;padding:8px 10px;max-width:calc(100vw - 38px);font-size:10px;line-height:1.45}.hud b{font-size:12px}.fxbar{top:194px;bottom:auto;left:8px;right:8px;transform:none;justify-content:flex-start;gap:6px}.fxbar button{height:36px;padding:0 11px;font-size:11px}.fxbar kbd{margin-right:4px;padding-right:5px}.joy{width:98px;height:98px;left:16px;bottom:14px}.knob{left:29px;top:29px}.buttons{grid-template-columns:repeat(2,65px);bottom:14px;right:12px;gap:6px}.buttons button{height:39px;font-size:11px}}
+@media(max-height:500px){.hud{font-size:9px;line-height:1.3}.hud span{display:none}.fxbar{top:auto;bottom:12px;left:45%;right:auto;transform:translateX(-50%)}.fxbar button{height:32px;padding:0 9px}.joy{width:84px;height:84px;bottom:10px}.knob{left:22px;top:22px}.buttons button{height:32px}.buttons{grid-template-columns:repeat(2,58px)}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud"><b>스케치 전투 · 시각 개선 02</b><br>A/D · ←/→ 이동 · W/Space/↑ 점프<br>J 공격 · K 번개 · 1 폭발 · 2 연기 · 3 오라<br>4 베기 · 5 지면 충격파 · 6 지면 파열 · 7 보호막 · 8 회복 · 9 투사체<br><span>이미지·텍스처 0 · 손그림 선 + 본 애니메이션</span><div class="status" id="status"></div><div class="inspect"><button id="slow" aria-pressed="false">느리게 0.25×</button><button id="pause" aria-pressed="false">일시정지</button><button id="practice" aria-pressed="false">몹 숨기기</button><button id="reset">다시 시작</button></div></div>
+<div class="joy" id="joy"><div class="knob" id="knob"></div></div>
+<div class="fxbar"><button data-act="slash"><kbd>4</kbd>베기</button><button data-act="shockwave"><kbd>5</kbd>충격파</button><button data-act="crack"><kbd>6</kbd>지면 파열</button></div>
+<div class="buttons"><button data-act="jump">점프</button><button data-act="attack">공격</button><button data-act="lightning">번개</button><button data-act="aura">오라</button></div>
+<script>
+(()=>{
+'use strict';
+const canvas=document.getElementById('c'),ctx=canvas.getContext('2d',{alpha:false}),statusEl=document.getElementById('status');
+let W=0,H=0,DPR=1,groundY=0,last=performance.now(),t=0,sketchFrame=0,spawnClock=0;
+const keys=new Set(),fx=[],enemies=[];
+const view={timeScale:1,paused:false,practice:false};
+const CFG={slash:{windup:.10,duration:.44,activeEnd:.23,reach:103},shockwave:{windup:.15,duration:.52,range:198,travel:.58},fracture:{windup:.19,duration:.6,life:2.8}};
+let effectSerial=0,enemySerial=0;
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const mix=(a,b,u)=>a+(b-a)*u;
+const smooth=(a,b,v)=>{const u=clamp((v-a)/(b-a));return u*u*(3-2*u)};
+const easeOut=u=>1-(1-clamp(u))**3;
+
+const player={x:180,y:0,vx:0,vy:0,dir:1,onGround:true,hp:100,maxHp:100,attackT:0,attackSerial:0,aura:false,shield:false,walkT:0,action:null,pendingGround:null};
+let joyVec={x:0,y:0},joyActive=false;
+function resize(){
+  const oldGround=groundY;DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=Math.round(W*DPR);canvas.height=Math.round(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0);groundY=H*.79;
+  const dy=groundY-oldGround;
+  if(!oldGround)player.y=groundY;else{player.y=player.onGround?groundY:Math.min(player.y+dy,groundY);for(const mob of enemies)mob.y+=dy;for(const e of fx){e.y+=dy;if(e.ty!=null)e.ty+=dy}}
+  player.x=Math.max(28,Math.min(W-28,player.x));
+}
+addEventListener('resize',resize);resize();
+function hash(n){n=Math.sin(n*127.1+311.7)*43758.5453;return n-Math.floor(n)}
+function h2(x,y,s=0){return hash(x*12.9898+y*78.233+s*37.719)}
+function jitter(seed,a=1.2){return[(h2(seed,sketchFrame,1)-.5)*a,(h2(seed+7.3,sketchFrame,2)-.5)*a]}
+function strokeLine(x1,y1,x2,y2,o={}){const passes=o.passes??2,w=o.width??1.7,wb=o.wobble??1.7;ctx.save();ctx.globalAlpha*=clamp(o.alpha??1);ctx.strokeStyle=o.color||'#171717';ctx.lineCap='round';ctx.lineJoin='round';for(let p=0;p<passes;p++){const[a,b]=jitter((o.seed||0)+p*13.7,wb),[c,d]=jitter((o.seed||0)+p*23.1+4,wb);ctx.lineWidth=w*(.85+h2(p,sketchFrame,o.seed||0)*.35);ctx.beginPath();ctx.moveTo(x1+a,y1+b);const mx=(x1+x2)/2,my=(y1+y2)/2,nx=-(y2-y1),ny=x2-x1,L=Math.hypot(nx,ny)||1,bend=(h2(o.seed||0,p,sketchFrame)-.5)*wb*2;ctx.quadraticCurveTo(mx+nx/L*bend,my+ny/L*bend,x2+c,y2+d);ctx.stroke()}ctx.restore()}
+function scribbleCircle(x,y,r,o={}){ctx.save();ctx.strokeStyle=o.color||'#171717';ctx.globalAlpha*=clamp(o.alpha??1);ctx.lineCap='round';const loops=o.loops??2,seg=o.seg??40;for(let l=0;l<loops;l++){ctx.lineWidth=(o.width??1.4)*(.9+h2(l,sketchFrame,o.seed||0)*.25);ctx.beginPath();for(let i=0;i<=seg;i++){const a=i/seg*Math.PI*2,n=Math.sin(a*5+(o.seed||0)+l)*.018+Math.sin(a*11+sketchFrame*.9+l)*.010,rr=r*(1+n)+(h2(i,l,sketchFrame)-.5)*(o.wobble??1.1),px=x+Math.cos(a)*rr+(h2(i,sketchFrame,l)-.5)*.6,py=y+Math.sin(a)*rr+(h2(i+9,sketchFrame,l)-.5)*.6;i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke()}ctx.restore()}
+function hatchRect(x,y,w,h,d=.5,angle=.7,o={}){ctx.save();ctx.beginPath();ctx.rect(x,y,w,h);ctx.clip();const sp=10-d*6,L=Math.hypot(w,h)*1.5,cx=x+w/2,cy=y+h/2,ca=Math.cos(angle),sa=Math.sin(angle);for(let q=-L;q<L;q+=sp){const ox=-sa*q,oy=ca*q;strokeLine(cx+ox-ca*L,cy+oy-sa*L,cx+ox+ca*L,cy+oy+sa*L,{width:.5,wobble:.7,passes:1,alpha:.12+.17*d,seed:q*.13+(o.seed||0)})}ctx.restore()}
+function burst(x,y,count=10,scale=1,alpha=1){for(let i=0;i<count;i++){const a=i/count*Math.PI*2+h2(i,sketchFrame,4)*.18,len=(20+h2(i,9,3)*40)*scale;strokeLine(x+Math.cos(a)*7,y+Math.sin(a)*7,x+Math.cos(a)*len,y+Math.sin(a)*len,{width:1+1.5*h2(i,2,1),wobble:2,passes:2,alpha,seed:i*17.1+sketchFrame})}}
+
+function sketchArc(cx,cy,r,a0,a1,o={}){
+  const seg=o.seg??18;
+  let prev=null;
+  for(let i=0;i<=seg;i++){
+    const u=i/seg,a=a0+(a1-a0)*u;
+    const rr=r+(h2(i,o.seed||0,sketchFrame)-.5)*(o.wobble??3);
+    const p={x:cx+Math.cos(a)*rr,y:cy+Math.sin(a)*rr};
+    if(prev)strokeLine(prev.x,prev.y,p.x,p.y,{width:o.width??1.8,wobble:o.lineWobble??1.2,passes:o.passes??2,alpha:o.alpha??1,seed:(o.seed||0)+i,color:o.color});
+    prev=p;
+  }
+}
+function sketchPath(points,o={}){
+  if(points.length<2)return;
+  ctx.save();ctx.globalAlpha*=clamp(o.alpha??1);ctx.strokeStyle=o.color||'#24211d';ctx.lineCap='round';ctx.lineJoin='round';
+  const passes=o.passes??2;
+  for(let pass=0;pass<passes;pass++){
+    ctx.beginPath();ctx.lineWidth=(o.width??1.2)*(1+pass*.10);
+    for(let i=0;i<points.length;i++){
+      const j=jitter((o.seed??0)+i*2.13+pass*67,o.wobble??.7),p=points[i];
+      const x=p.x+j[0],y=p.y+j[1];i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    if(o.closed)ctx.closePath();ctx.stroke();
+  }ctx.restore();
+}
+function quadratic(p0,p1,p2,n=24){const pts=[];for(let i=0;i<=n;i++){const u=i/n,v=1-u;pts.push({x:v*v*p0.x+2*v*u*p1.x+u*u*p2.x,y:v*v*p0.y+2*v*u*p1.y+u*u*p2.y})}return pts}
+function polygon(pts,fill='#f3f0e7',alpha=1){if(pts.length<3)return;ctx.save();ctx.globalAlpha*=clamp(alpha);ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.restore()}
+function pencilRibbon(pts,width,o={}){
+  if(pts.length<3)return;
+  const left=[],right=[],normals=[];
+  for(let i=0;i<pts.length;i++){
+    const p=pts[i],a=pts[Math.max(0,i-1)],b=pts[Math.min(pts.length-1,i+1)],dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1;
+    const nx=-dy/L,ny=dx/L,u=i/(pts.length-1),w=typeof width==='function'?width(u):width;
+    const grain=.85+.25*h2(i,o.seed??0,sketchFrame);
+    const r=Math.max(.15,w*grain/2);left.push({x:p.x+nx*r,y:p.y+ny*r});right.push({x:p.x-nx*r,y:p.y-ny*r});normals.push({x:nx,y:ny,r});
+  }
+  ctx.save();ctx.globalAlpha*=clamp(o.alpha??1);
+  polygon(left.concat([...right].reverse()),o.color||'#24211d');
+  sketchPath(left,{width:.65,passes:1,wobble:.7,seed:o.seed});sketchPath(right,{width:.55,passes:1,wobble:.7,seed:(o.seed??0)+41});
+  // Dry graphite streaks: actual vector strokes, no offscreen images or patterns.
+  for(let k=0;k<3;k++){
+    const a=3+k*3,b=pts.length-3-k*2;if(b<=a)continue;
+    const trace=[];for(let i=a;i<b;i++){const p=pts[i],n=normals[i],s=(k-1)*.44+.12*Math.sin(i*.9+k);trace.push({x:p.x+n.x*n.r*s,y:p.y+n.y*n.r*s})}
+    sketchPath(trace,{color:'#f3f0e7',width:.45+k*.13,alpha:.5,passes:1,wobble:.20,seed:(o.seed??0)+100+k});
+  }ctx.restore();
+}
+function inkChip(x,y,size,rotation,alpha=1,seed=0){
+  const pts=[[-.8,-.3],[-.15,-.7],[.85,-.12],[.45,.5],[-.5,.42]].map(([px,py])=>({x:x+(px*Math.cos(rotation)-py*Math.sin(rotation))*size,y:y+(px*Math.sin(rotation)+py*Math.cos(rotation))*size}));
+  ctx.save();ctx.globalAlpha*=clamp(alpha);polygon(pts);sketchPath(pts,{closed:true,width:1,seed,wobble:.5});
+  sketchPath([pts[0],pts[3]],{width:.7,passes:1,alpha:.45,seed:seed+1});ctx.restore();
+}
+function fractureGeometry(seed,small=false){
+  const scale=small?.46:1,main=[{x:0,y:1},{x:15,y:7},{x:31,y:4},{x:47,y:14},{x:64,y:10},{x:83,y:18},{x:101,y:12},{x:122,y:16},{x:146,y:8},{x:173,y:3}].map((p,i)=>({x:p.x*scale,y:(p.y+(h2(i,seed,3)-.5)*4)*scale}));
+  const branches=[];
+  for(const [j,k] of [2,4,7].entries()){
+    const p=main[k],sign=j===1?-1:1,length=[27,42,23][j]*scale;
+    const branch=[p,{x:p.x+sign*(7+j*2)*scale,y:p.y+length*.35},{x:p.x+sign*(2-j*4)*scale,y:p.y+length*.72},{x:p.x+sign*(13+j*3)*scale,y:p.y+length}];
+    branches.push(branch);
+  }
+  const back=[{x:0,y:1},{x:-13*scale,y:8*scale},{x:-24*scale,y:4*scale},{x:-37*scale,y:12*scale}];
+  const plates=[{x:10,w:31,h:11,base:9},{x:54,w:43,h:13,base:16},{x:117,w:32,h:8,base:16}].map((p,k)=>{
+    const x=p.x*scale,w=p.w*scale,h=p.h*scale,base=p.base*scale;
+    return {x,points:[{x:x-w*.54,y:base-h*.22},{x:x-w*.36,y:base-h*(.70+k*.10)},{x:x+w*.04,y:base-h},{x:x+w*.5,y:base-h*.57},{x:x+w*.36,y:base+.7*scale},{x:x-w*.32,y:base+2*scale}]};
+  });
+  return{main,branches,back,plates,scale};
+}
+function spawnDust(x,y,dir=0){spawnFX('dust',x,y,{dir})}
+function beginAction(kind){
+  if(player.action)return false;
+  if(kind!=='slash'&&!player.onGround){player.pendingGround=kind;player.vy=Math.max(player.vy,360);return false}
+  const def=kind==='slash'?CFG.slash:kind==='shockwave'?CFG.shockwave:CFG.fracture;
+  player.action={kind,age:0,duration:def.duration,windup:def.windup,dir:player.dir,released:false};
+  if(kind==='slash'){player.attackSerial++;player.attackT=def.duration}
+  return true;
+}
+function doShockwave(){beginAction('shockwave')}
+function doCrack(){beginAction('fracture')}
+function releaseAction(a){
+  const pose=humanoidPose(player.x,player.y,a.dir,player.walkT,false,player);
+  if(a.kind==='slash'){
+    spawnFX('slash',player.x+a.dir*9,player.y-76,{dir:a.dir,owner:player});
+    spawnFX('afterimage',player.x,player.y,{dir:a.dir});
+  }else{
+    // Same front-foot socket as the bone pose, sampled at the actual contact frame.
+    const origin={x:pose.frontFoot.x,y:groundY};
+    spawnFX(a.kind==='shockwave'?'shockwave':'crack',origin.x,origin.y,{dir:a.dir});
+    spawnDust(origin.x,origin.y-2,a.dir);
+  }
+}
+function updateAction(dt){
+  const a=player.action;if(!a)return;a.age+=dt;
+  player.attackT=a.kind==='slash'?Math.max(0,a.duration-a.age):0;
+  if(!a.released&&a.age>=a.windup){a.released=true;releaseAction(a)}
+  if(a.age>=a.duration){player.action=null;player.attackT=0}
+}
+function damageEnemy(e,damage,dir,knockback=170,lift=120){
+  if(e.dead)return;
+  e.hp=Math.max(0,e.hp-damage);e.vx=dir*knockback;e.vy=-lift;e.onGround=false;e.hitFlash=.16;e.hitStun=.24;
+  spawnFX('impact',e.x,e.y-58);
+  if(e.hp<=0){e.dead=true;e.deathT=.65}
+}
+function doHeal(){
+  player.hp=Math.min(player.maxHp,player.hp+20);
+  spawnFX('heal',player.x,player.y-55);
+}
+function doProjectile(){
+  spawnFX('projectile',player.x+player.dir*24,player.y-70,{dir:player.dir,vx:player.dir*420});
+}
+function spawnFX(type,x,y,extra={}){
+  const durations={smoke:1.4,lightning:.28,slash:.34,shockwave:CFG.shockwave.travel,crack:CFG.fracture.life,dust:.75,heal:1.0,projectile:1.1,shieldHit:.42,afterimage:.28};
+  const e={type,x,y,age:0,dur:durations[type]??.55,seed:++effectSerial*47.713,...extra};
+  if(type==='crack'){e.geometry=fractureGeometry(e.seed,e.small);if(e.small)e.dur=1.35}
+  if(type==='shockwave')e.hitIds=new Set();
+  fx.push(e);return e;
+}
+function spawnEnemy(x=W+50){enemies.push({id:++enemySerial,x,y:groundY,vx:0,vy:0,dir:-1,onGround:true,hp:55,maxHp:55,hitFlash:0,hitStun:0,dead:false,deathT:0,seed:Math.random()*9999,lastHitSerial:-1,walkT:Math.random()*3})}
+for(let i=0;i<4;i++)spawnEnemy(430+i*130);
+function solveIK(hip,foot,L1,L2,bend){const dx=foot.x-hip.x,dy=foot.y-hip.y,d=Math.max(1,Math.min(L1+L2-0.001,Math.hypot(dx,dy))),a=Math.atan2(dy,dx),cosA=(L1*L1+d*d-L2*L2)/(2*L1*d),off=Math.acos(Math.max(-1,Math.min(1,cosA)))*bend;return{x:hip.x+Math.cos(a+off)*L1,y:hip.y+Math.sin(a+off)*L1}}
+function humanoidPose(x,y,dir,walkT,isEnemy=false,entity=null){
+  const moving=entity?Math.abs(entity.vx)>15:isEnemy;
+  const a=entity?.action,standing=entity?entity.onGround:true,phase=walkT*9;
+  const gait=moving&&!a?Math.sin(phase):0,bob=moving&&!a?Math.abs(Math.sin(phase))*2:Math.sin(t*2.6)*.5;
+  let hipY=y-45-bob,chestY=y-84-bob,lean=0,frontLift=0,frontOffset=12,backOffset=-10;
+  if(!standing){hipY+=2;chestY+=2}
+  if(a&&a.kind==='slash'){
+    const wind=smooth(0,a.windup,a.age),swing=smooth(a.windup,a.windup+.10,a.age),recover=smooth(.25,a.duration,a.age);
+    lean=(-5*wind+13*swing)*(1-recover);hipY+=3*Math.sin(clamp(a.age/a.duration)*Math.PI);frontOffset=16;backOffset=-14;
+  }else if(a){
+    const wind=smooth(0,a.windup,a.age),settle=1-smooth(a.windup,a.duration,a.age);
+    frontLift=a.age<a.windup?Math.sin(wind*Math.PI)*18:0;
+    hipY+=7*wind*settle;chestY+=10*wind*settle;lean=7*wind*settle;frontOffset=18;backOffset=-13;
+  }
+  const hip={x:x+dir*lean*.25,y:hipY},chest={x:x+dir*lean,y:chestY},head={x:chest.x,y:chest.y-19};
+  const stride=gait*15;
+  const frontFoot={x:x+dir*(frontOffset+stride),y:y-(standing?Math.max(0,gait)*8:12)-frontLift};
+  const backFoot={x:x+dir*(backOffset-stride),y:y-(standing?Math.max(0,-gait)*8:3)};
+  const frontHip={x:hip.x+dir*3,y:hip.y},backHip={x:hip.x-dir*3,y:hip.y};
+  function limb(root,end,L1,L2,bend){const dx=end.x-root.x,dy=end.y-root.y,d=Math.hypot(dx,dy)||1,r=Math.min(d,L1+L2-.01),tip={x:root.x+dx/d*r,y:root.y+dy/d*r};return{root,joint:solveIK(root,tip,L1,L2,bend),tip}}
+  const frontLeg=limb(frontHip,frontFoot,25,25,-dir),backLeg=limb(backHip,backFoot,25,25,dir);
+  const frontShoulder={x:chest.x+dir*4,y:chest.y+5},backShoulder={x:chest.x-dir*4,y:chest.y+5};
+  let frontHand={x:chest.x+dir*(18+gait*10),y:chest.y+28},backHand={x:chest.x-dir*(17+gait*10),y:chest.y+28};
+  if(a?.kind==='slash'){
+    let angle;
+    if(a.age<a.windup)angle=mix(.95,-1.38,smooth(0,a.windup,a.age));
+    else angle=mix(-1.38,1.16,easeOut((a.age-a.windup)/.105));
+    const recovery=smooth(.28,a.duration,a.age);angle=mix(angle,.95,recovery);
+    frontHand={x:frontShoulder.x+dir*Math.cos(angle)*34,y:frontShoulder.y+Math.sin(angle)*34};
+    backHand={x:backShoulder.x-dir*25,y:backShoulder.y+12};
+  }else if(a){frontHand={x:chest.x+dir*24,y:chest.y+19};backHand={x:chest.x-dir*25,y:chest.y+8}}
+  return{hip,chest,head,frontFoot:frontLeg.tip,backFoot:backLeg.tip,frontLeg,backLeg,frontArm:limb(frontShoulder,frontHand,18,18,-dir),backArm:limb(backShoulder,backHand,18,18,dir)};
+}
+function drawHumanoid(x,y,dir,walkT,attackT,isEnemy=false,seed=0,entity=null){
+  const p=humanoidPose(x,y,dir,walkT,isEnemy,entity||(isEnemy?null:player));
+  const col=isEnemy?'#3b2424':'#171717';
+  const bone=(a,b,s,w=2,alpha=1)=>strokeLine(a.x,a.y,b.x,b.y,{width:w,wobble:1.4,passes:2,seed:seed+s,color:col,alpha});
+  for(const [limb,n,alpha] of [[p.backLeg,1,.68],[p.backArm,3,.65],[p.frontLeg,5,1],[p.frontArm,7,1]]){bone(limb.root,limb.joint,n,2,alpha);bone(limb.joint,limb.tip,n+1,2,alpha)}
+  bone(p.hip,p.chest,9,2.3);
+  // Short soles pin each foot to the floor and make the stomp contact legible.
+  for(const [foot,n] of [[p.frontFoot,13],[p.backFoot,14]])bone({x:foot.x-dir*3,y:foot.y},{x:foot.x+dir*5,y:foot.y},n,1.5);
+  scribbleCircle(p.head.x,p.head.y,12,{loops:3,width:1.45,wobble:1.1,seed:seed+10,color:col});
+  strokeLine(p.head.x+3*dir,p.head.y-2,p.head.x+7*dir,p.head.y-2,{width:1,wobble:.4,passes:2,seed:seed+11,color:col});
+  return p;
+}
+function doJump(){if(player.onGround){player.vy=-560;player.onGround=false}}
+function doAttack(){beginAction('slash')}
+function doLightning(){
+  let target=null,best=1e9;for(const e of enemies){if(e.dead)continue;const d=Math.abs(e.x-player.x);if(d<best){best=d;target=e}}
+  if(target&&best<360){spawnFX('lightning',player.x+player.dir*18,player.y-78,{tx:target.x,ty:target.y-62});damageEnemy(target,40,Math.sign(target.x-player.x)||player.dir,120,80)}
+  else spawnFX('lightning',player.x+player.dir*18,player.y-78,{tx:player.x+player.dir*150,ty:player.y-70});
+}
+function attackHitCheck(){
+  const a=player.action;if(!a||a.kind!=='slash'||a.age<CFG.slash.windup+.035||a.age>CFG.slash.activeEnd)return;
+  for(const e of enemies){if(e.dead||e.lastHitSerial===player.attackSerial)continue;const dx=(e.x-player.x)*a.dir;
+    if(dx>8&&dx<CFG.slash.reach&&Math.abs(e.y-player.y)<45){e.lastHitSerial=player.attackSerial;damageEnemy(e,25,a.dir)}
+  }
+}
+function update(dt){const move=((keys.has('d')||keys.has('ArrowRight'))?1:0)-((keys.has('a')||keys.has('ArrowLeft'))?1:0)+joyVec.x;const target=move*210,acc=player.onGround?1500:700;player.vx+=Math.max(-acc*dt,Math.min(acc*dt,target-player.vx));if(Math.abs(move)<.05&&player.onGround)player.vx*=Math.pow(.001,dt);player.vy+=1500*dt;player.x+=player.vx*dt;player.y+=player.vy*dt;if(player.y>=groundY){
+  const landingSpeed=player.vy;
+  const wasAir=!player.onGround;
+  player.y=groundY;player.vy=0;player.onGround=true;
+  if(wasAir&&landingSpeed>260){
+    spawnDust(player.x,groundY-3,player.dir);
+    if(landingSpeed>520&&!player.pendingGround)spawnFX('crack',player.x,groundY+1,{dir:player.dir,small:true});
+  }
+}else player.onGround=false;if(player.onGround&&player.pendingGround&&!player.action){const kind=player.pendingGround;player.pendingGround=null;beginAction(kind)}player.x=Math.max(28,Math.min(W-28,player.x));if(Math.abs(move)>.05&&!player.action)player.dir=move>0?1:-1;if(Math.abs(player.vx)>10)player.walkT+=dt;updateAction(dt);attackHitCheck();spawnClock+=dt;if(!view.practice&&spawnClock>3.2&&enemies.filter(e=>!e.dead).length<6){spawnClock=0;spawnEnemy(W+30)}for(const e of enemies){if(e.dead){e.deathT-=dt;e.vy+=1500*dt;e.y=Math.min(groundY,e.y+e.vy*dt);continue}e.hitFlash=Math.max(0,e.hitFlash-dt);e.hitStun=Math.max(0,(e.hitStun||0)-dt);const dx=player.x-e.x;e.dir=dx>=0?1:-1;if(e.hitStun>0){e.vx*=Math.pow(.1,dt)}else if(Math.abs(dx)>54)e.vx+=Math.sign(dx)*430*dt;else{e.vx*=Math.pow(.02,dt);if(Math.abs(dx)<48&&player.onGround&&Math.random()<dt*.7){if(player.shield){
+  player.hp=Math.max(0,player.hp-1);
+  spawnFX('shieldHit',player.x,player.y-58,{dir:e.dir});
+}else{
+  player.hp=Math.max(0,player.hp-5);
+  spawnFX('impact',player.x,player.y-62);
+}}}if(e.hitStun<=0)e.vx=Math.max(-95,Math.min(95,e.vx));e.vy+=1500*dt;e.x+=e.vx*dt;e.y+=e.vy*dt;if(e.y>=groundY){e.y=groundY;e.vy=0;e.onGround=true}else e.onGround=false;e.walkT+=dt*Math.max(.25,Math.abs(e.vx)/80)}for(let i=enemies.length-1;i>=0;i--)if(enemies[i].dead&&enemies[i].deathT<=0)enemies.splice(i,1);statusEl.textContent=`HP ${player.hp}/${player.maxHp} · 몹 ${enemies.filter(e=>!e.dead).length} · ${view.paused?"정지":view.timeScale===1?"1×":"0.25×"}`}
+function drawGround(){strokeLine(0,groundY+1,W,groundY+1,{width:2,wobble:1.3,passes:2,alpha:.55,seed:900});for(let i=0;i<10;i++)strokeLine(i/10*W,groundY+10,(i/10*W)-35,H,{width:.5,wobble:1,passes:1,alpha:.06,seed:910+i})}
+function drawSlash(e){
+  const dir=e.dir,age=e.owner?.action?.kind==='slash'?Math.max(0,e.owner.action.age-CFG.slash.windup):e.age,u=age/e.dur;
+  const cx=(e.owner?.x??(e.x-dir*9))+dir*9,cy=(e.owner?.y??(e.y+76))-76;
+  const head=mix(-1.38,1.16,easeOut(age/.105));
+  const tail=mix(-1.46,1.15,smooth(.10,.335,age));
+  if(head-tail<.015)return;
+  const pts=[];
+  for(let i=0;i<=40;i++){const v=i/40,a=mix(tail,head,v),r=65+7*Math.sin(v*Math.PI)+2*Math.sin(a*3);pts.push({x:cx+dir*Math.cos(a)*r,y:cy+Math.sin(a)*r})}
+  const alpha=1-smooth(.18,e.dur,age);
+  pencilRibbon(pts,v=>(.3+17*Math.pow(Math.sin(v*Math.PI),.75))*(1-u*.32),{alpha,seed:e.seed});
+  if(e.owner&&age<.12){
+    const pose=humanoidPose(e.owner.x,e.owner.y,dir,e.owner.walkT,false,e.owner),hand=pose.frontArm.tip,tip=pts[pts.length-1];
+    sketchPath([hand,{x:mix(hand.x,tip.x,.6),y:mix(hand.y,tip.y,.6)-2},tip],{width:1.4,passes:2,alpha:.65*(1-smooth(.085,.12,age)),seed:e.seed+301});
+  }
+  // A single fine travel trace, not another equal-weight crescent.
+  const echo=[];for(let i=0;i<=24;i++){const a=mix(tail-.06,head-.12,i/24),r=54;echo.push({x:cx+dir*Math.cos(a)*r,y:cy+Math.sin(a)*r})}
+  sketchPath(echo,{width:.9,passes:1,alpha:alpha*.3,seed:e.seed+100});
+  if(age>.07){for(let k=0;k<4;k++){const a=.22+k*.20,d=68+(age-.07)*(100+k*50);const px=cx+dir*Math.cos(a)*d,py=cy+Math.sin(a)*d;
+    sketchPath([{x:px-dir*(7+k*2),y:py-3},{x:px,y:py+2}],{width:1.3-k*.2,passes:1,alpha:alpha*.65,seed:e.seed+k+200})}}
+}
+function shockFront(e,age=e.age){return e.x+e.dir*(8+CFG.shockwave.range*clamp(age/e.dur))}
+function drawShockwave(e){
+  const u=e.age/e.dur,dir=e.dir,front=shockFront(e),base=e.y;
+  const travel=(front-e.x)*dir,build=smooth(0,.14,u),backBend=Math.min(30,travel*.8);
+  const h=(43+17*Math.sin(u*Math.PI))*(.40+.60*build),tailLength=Math.min(81,travel);
+  const alpha=1-smooth(.67,1,u);
+  const main=quadratic({x:front-dir*backBend,y:base-h},{x:front+dir*(8+13*build),y:base-h*.62},{x:front,y:base},32);
+  // A low triangular compression wake makes this a wave, rather than a second floating slash.
+  const wake=quadratic({x:front-dir*tailLength,y:base-1},{x:front-dir*tailLength*.62,y:base-h*.10},{x:front-dir*backBend,y:base-h},18);
+  const body=[...wake,...main.slice(1),{x:front-dir*tailLength,y:base-1}];
+  ctx.save();ctx.globalAlpha*=alpha;
+  polygon(body,'#efebe1',.8);
+  sketchPath(wake,{width:.8,passes:1,alpha:.48,seed:e.seed+152});
+  ctx.beginPath();body.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.clip();
+  for(let k=0;k<14;k++){
+    const px=front-dir*(k*6-6);sketchPath([{x:px,y:base+1},{x:px-dir*22,y:base-30}],{width:.65,passes:1,alpha:.22,seed:e.seed+k+170});
+  }ctx.restore();
+  // Upright pressure face: the lower tip is exactly on the captured contact plane.
+  pencilRibbon(main,v=>.3+6.2*Math.sin(v*Math.PI)**.7,{alpha,seed:e.seed});
+  const inner=quadratic({x:front-dir*Math.min(35,travel*.85),y:base-h*.8},{x:front+dir*3,y:base-h*.47},{x:front-dir*8,y:base},22);
+  sketchPath(inner,{width:1.2,alpha:alpha*.52,seed:e.seed+27,wobble:.6});
+  for(let k=0;k<5;k++){
+    const f=k/5,from={x:front-dir*(15+f*28),y:base-h*(.18+f*.12)},to={x:from.x-dir*(19+u*35)*(1-f*.5),y:from.y+8};
+    if((to.x-e.x)*dir>=0)sketchPath([to,from],{width:.8,passes:1,alpha:alpha*.32,seed:e.seed+k+51});
+  }
+  // Transient contact print remains at the original foot, not at the moving crest.
+  const stamp=1-smooth(.04,.23,e.age);
+  if(stamp>0){
+    const pts=[];for(let i=0;i<=32;i++){const a=i/32*Math.PI*2;pts.push({x:e.x+Math.cos(a)*(13+e.age*62),y:base+Math.sin(a)*(3+e.age*8)})}
+    sketchPath(pts,{width:1.4,alpha:stamp*.7,seed:e.seed+90});
+    for(let k=0;k<4;k++)sketchPath([{x:e.x+dir*(k*6-8),y:base},{x:e.x+dir*(k*10-9),y:base-12-k%2*8}],{width:1,alpha:stamp*.5,seed:e.seed+k+98});
+  }
+  // Solid chips and brief floor skids, all derived from the captured ground anchor.
+  for(let k=0;k<6;k++){
+    const d=.07+k*.055,life=clamp((e.age-d)/.32);if(e.age<d||life>=1)continue;
+    const birth=shockFront(e,d),px=birth-dir*life*(15+k*4),py=base-Math.sin(life*Math.PI)*(8+k%3*5);
+    inkChip(px,py,3+k%3,dir*life*3,(1-life)*alpha,e.seed+k*3);
+  }
+  sketchPath([{x:front-dir*18,y:base+.7},{x:front+dir*6,y:base+.7}],{width:1.5,alpha:alpha*.8,seed:e.seed+66});
+}
+function drawCrack(e){
+  const geo=e.geometry,dir=e.dir||1,age=e.age,alpha=1-smooth(e.dur*.56,e.dur,age),reveal=easeOut(age/(e.small?.19:.32)),scale=geo.scale;
+  const point=p=>({x:e.x+dir*p.x,y:e.y+p.y});
+  ctx.save();ctx.globalAlpha*=alpha;
+  // Break the otherwise uninterrupted baseline before drawing the opening and its lips.
+  ctx.fillStyle='#f3f0e7';const start=e.x-dir*28*scale,end=e.x+dir*174*scale*reveal;ctx.fillRect(Math.min(start,end),e.y-2,Math.abs(end-start)+1,6);
+  const shown=[];const progress=reveal*(geo.main.length-1),index=Math.floor(progress);
+  for(let i=0;i<=index;i++)shown.push(geo.main[i]);
+  if(index<geo.main.length-1){const a=geo.main[index],b=geo.main[index+1],f=progress-index;shown.push({x:mix(a.x,b.x,f),y:mix(a.y,b.y,f)})}
+  if(shown.length>1){
+    const upper=[],lower=[];
+    for(let i=0;i<shown.length;i++){const p=shown[i],w=(2+7*(1-p.x/(175*scale)))*scale*reveal;upper.push(point({x:p.x,y:p.y-w*.55}));lower.push(point({x:p.x,y:p.y+w*.65}))}
+    const opening=upper.concat(lower.reverse());polygon(opening,'#25211e');sketchPath(upper,{width:.85,passes:1,wobble:.30,seed:e.seed});
+    for(let b=0;b<geo.branches.length;b++){
+      const branch=geo.branches[b];if(branch[0].x>reveal*160*scale)continue;
+      const pts=branch.map(point);pencilRibbon(pts,v=>(1-v)*(3.6-b*.7)*scale+.2,{seed:e.seed+b+70});
+      sketchPath(pts.map(p=>({x:p.x+dir*2*scale,y:p.y})),{width:.5,passes:1,alpha:.30,seed:e.seed+b+80});
+    }
+    pencilRibbon(geo.back.map(point),v=>(1-v)*4*scale+.2,{seed:e.seed+36});
+  }
+  // Lifted, hatched ground lips supply volume and occlusion instead of more random lines.
+  for(let k=0;k<geo.plates.length;k++){
+    const plate=geo.plates[k],delay=.022+k*.055;if(age<delay||plate.x>reveal*170*scale)continue;
+    const lift=Math.sin(clamp((age-delay)/.46)*Math.PI)*(11-k*2)*scale;
+    const tilt=(1-smooth(.04,.52,age-delay))*(k===1?-.15:.10);
+    const pts=plate.points.map(p=>point({x:p.x,y:p.y-lift+(p.x-plate.x)*tilt}));
+    polygon(pts);sketchPath(pts,{closed:true,width:1,passes:2,seed:e.seed+k*10,wobble:.5});
+    ctx.save();ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.clip();
+    const cx=e.x+dir*plate.x;
+    for(let j=-3;j<=3;j++)sketchPath([{x:cx+j*6*scale,y:e.y+24*scale},{x:cx+(j*6+20)*scale,y:e.y-22*scale}],{width:.7,passes:1,alpha:.30,seed:e.seed+k*10+j});
+    ctx.restore();
+  }
+  ctx.restore();
+  // Fragments are ballistic and detach once; the ground pattern itself stays put.
+  for(let k=0;k<(e.small?4:8);k++){
+    const a=age-.025*k;if(a<0||a>.68)continue;
+    const px=e.x+dir*((10+k*12)*scale+a*(18+k*8)*scale),py=e.y-4*scale-(85+k%3*27)*a*scale+240*a*a*scale;
+    if(py>e.y+3)continue;
+    inkChip(px,py,(3+k%3*2)*scale,k+a*4*dir,alpha*(1-smooth(.38,.68,a)),e.seed+k*17);
+  }
+}
+function updateEffects(dt){
+  for(let i=fx.length-1;i>=0;i--){
+    const e=fx[i],oldAge=e.age;e.age+=dt;
+    if(e.type==='projectile'){
+      const oldX=e.x;e.x+=(e.vx||0)*dt;
+      for(const mob of enemies){if(mob.dead)continue;const left=Math.min(oldX,e.x)-10,right=Math.max(oldX,e.x)+10;
+        if(mob.x>=left&&mob.x<=right&&Math.abs((mob.y-60)-e.y)<38){damageEnemy(mob,32,e.dir,220,100);e.age=e.dur;break}}
+    }else if(e.type==='shockwave'){
+      const prev=shockFront(e,oldAge),curr=shockFront(e);for(const mob of enemies){
+        if(mob.dead||e.hitIds.has(mob.id))continue;
+        if(mob.x>=Math.min(prev,curr)-12&&mob.x<=Math.max(prev,curr)+12&&Math.abs(mob.y-e.y)<35){e.hitIds.add(mob.id);damageEnemy(mob,18,e.dir,260,180)}
+      }
+    }
+    if(e.age>=e.dur)fx.splice(i,1);
+  }
+}
+function drawFX(layer='front'){
+  for(let i=fx.length-1;i>=0;i--){
+    const e=fx[i];
+    if((e.type==='crack')!==(layer==='ground'))continue;
+    const u=e.age/e.dur;
+
+    if(e.type==='impact'){
+      burst(e.x,e.y,8,1-u*.4,1-u);
+      scribbleCircle(e.x,e.y,9+u*24,{loops:2,width:1.1,alpha:1-u,seed:e.seed});
+    }
+    else if(e.type==='explosion'){
+      burst(e.x,e.y,14,.7+u,1-u);
+      scribbleCircle(e.x,e.y,18+u*45,{loops:3,width:1.5,alpha:1-u,seed:e.seed});
+      for(let k=0;k<7;k++){
+        const a=h2(k,e.seed,2)*Math.PI*2,d=18+u*(35+h2(k,e.seed,3)*55);
+        const px=e.x+Math.cos(a)*d,py=e.y+Math.sin(a)*d;
+        sketchArc(px,py,5+8*u,a-1,a+1,{seg:5,width:.9,passes:1,alpha:(1-u)*.65,seed:e.seed+k});
+      }
+    }
+    else if(e.type==='smoke'){
+      for(let k=0;k<4;k++){
+        const ku=Math.max(0,Math.min(1,u-k*.09));
+        const sx=e.x+(h2(e.seed,k,1)-.5)*26;
+        const sy=e.y-ku*70;
+        sketchArc(sx,sy,12+ku*24,Math.PI*.08,Math.PI*1.8,{seg:12,width:1,passes:2,alpha:(1-ku)*.45,seed:e.seed+k*9,wobble:3});
+      }
+    }
+    else if(e.type==='lightning'){
+      const x2=e.tx??e.x+150,y2=e.ty??e.y-10,seg=8,pts=[[e.x,e.y]];
+      for(let q=1;q<seg;q++){
+        const z=q/seg,x=e.x+(x2-e.x)*z,y=e.y+(y2-e.y)*z,nx=-(y2-e.y),ny=x2-e.x,L=Math.hypot(nx,ny)||1;
+        const off=(h2(q,e.seed,sketchFrame)-.5)*22;
+        pts.push([x+nx/L*off,y+ny/L*off]);
+      }
+      pts.push([x2,y2]);
+      for(let q=0;q<pts.length-1;q++)strokeLine(...pts[q],...pts[q+1],{color:'#1d2a42',width:2,passes:2,wobble:1.3,alpha:1-u,seed:e.seed+q});
+      if(u<.45)scribbleCircle(x2,y2,8+u*14,{loops:2,width:1,alpha:1-u,seed:e.seed+200,color:'#1d2a42'});
+    }
+    else if(e.type==='slash'){drawSlash(e)}
+    else if(e.type==='shockwave'){drawShockwave(e)}
+    else if(e.type==='crack'){drawCrack(e)}
+    else if(e.type==='dust'){
+      const dir=e.dir||0;
+      for(let k=0;k<7;k++){
+        const side=(k%2?1:-1);
+        const sx=e.x+side*(8+k*2)+dir*u*12;
+        const sy=e.y-u*(10+h2(k,e.seed,2)*28);
+        const rr=5+u*(8+h2(k,e.seed,3)*12);
+        sketchArc(sx,sy,rr,Math.PI*.15,Math.PI*1.8,{seg:8,width:.85,passes:1,alpha:(1-u)*.42,seed:e.seed+k,wobble:2.5});
+      }
+    }
+    else if(e.type==='heal'){
+      for(let k=0;k<8;k++){
+        const phase=u*1.8+k/8;
+        const a=k/8*Math.PI*2+u*1.6;
+        const rr=15+phase*28;
+        const x=e.x+Math.cos(a)*rr,y=e.y-Math.sin(phase*Math.PI)*45+Math.sin(a)*8;
+        strokeLine(x-3,y,x+3,y,{width:1.2,passes:2,wobble:.7,alpha:1-u,seed:e.seed+k});
+        strokeLine(x,y-3,x,y+3,{width:1.2,passes:2,wobble:.7,alpha:1-u,seed:e.seed+k+20});
+      }
+      scribbleCircle(e.x,e.y+6,22+u*18,{loops:2,width:1,alpha:(1-u)*.35,seed:e.seed+50});
+    }
+    else if(e.type==='shieldHit'){
+      const a=(e.dir||1)>0?Math.PI:0;
+      sketchArc(e.x,e.y,38,a-.9,a+.9,{seg:16,width:2.3,passes:3,alpha:1-u,seed:e.seed,wobble:2});
+      for(let k=0;k<5;k++){
+        const aa=a-.65+k*.32;
+        strokeLine(e.x+Math.cos(aa)*36,e.y+Math.sin(aa)*36,e.x+Math.cos(aa)*52,e.y+Math.sin(aa)*52,{
+          width:1,passes:1,wobble:1,alpha:1-u,seed:e.seed+k
+        });
+      }
+    }
+    else if(e.type==='afterimage'){
+      const dir=e.dir||1;
+      ctx.save();ctx.globalAlpha=(1-u)*.13;
+      for(let k=0;k<3;k++){
+        const ox=-dir*(10+k*9+u*10);
+        scribbleCircle(e.x+ox,e.y-103,10+k,{loops:1,width:1,wobble:2,alpha:1,seed:e.seed+k});
+        strokeLine(e.x+ox,e.y-88,e.x+ox-dir*5,e.y-45,{width:1.2,wobble:2,passes:1,seed:e.seed+k+7});
+      }
+      ctx.restore();
+    }
+    else if(e.type==='projectile'){
+      const dir=e.dir||1;
+      for(let k=0;k<5;k++){
+        const tail=10+k*9;
+        strokeLine(e.x-dir*tail,e.y+(h2(k,e.seed,1)-.5)*5,e.x-dir*(tail+10),e.y+(h2(k,e.seed,2)-.5)*8,{
+          width:1.6-k*.18,wobble:1.3,passes:2,alpha:(1-u)*(.9-k*.1),seed:e.seed+k
+        });
+      }
+      scribbleCircle(e.x,e.y,7+Math.sin(sketchFrame)*1.2,{loops:3,width:1.3,wobble:1.5,alpha:1-u*.45,seed:e.seed});
+
+    }
+  }
+}
+function render(dt){ctx.fillStyle='#f3f0e7';ctx.fillRect(0,0,W,H);drawGround();drawFX('ground');if(player.aura){for(let r=36;r<62;r+=10)scribbleCircle(player.x,player.y-56,r+Math.sin(t*3+r)*2,{loops:2,width:1,wobble:2,alpha:.13,seed:r+sketchFrame})}for(const e of enemies){if(e.dead){ctx.save();ctx.globalAlpha=clamp(e.deathT/.38);ctx.translate(e.x,e.y-20);ctx.rotate((.65-e.deathT)*2.2*e.dir);ctx.translate(-e.x,-(e.y-20));drawHumanoid(e.x,e.y,e.dir,e.walkT,0,true,e.seed,e);ctx.restore();continue}hatchRect(e.x-18,e.y+3,36,8,.5,.1,{seed:e.seed});drawHumanoid(e.x,e.y,e.dir,e.walkT,0,true,e.seed,e);const bw=34,bx=e.x-bw/2,by=e.y-130;ctx.strokeStyle='rgba(0,0,0,.45)';ctx.strokeRect(bx,by,bw,4);ctx.fillStyle='#3b2424';ctx.fillRect(bx+1,by+1,(bw-2)*Math.max(0,e.hp/e.maxHp),2)}
+if(player.shield){
+  const pulse=2+Math.sin(t*4)*2;
+  sketchArc(player.x,player.y-58,43+pulse,-1.18,1.18,{seg:24,width:1.6,passes:3,alpha:.42,seed:740+sketchFrame,wobble:2.4});
+  sketchArc(player.x,player.y-58,48-pulse,1.95,4.33,{seg:24,width:.9,passes:2,alpha:.18,seed:780+sketchFrame,wobble:3});
+}
+hatchRect(player.x-22,player.y+3,44,9,.55,.15,{seed:17});
+drawHumanoid(player.x,player.y,player.dir,player.walkT,player.attackT,false,100,player);drawFX('front');}
+function step(now){const realDt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;const dt=view.paused?0:realDt*view.timeScale;if(dt>0){t+=dt;sketchFrame=Math.floor(t*8);update(dt);updateEffects(dt)}render(0);requestAnimationFrame(step)}requestAnimationFrame(step);
+addEventListener('keydown',event=>{
+  const e={key:event.key.length===1?event.key.toLowerCase():event.key,repeat:event.repeat,target:event.target,preventDefault:()=>event.preventDefault()};
+  if(['ArrowLeft','ArrowRight','ArrowUp',' ','a','d','w','j','k','1','2','3','4','5','6','7','8','9'].includes(e.key))e.preventDefault();
+  if(e.target instanceof HTMLElement&&e.target.tagName==='INPUT')return;
+  keys.add(e.key.length===1?e.key.toLowerCase():e.key);
+  if((e.key==='w'||e.key==='ArrowUp'||e.key===' ')&&!e.repeat)doJump();
+  if(e.key==='j'&&!e.repeat)doAttack();
+  if(e.key==='k'&&!e.repeat)doLightning();
+  if(e.key==='1'&&!e.repeat)spawnFX('explosion',player.x+player.dir*65,player.y-55);
+  if(e.key==='2'&&!e.repeat)spawnFX('smoke',player.x,player.y-20);
+  if(e.key==='3'&&!e.repeat)player.aura=!player.aura;
+  if(e.key==='4'&&!e.repeat)doAttack();
+  if(e.key==='5'&&!e.repeat)doShockwave();
+  if(e.key==='6'&&!e.repeat)doCrack();
+  if(e.key==='7'&&!e.repeat)player.shield=!player.shield;
+  if(e.key==='8'&&!e.repeat)doHeal();
+  if(e.key==='9'&&!e.repeat)doProjectile();
+});addEventListener('keyup',e=>keys.delete(e.key.length===1?e.key.toLowerCase():e.key));
+document.querySelectorAll('button').forEach(b=>b.addEventListener('pointerdown',e=>e.preventDefault()));
+document.querySelectorAll('button[data-act]').forEach(b=>b.addEventListener('pointerdown',e=>{e.stopPropagation();const a=b.dataset.act;if(a==='jump')doJump();if(a==='attack')doAttack();if(a==='lightning')doLightning();if(a==='aura')player.aura=!player.aura;if(a==='slash')doAttack();if(a==='shockwave')doShockwave();if(a==='crack')doCrack()}));
+const joy=document.getElementById('joy'),knob=document.getElementById('knob');function joyUpdate(e){const r=joy.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy,L=Math.hypot(dx,dy),max=38;if(L>max){dx*=max/L;dy*=max/L}knob.style.transform=`translate(${dx}px,${dy}px)`;joyVec={x:dx/max,y:dy/max}}joy.addEventListener('pointerdown',e=>{joyActive=true;joy.setPointerCapture(e.pointerId);joyUpdate(e)});joy.addEventListener('pointermove',e=>{if(joyActive)joyUpdate(e)});joy.addEventListener('pointerup',()=>{joyActive=false;joyVec={x:0,y:0};knob.style.transform='translate(0,0)'});joy.addEventListener('pointercancel',()=>{joyActive=false;joyVec={x:0,y:0};knob.style.transform='translate(0,0)'});
+function resetGame(){
+  view.paused=false;const pauseButton=document.getElementById('pause');pauseButton.setAttribute('aria-pressed','false');pauseButton.textContent='일시정지';
+  fx.length=0;enemies.length=0;keys.clear();spawnClock=0;
+  Object.assign(player,{x:Math.min(180,W*.28),y:groundY,vx:0,vy:0,dir:1,onGround:true,hp:100,attackT:0,attackSerial:0,action:null,pendingGround:null,walkT:0,aura:false,shield:false});
+  if(!view.practice)for(let i=0;i<4;i++)spawnEnemy(Math.max(player.x+220,W*.58)+i*130);
+}
+function clearInput(){keys.clear();joyActive=false;joyVec={x:0,y:0};knob.style.transform='translate(0,0)'}
+addEventListener('blur',clearInput);document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInput()});
+document.getElementById('slow').addEventListener('click',e=>{view.timeScale=view.timeScale===1?.25:1;e.currentTarget.setAttribute('aria-pressed',String(view.timeScale!==1))});
+document.getElementById('pause').addEventListener('click',e=>{view.paused=!view.paused;e.currentTarget.setAttribute('aria-pressed',String(view.paused));e.currentTarget.textContent=view.paused?'계속 재생':'일시정지';clearInput()});
+document.getElementById('practice').addEventListener('click',e=>{view.practice=!view.practice;enemies.length=0;fx.length=0;spawnClock=0;if(!view.practice)for(let i=0;i<3;i++)spawnEnemy(Math.max(player.x+200,W*.6)+i*125);e.currentTarget.setAttribute('aria-pressed',String(view.practice));e.currentTarget.textContent=view.practice?'몹 다시 켜기':'몹 숨기기'});
+document.getElementById('reset').addEventListener('click',resetGame);
+window.__game={player,enemies,fx,view,update,updateEffects,render,doJump,doAttack,doLightning,doShockwave,doCrack,doHeal,doProjectile,spawnEnemy,spawnFX,resetGame,ground:()=>groundY,solveIK,humanoidPose};
+
+})();
+</script>
+</body></html>
