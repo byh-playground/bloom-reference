@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>공통 프로젝트 관리 규칙</title>
+<style>
+:root{
+  --bg:#f5f6f7; --panel:#fff; --panel-2:#f8f9fa; --text:#202122; --muted:#72777d;
+  --line:#d9dde1; --line-strong:#b9bec4; --accent:#00a495; --accent-2:#007c70;
+  --link:#0275d8; --danger:#d33; --warn:#b26a00; --ok:#14866d; --code:#eef1f3;
+  --shadow:0 2px 10px rgba(0,0,0,.08); --header-h:56px; --sidebar-w:285px;
+}
+[data-theme="dark"]{
+  --bg:#181a1b; --panel:#222426; --panel-2:#292c2f; --text:#e8eaed; --muted:#a9b0b6;
+  --line:#3b4045; --line-strong:#555c62; --accent:#28c6b6; --accent-2:#50ddce;
+  --link:#7ab8ff; --danger:#ff6b6b; --warn:#f0b45d; --ok:#57d2b1; --code:#303438;
+  --shadow:0 2px 14px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;line-height:1.72}
+a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;height:var(--header-h);display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.brand{font-weight:800;white-space:nowrap;letter-spacing:-.02em}.brand small{font-weight:600;color:var(--muted);margin-left:6px}
+.spacer{flex:1}.toolbar{display:flex;align-items:center;gap:8px}
+.icon-btn{border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);border-radius:6px;min-width:40px;height:38px;padding:0 11px;cursor:pointer;font-weight:800}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-2)}
+.menu-btn{display:none;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:900;text-shadow:0 1px 1px rgba(0,0,0,.28)}
+.menu-btn:hover{color:#fff;background:var(--accent-2)}
+.search-wrap{position:relative;max-width:520px;flex:1}.search-wrap input{width:100%;height:38px;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);border-radius:6px;padding:0 36px 0 12px;outline:none}.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 18%,transparent)}
+.search-count{position:absolute;right:9px;top:8px;color:var(--muted);font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);max-width:1480px;margin:0 auto}
+.sidebar{position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow:auto;padding:20px 14px 32px;border-right:1px solid var(--line);background:var(--panel)}
+.toc-title{font-size:13px;color:var(--muted);font-weight:800;margin:0 8px 10px;text-transform:uppercase;letter-spacing:.08em}
+.toc{list-style:none;padding:0;margin:0}.toc li{margin:2px 0}.toc a{display:block;padding:7px 9px;border-radius:5px;color:var(--text);font-size:14px;line-height:1.4}.toc a:hover{background:var(--panel-2);text-decoration:none}.toc a.active{background:color-mix(in srgb,var(--accent) 14%,var(--panel));color:var(--accent-2);font-weight:800}.toc .sub a{padding-left:24px;font-size:13px;color:var(--muted)}
+.main{min-width:0;padding:28px 34px 80px}.doc{max-width:1040px;margin:0 auto;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 42px 58px}
+.doc-header{border-bottom:2px solid var(--line-strong);padding-bottom:20px;margin-bottom:28px}.doc-header h1{font-size:34px;line-height:1.2;margin:0 0 10px;letter-spacing:-.04em}.subtitle{color:var(--muted);margin:0 0 16px}.meta{display:flex;gap:7px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--muted)}.badge.core{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent-2);background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.notice{margin:18px 0;padding:14px 16px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-radius:0 6px 6px 0}.notice strong{color:var(--accent-2)}
+.section{margin-top:42px}.section.filtered-out{display:none}.section h2{font-size:25px;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:-.025em}.section h3{font-size:19px;margin:28px 0 10px;letter-spacing:-.02em}.anchor-no{color:var(--muted);font-weight:500;margin-right:8px}
+p{margin:10px 0} ul,ol{padding-left:25px} li{margin:4px 0}.tight li{margin:2px 0}
+.rule{border:1px solid var(--line);background:var(--panel-2);border-radius:7px;padding:15px 17px;margin:14px 0}.rule-title{font-weight:900;margin-bottom:5px}.rule.core{border-left:4px solid var(--accent)}
+blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--line-strong);background:var(--panel-2);color:var(--text)}
+code,kbd{background:var(--code);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.92em}pre{overflow:auto;background:var(--code);border:1px solid var(--line);padding:14px;border-radius:6px;line-height:1.5}
+.table-wrap{overflow:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:6px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th:last-child,td:last-child{border-right:0}tr:last-child td{border-bottom:0}th{background:var(--panel-2);font-weight:800}td:first-child{font-weight:700}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:14px 0}.flow span{border:1px solid var(--line);background:var(--panel-2);padding:6px 10px;border-radius:5px;font-weight:700}.flow b{color:var(--muted)}
+.kicker{font-size:12px;font-weight:900;color:var(--accent-2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}.muted{color:var(--muted)}.danger{color:var(--danger);font-weight:800}.ok{color:var(--ok);font-weight:800}
+mark{background:#ffe477;color:#1d1d1d;border-radius:2px;padding:0 1px}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:800;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);width:42px;height:42px;border-radius:50%;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
+.overlay{display:none}
+.no-results{display:none;padding:24px;border:1px dashed var(--line-strong);border-radius:7px;text-align:center;color:var(--muted);margin-top:20px}
+.no-results.show{display:block}
+.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:900px){
+  :root{--header-h:58px}.topbar{padding:0 10px}.brand small{display:none}.search-wrap{max-width:none}.menu-btn{display:inline-flex;align-items:center;justify-content:center;min-width:52px;color:#fff !important;background:var(--accent) !important;border-color:var(--accent) !important}
+  .layout{display:block}.sidebar{position:fixed;left:0;top:var(--header-h);z-index:1200;width:min(86vw,320px);height:calc(100vh - var(--header-h));transform:translateX(-105%);transition:transform .2s ease;box-shadow:var(--shadow);border-right:1px solid var(--line)}
+  .sidebar.open{transform:translateX(0)}.overlay{position:fixed;display:block;inset:var(--header-h) 0 0 0;background:rgba(0,0,0,.45);z-index:1100;opacity:0;pointer-events:none;transition:opacity .2s}.overlay.open{opacity:1;pointer-events:auto}
+  .main{padding:14px}.doc{padding:25px 18px 45px}.doc-header h1{font-size:28px}.section h2{font-size:22px}.section h3{font-size:18px}.toolbar .theme-label{display:none}
+}
+@media(max-width:560px){.brand{font-size:14px}.search-wrap input{padding-left:9px}.search-count{display:none}.icon-btn{min-width:38px;padding:0 8px}.menu-btn{min-width:48px}.doc{border-left:0;border-right:0}.main{padding:10px 0}.doc-header h1{font-size:25px}}
+@media print{.topbar,.sidebar,.backtop,.overlay{display:none!important}.layout{display:block}.main{padding:0}.doc{border:0;box-shadow:none;max-width:none;padding:0}.section{break-inside:avoid-page}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="목차 열기">목차</button>
+  <div class="brand">공통 프로젝트 관리 규칙 <small>운영·버전·배포 SSOT</small></div>
+  <div class="spacer"></div>
+  <div class="search-wrap"><input id="search" type="search" placeholder="규칙 검색 (예: 버전, 마이그레이션, Stable)" autocomplete="off"/><span id="searchCount" class="search-count"></span></div>
+  <div class="toolbar"><button class="icon-btn" id="themeBtn" title="다크모드 전환"><span class="theme-label">테마</span> ◐</button></div>
+</header>
+<div class="overlay" id="overlay"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="toc-title">목차</div>
+    <ul class="toc" id="toc">
+      <li><a href="#scope">1. 문서 범위</a></li>
+      <li><a href="#version">2. 버전 규칙</a></li>
+      <li class="sub"><a href="#version-major">2.1 MAJOR</a></li>
+      <li class="sub"><a href="#version-minor">2.2 MINOR</a></li>
+      <li class="sub"><a href="#version-patch">2.3 PATCH</a></li>
+      <li class="sub"><a href="#version-none">2.4 버전 유지</a></li>
+      <li class="sub"><a href="#version-decision">2.5 판정 순서</a></li>
+      <li><a href="#version-split">3. 별도 버전 최소화</a></li>
+      <li><a href="#build-id">4. BUILD_ID</a></li>
+      <li><a href="#ssot">5. SSOT · 최신 기준본</a></li>
+      <li><a href="#migration">6. 마이그레이션</a></li>
+      <li class="sub"><a href="#compat-exception">6.1 호환 계층 예외</a></li>
+      <li class="sub"><a href="#migration-done">6.2 완료 기준</a></li>
+      <li><a href="#states">7. Candidate · Validated · Stable</a></li>
+      <li><a href="#stable">8. Stable 승격</a></li>
+      <li><a href="#git">9. Git 운영</a></li>
+      <li><a href="#commit">10. 커밋 메시지</a></li>
+      <li><a href="#consumer">11. 라이브러리 · Consumer</a></li>
+      <li><a href="#delivery">12. 결과물 전달</a></li>
+      <li><a href="#verification">13. 검증 · 배포 기록</a></li>
+      <li><a href="#rollback">14. 롤백</a></li>
+      <li><a href="#handoff">15. 핸드오프</a></li>
+      <li><a href="#docs">16. 문서 역할 분리</a></li>
+      <li><a href="#complexity">17. 최소 복잡성</a></li>
+      <li><a href="#summary">18. 핵심 요약</a></li>
+    </ul>
+  </aside>
+  <main class="main">
+    <article class="doc" id="doc">
+      <header class="doc-header">
+        <div class="kicker">Project Management Rules</div>
+        <h1>공통 프로젝트 관리 규칙</h1>
+        <p class="subtitle">버전, 기준본, 마이그레이션, 검증, 배포, Git, 산출물, 핸드오프를 위한 공통 운영 규칙.</p>
+        <div class="meta"><span class="badge core">관리 규칙 SSOT</span><span class="badge">단일 HTML</span><span class="badge">MAJOR.MINOR.PATCH</span><span class="badge">Candidate → Validated → Stable</span></div>
+      </header>
+
+      <div class="notice"><strong>가장 중요한 원칙</strong><br>관리 체계가 프로젝트보다 복잡해지지 않게 한다. 기본값은 <b>메인 버전 하나, Stable 하나, 불필요한 호환 계층 없음</b>이다.</div>
+
+      <section class="section" id="scope" data-search>
+        <h2><span class="anchor-no">1.</span>문서 범위</h2>
+        <p>이 문서는 <b>개발 외 프로젝트 운영 규칙</b>만 다룬다. 코드 스타일·알고리즘·렌더링·구체 구현 방식은 별도 개발 규칙에서 관리한다.</p>
+        <div class="table-wrap"><table><thead><tr><th>이 문서에서 관리</th><th>별도 개발 규칙에서 관리</th></tr></thead><tbody><tr><td>버전, Stable, 기준본, 마이그레이션, Git/PR, 배포, 전달, 검증 기록, 핸드오프, README 역할</td><td>코드 스타일, 자료구조, 알고리즘, 렌더링, 성능 구현, 클래스/믹스인 설계, 구체 기술 선택</td></tr></tbody></table></div>
+      </section>
+
+      <section class="section" id="version" data-search>
+        <h2><span class="anchor-no">2.</span>버전 규칙</h2>
+        <div class="rule core"><div class="rule-title">최상위 규칙</div><b>MAJOR는 제품 세대, MINOR는 비호환 변경, PATCH는 호환 변경.</b></div>
+        <p>기본 버전은 프로젝트 전체를 대표하는 <b>하나의 메인 버전</b>이다.</p>
+        <pre><code>MAJOR.MINOR.PATCH
+예: 0.8.3 / 1.0.0 / 1.4.2</code></pre>
+
+        <h3 id="version-major"><span class="anchor-no">2.1.</span>MAJOR — 제품 생애주기 / 세대</h3>
+        <p>MAJOR는 기술적인 Breaking Change 횟수가 아니다. 제품 자체의 큰 생애주기나 세대를 표현한다.</p>
+        <ul><li><code>0.x.x</code> — 개발 / 알파 / 베타</li><li><code>1.x.x</code> — 최초 정식 릴리즈</li><li><code>2.x.x+</code> — 제품 자체가 다음 세대로 넘어갔다고 판단할 수준의 큰 전환</li></ul>
+        <p>프로토콜·API·저장 포맷·렌더러·내부 아키텍처가 깨졌다는 이유만으로 MAJOR를 올리지 않는다.</p>
+
+        <h3 id="version-minor"><span class="anchor-no">2.2.</span>MINOR — 호환되지 않는 변경</h3>
+        <div class="rule"><div class="rule-title">판정 질문</div>기존 버전과 그대로 함께 사용할 수 있는가? <span class="danger">아니라면 MINOR.</span></div>
+        <ul><li>네트워크 프로토콜 비호환 변경</li><li>저장 포맷 비호환 변경</li><li>API / 인터페이스 계약 변경</li><li>외부 데이터 구조 비호환 변경</li><li>기존 Consumer를 수정해야 하는 변경</li><li>기존 사용 방식이 깨지는 마이그레이션</li></ul>
+        <p>예: <code>0.7.5 → 0.8.0</code>. MINOR를 올리면 PATCH는 <code>0</code>으로 초기화한다.</p>
+
+        <h3 id="version-patch"><span class="anchor-no">2.3.</span>PATCH — 호환되는 변경</h3>
+        <div class="rule"><div class="rule-title">판정 질문</div>기존 계약과 사용법을 그대로 유지하는가? <span class="ok">그렇다면 PATCH.</span></div>
+        <ul><li>버그 / 회귀 수정</li><li>성능 최적화</li><li>호환되는 UX·VFX 개선</li><li>밸런스 조정</li><li>기존 API를 유지하는 기능 보완</li></ul>
+        <p>예: <code>0.8.0 → 0.8.1</code>.</p>
+
+        <h3 id="version-none"><span class="anchor-no">2.4.</span>버전을 올리지 않는 변경</h3>
+        <p>모든 커밋마다 PATCH를 올리지 않는다. 사용자 동작이나 외부 계약에 의미 있는 변화가 없다면 버전을 유지한다.</p>
+        <ul><li>순수 리팩터링</li><li>변수명·내부 이름 정리</li><li>Dead Code 제거</li><li>문서·주석 수정</li><li>테스트 추가·정리</li><li>CI / 포맷팅 / 내부 파일 구조 정리</li></ul>
+
+        <h3 id="version-decision"><span class="anchor-no">2.5.</span>버전 판정 순서</h3>
+        <ol><li>제품 세대 자체가 바뀌는가? → <b>MAJOR</b></li><li>기존 버전과 호환되지 않는가? → <b>MINOR</b></li><li>호환되는 의미 있는 변경인가? → <b>PATCH</b></li><li>외부 동작·계약이 동일한 내부 정리인가? → <b>버전 유지</b></li></ol>
+      </section>
+
+      <section class="section" id="version-split" data-search>
+        <h2><span class="anchor-no">3.</span>별도 버전 최소화</h2>
+        <p>기능·모듈·서브시스템마다 별도 버전을 만들지 않는다. 기본적으로 프로젝트에는 <b>메인 버전 하나</b>만 존재한다.</p>
+        <p><code>SIM_VERSION</code>, <code>NETWORK_VERSION</code>, <code>PROTOCOL_VERSION</code>, <code>SCHEMA_VERSION</code>, <code>SAVE_VERSION</code> 같은 값은 습관적으로 만들지 않는다.</p>
+        <div class="rule core"><div class="rule-title">예외</div>실제 런타임에서 독립적인 호환성 판정이 반드시 필요한 경우에만 기술용 식별자를 둔다. 이 값은 사용자에게 보이는 메인 버전과 분리한다.</div>
+      </section>
+
+      <section class="section" id="build-id" data-search>
+        <h2><span class="anchor-no">4.</span>BUILD_ID</h2>
+        <p><code>BUILD_ID</code>는 버전 번호가 아니라, <b>같은 버전 안의 특정 산출물을 추적하기 위한 식별자</b>다.</p>
+        <pre><code>Version: 0.8.2
+Build: 20261007T193500+0900-a1b2c3d</code></pre>
+        <p>파일명 숫자만으로 최신 여부를 판단하지 않는다. 제품 상태는 Version, 특정 결과물 추적은 BUILD_ID나 커밋으로 구분한다.</p>
+      </section>
+
+      <section class="section" id="ssot" data-search>
+        <h2><span class="anchor-no">5.</span>SSOT · 최신 기준본</h2>
+        <p>작업 시작 시 베이스는 하나로 확정한다. 중간본·실패본·과거 후보본이 암묵적으로 새 기준이 되지 않게 한다.</p>
+        <ol><li><b>사용자가 명시적으로 지정한 기준본</b></li><li>현재 <b>Stable</b></li><li>가장 최근 검증 완료된 <b>Validated</b></li><li>그 외 Candidate</li></ol>
+        <p>과거 파일명이나 기억보다 <b>실제 저장소·파일·BUILD_ID·커밋 상태</b>를 우선한다.</p>
+      </section>
+
+      <section class="section" id="migration" data-search>
+        <h2><span class="anchor-no">6.</span>마이그레이션 기본 정책</h2>
+        <div class="rule core"><div class="rule-title">교체 후 정리, 호환은 명시적 예외</div>마이그레이션은 기본적으로 새 구조를 덧붙이는 작업이 아니라 <b>구 구조를 새 구조로 교체하는 작업</b>이다.</div>
+        <p>사용자가 요청하지 않은 하위 호환 계층을 임의로 남기지 않는다.</p>
+        <div class="table-wrap"><table><thead><tr><th>기본 제거 대상</th><th>남기지 않는 이유</th></tr></thead><tbody>
+          <tr><td>legacy path / fallback</td><td>신·구 경로 이중화로 실행 경로가 복잡해짐</td></tr>
+          <tr><td>compatibility adapter / bridge / alias</td><td>실제 Consumer가 없으면 유지비만 증가</td></tr>
+          <tr><td>deprecated wrapper / 구 API forwarding</td><td>새 구조 정착을 방해하고 잘못된 사용을 계속 허용</td></tr>
+          <tr><td>옛 설정 분기 / migration shim</td><td>현재 포맷의 SSOT를 흐림</td></tr>
+        </tbody></table></div>
+        <p>“혹시 나중에 쓸 수도 있어서”, “지우기 불안해서”, “과거에 사용했기 때문에”는 호환 계층 유지 사유가 아니다.</p>
+
+        <h3 id="compat-exception"><span class="anchor-no">6.1.</span>호환 계층은 명시적 예외</h3>
+        <p>호환을 유지한다면 최소한 다음이 명확해야 한다.</p>
+        <ul><li>무엇과의 호환인가</li><li>실제 Consumer가 무엇인가</li><li>왜 유지해야 하는가</li><li>어디까지 유지하는가</li><li>제거 조건은 무엇인가</li></ul>
+        <p>이 조건이 없다면 현재 구조로 완전히 전환한다.</p>
+
+        <h3 id="migration-done"><span class="anchor-no">6.2.</span>마이그레이션 완료 기준</h3>
+        <div class="flow"><span>새 구조 구현</span><b>→</b><span>Consumer 이전</span><b>→</b><span>구 참조 제거</span><b>→</b><span>호환 계층 제거</span><b>→</b><span>Legacy / Dead Code 제거</span><b>→</b><span>검증</span></div>
+        <blockquote><b>마이그레이션 완료 = 새 구조 적용 + 구 구조 정리.</b></blockquote>
+      </section>
+
+      <section class="section" id="states" data-search>
+        <h2><span class="anchor-no">7.</span>Candidate · Validated · Stable</h2>
+        <div class="table-wrap"><table><thead><tr><th>상태</th><th>의미</th><th>완료 조건</th></tr></thead><tbody>
+          <tr><td>Candidate</td><td>개발 중이거나 검증 전인 결과물</td><td>구현이 끝났어도 검증 전이면 Candidate</td></tr>
+          <tr><td>Validated</td><td>정해진 검증 기준을 통과한 결과물</td><td>정적 검사뿐 아니라 프로젝트에 필요한 실제 실행 검증 완료</td></tr>
+          <tr><td>Stable</td><td>다음 작업·배포의 공식 기준선</td><td>Validated 중 기준본으로 승격된 결과물</td></tr>
+        </tbody></table></div>
+        <div class="flow"><span>Working</span><b>→</b><span>Candidate</span><b>→</b><span>Validated</span><b>→</b><span>Stable</span></div>
+      </section>
+
+      <section class="section" id="stable" data-search>
+        <h2><span class="anchor-no">8.</span>Stable 승격</h2>
+        <p>Stable은 단순히 “가장 최신 코드”가 아니라 <b>검증 완료된 공식 기준선</b>이다.</p>
+        <p>변경 성격에 따라 빌드, 실제 실행, 브라우저 E2E, 핵심 흐름, 회귀, 결정론, 관련 라이브러리 테스트 등을 수행한다. 실제로 하지 않은 검증은 PASS로 기록하지 않는다.</p>
+      </section>
+
+      <section class="section" id="git" data-search>
+        <h2><span class="anchor-no">9.</span>Git 운영</h2>
+        <ul><li><code>main</code>은 기본적으로 안정 기준선을 나타낸다.</li><li>Candidate와 Stable을 혼동하지 않는다.</li><li>PR/브랜치 작업 전 실제 Git 상태를 먼저 확인한다.</li><li>이미 병합된 PR, 오래된 커밋, Draft 상태, CI 실패 상태를 Stable로 착각하지 않는다.</li></ul>
+      </section>
+
+      <section class="section" id="commit" data-search>
+        <h2><span class="anchor-no">10.</span>커밋 메시지</h2>
+        <p>기본적으로 한국어를 사용하고 변경 목적이 즉시 보이게 작성한다.</p>
+        <pre><code>[bug-fix] 싱글 시작 오류 수정
+
+- 캠페인 초기화 과정에서 발생하던 예외 수정</code></pre>
+        <p>대표 prefix: <code>[bug-fix]</code>, <code>[feature]</code>, <code>[refactor]</code>, <code>[performance]</code>, <code>[docs]</code>, <code>[test]</code>, <code>[build]</code></p>
+      </section>
+
+      <section class="section" id="consumer" data-search>
+        <h2><span class="anchor-no">11.</span>라이브러리 · Consumer 관리</h2>
+        <p>공통 라이브러리와 이를 사용하는 게임은 서로 다른 변경 단위로 본다.</p>
+        <div class="flow"><span>공통 라이브러리 변경</span><b>→</b><span>라이브러리 검증</span><b>→</b><span>기준본 확정</span><b>→</b><span>각 Consumer에서 명시적 업데이트</span></div>
+        <p>라이브러리가 바뀌었다는 이유만으로 모든 Consumer를 자동으로 동시에 수정하지 않는다.</p>
+      </section>
+
+      <section class="section" id="delivery" data-search>
+        <h2><span class="anchor-no">12.</span>결과물 전달</h2>
+        <p>사용자에게 최종 결과물처럼 전달하는 파일은 검증이 끝난 결과물이어야 한다.</p>
+        <ul><li>중간본·부분 구현본·실패 후보본·검증 전 파일을 최종본처럼 전달하지 않는다.</li><li>내부 Candidate는 여러 개 만들 수 있지만 최종 전달은 가능한 한 하나로 정리한다.</li><li>최종 전달 시 파일/커밋, 메인 버전, 필요 시 BUILD_ID, 기준 베이스, 주요 변경, 검증 결과를 남긴다.</li></ul>
+      </section>
+
+      <section class="section" id="verification" data-search>
+        <h2><span class="anchor-no">13.</span>검증 · 배포 기록</h2>
+        <p>다음 상태를 서로 같은 것으로 취급하지 않는다.</p>
+        <div class="flow"><span>구현 완료</span><b>≠</b><span>검증 완료</span><b>≠</b><span>Stable 승격</span><b>≠</b><span>배포 완료</span></div>
+        <p>파일 생성은 배포 완료가 아니며, CI 실행은 검증 성공을 의미하지 않는다. <b>실제 결과</b>를 기록한다.</p>
+      </section>
+
+      <section class="section" id="rollback" data-search>
+        <h2><span class="anchor-no">14.</span>롤백</h2>
+        <ul><li>롤백 대상은 명확한 기준본으로 지정한다.</li><li>파일명이 오래됐다는 이유만으로 롤백하지 않는다.</li><li>롤백 대상 기능과 독립적인 리팩터링·성능 개선·버그 수정·구조 정리는 가능한 한 유지한다.</li><li>롤백 대상에 종속된 변경은 함께 제거한다.</li></ul>
+      </section>
+
+      <section class="section" id="handoff" data-search>
+        <h2><span class="anchor-no">15.</span>핸드오프</h2>
+        <p>대화 또는 작업 공간을 옮길 때는 단순 요약이 아니라 <b>즉시 작업을 이어갈 수 있는 상태 전달</b>을 작성한다.</p>
+        <ul><li>현재 Stable / 기준본</li><li>현재 메인 버전</li><li>BUILD_ID 또는 커밋</li><li>완료 / 진행 중 / 남은 작업</li><li>중요 결정</li><li>폐기된 방향 및 재도입하면 안 되는 Legacy 방향</li><li>검증 결과</li><li>다음 작업 순서</li></ul>
+        <p>새 작업에서는 오래된 기억보다 <b>핸드오프와 실제 저장소 상태</b>를 우선한다.</p>
+      </section>
+
+      <section class="section" id="docs" data-search>
+        <h2><span class="anchor-no">16.</span>문서 역할 분리</h2>
+        <div class="table-wrap"><table><thead><tr><th>문서</th><th>역할</th></tr></thead><tbody>
+          <tr><td>README</td><td>프로젝트 소개, 실행·운영 방법</td></tr>
+          <tr><td>개발 규칙</td><td>코딩, 아키텍처, 알고리즘, 구현 원칙</td></tr>
+          <tr><td>관리 규칙</td><td>버전, Stable, Git, 마이그레이션, 배포, 산출물</td></tr>
+          <tr><td>사용자 도움말 / Wiki</td><td>게임 규칙과 최종 사용자 사용법</td></tr>
+          <tr><td>검증 기록</td><td>어떤 버전/커밋에서 무엇을 실제로 검증했는지</td></tr>
+        </tbody></table></div>
+        <p>같은 내용을 여러 문서에 복제해 서로 다른 SSOT가 생기지 않게 한다.</p>
+      </section>
+
+      <section class="section" id="complexity" data-search>
+        <h2><span class="anchor-no">17.</span>최소 복잡성 원칙</h2>
+        <p>관리 체계 자체가 프로젝트보다 복잡해지지 않게 한다.</p>
+        <ul><li>메인 버전 하나</li><li>Stable 기준본 하나</li><li>불필요한 Compatibility Layer 없음</li><li>불필요한 별도 Schema / Protocol Version 없음</li><li>불필요한 중간 산출물 전달 없음</li><li>불필요한 문서 중복 없음</li></ul>
+        <blockquote>새 관리 계층은 <b>실제 문제를 해결하는 경우에만</b> 추가한다.</blockquote>
+      </section>
+
+      <section class="section" id="summary" data-search>
+        <h2><span class="anchor-no">18.</span>핵심 요약</h2>
+        <div class="table-wrap"><table><thead><tr><th>영역</th><th>핵심 규칙</th></tr></thead><tbody>
+          <tr><td>버전</td><td><b>MAJOR = 제품 세대 / MINOR = 비호환 변경 / PATCH = 호환 변경</b></td></tr>
+          <tr><td>마이그레이션</td><td><b>교체 후 정리. 호환 계층은 명시적 예외.</b></td></tr>
+          <tr><td>기준본</td><td>항상 하나의 명확한 Stable / SSOT에서 시작</td></tr>
+          <tr><td>승격</td><td>Candidate → Validated → Stable</td></tr>
+          <tr><td>완료</td><td>구현 + 검증 + 불필요한 Legacy 정리</td></tr>
+          <tr><td>복잡성</td><td>실제 필요가 없는 버전·호환 계층·문서·분기를 만들지 않음</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <div id="noResults" class="no-results">검색어와 일치하는 규칙이 없습니다.</div>
+      <footer class="footer">공통 세계관 / 게임 프로젝트 · 개발 외 관리 규칙 SSOT</footer>
+    </article>
+  </main>
+</div>
+<button class="backtop" id="backtop" title="맨 위로">↑</button>
+<script>
+(() => {
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  const saved = localStorage.getItem('mgmtRulesTheme');
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    localStorage.setItem('mgmtRulesTheme', next);
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenu = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); };
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); });
+  overlay.addEventListener('click', closeMenu);
+  document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', closeMenu));
+
+  document.getElementById('backtop').addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+
+  const links = [...document.querySelectorAll('.toc a')];
+  const targets = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if (!visible) return;
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+  }, {rootMargin:'-70px 0px -72% 0px',threshold:[0,1]});
+  targets.forEach(t => observer.observe(t));
+
+  const search = document.getElementById('search');
+  const count = document.getElementById('searchCount');
+  const sections = [...document.querySelectorAll('[data-search]')];
+  const noResults = document.getElementById('noResults');
+  const normalize = s => s.toLowerCase().replace(/\s+/g,' ').trim();
+  const runSearch = () => {
+    const q = normalize(search.value);
+    let shown = 0;
+    sections.forEach(sec => {
+      const hit = !q || normalize(sec.textContent).includes(q);
+      sec.classList.toggle('filtered-out', !hit);
+      if (hit) shown++;
+    });
+    count.textContent = q ? `${shown}/${sections.length}` : '';
+    noResults.classList.toggle('show', !!q && shown === 0);
+  };
+  search.addEventListener('input', runSearch);
+  search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value=''; runSearch(); search.blur(); } });
+  addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); search.focus(); search.select(); } });
+})();
+</script>
+</body>
+</html>
