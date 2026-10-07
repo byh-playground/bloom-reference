@@ -1,0 +1,41 @@
+{
+  "sourceCommit": "421e04145c89b827d280f5774e8d502486cc3074",
+  "vendorChanged": false,
+  "files": [
+    {
+      "file": "vendor/device.js",
+      "bytes": 23767,
+      "sha256": "c504c75dc7041b70205a7acbf48859ea7b7b60a9daea77fcec4d5ad8ef073cb3",
+      "gitBlobSha1": "b4c2e81eca8b9abc7627b3af44bdda6ce01ca63c"
+    },
+    {
+      "file": "vendor/presentation-events.js",
+      "bytes": 9215,
+      "sha256": "ee0ca5510c730bded08b814c343a84a801bf8c436d554354cb4b39da83e9e2fe",
+      "gitBlobSha1": "c6ab77207be1e8b36eeba281f435b31d18da4918"
+    },
+    {
+      "file": "bloom-effects.js",
+      "bytes": 172477,
+      "sha256": "bb254e609caae803a0cd9a47f72a81a9311da2af92794d4fc4d7539fa3f60039",
+      "gitBlobSha1": "cdca660c66baf3faa3ed2b8cefe720c3a2f8164c"
+    }
+  ],
+  "packageVersion": "3.0.0",
+  "referenceFiles": [
+    {
+      "repository": "byh-playground/rally-frontier",
+      "path": "index.html",
+      "gitBlob": "258c43dda704f9b8d89f24de50e505066f28498e"
+    },
+    {
+      "repository": "byh-playground/budmori-io",
+      "path": "index.html",
+      "gitBlob": "3731ecb66bcbe3fba3c9bd1dd6fd033074b5a36b"
+    }
+  ],
+  "artifact": {
+    "file": "BLOOM_Particle_Lab_v3_GameKit.html",
+    "sha256": "e0f7ded216c9b47ab59834d3e36e03396dd12d2bbbe061c3c3b3bc8311ad8e5e"
+  }
+}
