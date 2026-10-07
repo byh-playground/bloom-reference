@@ -12,7 +12,7 @@ BLOOM 개발 규칙, 알고리즘 설명, 시각 실험을 모아 둔 레퍼런�
 | 그림체 실험실 · 스틱맨 / 블룸 탑다운 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/labs/topdown-style.html) | [labs/topdown-style.html](labs/topdown-style.html) |
 | 스케치 전투 · 동작과 실루엣 개선 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/labs/sketch-vfx.html) | [labs/sketch-vfx.html](labs/sketch-vfx.html) |
 
-바로 보기 링크는 [HTML Share 사용 설명서](https://htmlpreview.github.io/?https://github.com/byh-playground/html-share/blob/main/docs/usage.html)와 같은 HTML Preview 방식을 사용합니다. 공개 저장소의 `main` 브랜치에 있는 HTML을 표시하며, 별도의 빌드나 서버 업로드는 필요하지 않습니다. 파일을 내려받아 브라우저로 직접 열 수도 있습니다. 파티클 프리셋은 현재 브라우저에 저장되므로 필요한 프리셋은 JSON으로 내보내 보관하세요.
+바로 보기 링크는 [HTML Share 사용 설명서](https://htmlpreview.github.io/?https://github.com/byh-playground/html-share/blob/main/docs/usage.html)와 같은 HTML Preview 방식을 사용합니다. 공개 저장소의 `main` 브랜치에 있는 HTML을 표시하며, 별도의 빌드나 서버 업로드는 필요하지 않습니다. 파일을 내려받아 브라우저로 직접 열 수도 있습니다. 파티클 연구소는 WebGL을 사용할 수 있는 브라우저가 필요합니다. 파티클 프리셋은 현재 브라우저에 저장되므로 필요한 프리셋은 JSON으로 내보내 보관하세요.
 
 ## 역할과 경계
 
