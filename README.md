@@ -51,3 +51,5 @@ Style Lab v9는 기존 8종 스타일·스틱맨 횡스크롤·블룸 탑다운 
 기존 46종에 수치 애니메이션·게이지·UI·보상·전술 표시 28종을 더한 총 74종입니다. 실제 값 `data`와 계층형 표현 `config`를 분리하며 `BloomEffects`, `NumberTransition`, `NumberLabelChannel`, `UiMotion`을 재사용할 수 있습니다. HTML의 내보내기에서도 모듈·설정 JSON·독립 실행 HTML을 얻을 수 있습니다.
 
 이 자료는 GameKit 원본 커밋 `421e04145c89b827d280f5774e8d502486cc3074`를 고정 사용합니다. 더 최신 GameKit으로 바꾼 자료가 아니며, 버드모리·랠리 프론티어 저장소와 정식 GameKit 모듈은 이번 레퍼런스 갱신으로 수정하지 않습니다. 단위·브라우저 검사 상세는 원본 ZIP의 `validation/TEST-REPORT.md`에 포함되어 있습니다.
+
+HTML Preview가 script의 type 속성을 보존하지 않아, 파티클 연구소와 UI·HUD HTML은 내장 JSON 저장 태그와 비동기 시작 래퍼만 실행 가능한 형태로 포장했습니다. 내장 ESM 소스·효과·설정은 원본과 동일하고, 전체 소스 ZIP과 열람용 ESM은 원본 바이트를 유지합니다.
