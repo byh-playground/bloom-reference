@@ -37,3 +37,5 @@ BLOOM 개발 규칙, 알고리즘 설명, 시각 실험을 모아 둔 레퍼런�
 | `labs/sketch-vfx.html` | `procedural_sketch_vfx_visual_review.html` | 2026-10-06 |
 
 Topdown Style Lab v5에는 스틱맨 횡스크롤과 블룸 탑다운 예제가 함께 들어 있어 이전 스틱맨 전용 버전은 중복 수록하지 않았습니다. 갱신할 때는 고정 경로의 HTML과 위 원본 정보를 함께 바꾸고, 이전 내용은 Git 이력으로 확인합니다.
+
+2026-10-07 런타임 이관에 맞춰 `algorithms/index.html`의 Rollback 계약 링크 한 곳을 bloom-gamekit의 `modules/rollback-netcode/CONTRACT.md`로 갱신했습니다. 원본 자료의 설명·알고리즘·화면과 다른 링크는 바꾸지 않았습니다.
