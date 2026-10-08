@@ -8,6 +8,7 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 시각 실험을 
 | --- | --- | --- |
 | 공통 개발 규칙 · 비용 우선순위 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.html](rules/development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable·Git·배포 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.html](rules/project-management.html) |
+| 예약 버그 탐지 · 자동 수정 범위·전체 이력 10줄 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/scheduled-bug-qa.html) | [rules/scheduled-bug-qa.html](rules/scheduled-bug-qa.html) |
 | 구체 개발규칙 · 알고리즘 레퍼런스 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/algorithms/index.html) | [algorithms/index.html](algorithms/index.html) |
 | 파티클 연구소 v3 · 74종·수치·UI | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/labs/particles.html) | [labs/particles.html](labs/particles.html) |
 | 파티클 UI·HUD 예제 v3 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/labs/particles-ui-hud.html) | [labs/particles-ui-hud.html](labs/particles-ui-hud.html) |
@@ -28,12 +29,13 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 시각 실험을 
 
 ## 수록 원본
 
-2026-10-07 기준으로 확인한 최신 자료를 아래 고정 경로에 수록했습니다. 날짜는 UTC 기준 원본 수정일입니다.
+2026-10-07에 수록한 자료와 2026-10-08에 추가한 운영 레퍼런스를 아래 고정 경로에서 관리합니다. 기존 원본의 수정일은 UTC 기준이며 새 운영 레퍼런스는 조사·작성일을 표시합니다.
 
 | 저장 경로 | 원본 파일 | 수정일 |
 | --- | --- | --- |
 | `rules/development.html` | `common-development-rules-priority-wiki-v14.html` | 2026-10-07 |
 | `rules/project-management.html` | `common_project_management_rules.html` | 2026-10-07 |
+| `rules/scheduled-bug-qa.html` | 예약 버그 탐지·자동 수정 운영 조사 (이 저장소에서 작성) | 2026-10-08 |
 | `algorithms/index.html` | `specific-development-algorithm-wiki-v3.html` | 2026-10-07 |
 | `labs/particles.html` | `BLOOM_Particle_Lab_v3_GameKit.html` | 2026-10-07 |
 | `labs/particles-ui-hud.html` | `BLOOM_UI_HUD_Example_v3.html` | 2026-10-07 |
