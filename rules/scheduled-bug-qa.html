@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>예약 버그 탐지와 자동 수정 · BLOOM Reference</title>
+<style>
+:root{
+  --bg:#f5f6f7; --panel:#fff; --panel-2:#f8f9fa; --text:#202122; --muted:#72777d;
+  --line:#d9dde1; --line-strong:#b9bec4; --accent:#00a495; --accent-2:#007c70;
+  --link:#0275d8; --danger:#d33; --warn:#b26a00; --ok:#14866d; --code:#eef1f3;
+  --shadow:0 2px 10px rgba(0,0,0,.08); --header-h:56px; --sidebar-w:285px;
+}
+[data-theme="dark"]{
+  --bg:#181a1b; --panel:#222426; --panel-2:#292c2f; --text:#e8eaed; --muted:#a9b0b6;
+  --line:#3b4045; --line-strong:#555c62; --accent:#28c6b6; --accent-2:#50ddce;
+  --link:#7ab8ff; --danger:#ff6b6b; --warn:#f0b45d; --ok:#57d2b1; --code:#303438;
+  --shadow:0 2px 14px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;line-height:1.72}
+a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;height:var(--header-h);display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.brand{font-weight:800;white-space:nowrap;letter-spacing:-.02em}.brand small{font-weight:600;color:var(--muted);margin-left:6px}
+.spacer{flex:1}.toolbar{display:flex;align-items:center;gap:8px}
+.icon-btn{border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);border-radius:6px;min-width:40px;height:38px;padding:0 11px;cursor:pointer;font-weight:800}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-2)}
+.menu-btn{display:none;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:900;text-shadow:0 1px 1px rgba(0,0,0,.28)}
+.menu-btn:hover{color:#fff;background:var(--accent-2)}
+.search-wrap{position:relative;max-width:520px;flex:1}.search-wrap input{width:100%;height:38px;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);border-radius:6px;padding:0 36px 0 12px;outline:none}.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 18%,transparent)}
+.search-count{position:absolute;right:9px;top:8px;color:var(--muted);font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);max-width:1480px;margin:0 auto}
+.sidebar{position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow:auto;padding:20px 14px 32px;border-right:1px solid var(--line);background:var(--panel)}
+.toc-title{font-size:13px;color:var(--muted);font-weight:800;margin:0 8px 10px;text-transform:uppercase;letter-spacing:.08em}
+.toc{list-style:none;padding:0;margin:0}.toc li{margin:2px 0}.toc a{display:block;padding:7px 9px;border-radius:5px;color:var(--text);font-size:14px;line-height:1.4}.toc a:hover{background:var(--panel-2);text-decoration:none}.toc a.active{background:color-mix(in srgb,var(--accent) 14%,var(--panel));color:var(--accent-2);font-weight:800}.toc .sub a{padding-left:24px;font-size:13px;color:var(--muted)}
+.main{min-width:0;padding:28px 34px 80px}.doc{max-width:1040px;margin:0 auto;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 42px 58px}
+.doc-header{border-bottom:2px solid var(--line-strong);padding-bottom:20px;margin-bottom:28px}.doc-header h1{font-size:34px;line-height:1.2;margin:0 0 10px;letter-spacing:-.04em}.subtitle{color:var(--muted);margin:0 0 16px}.meta{display:flex;gap:7px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--muted)}.badge.core{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent-2);background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.notice{margin:18px 0;padding:14px 16px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-radius:0 6px 6px 0}.notice strong{color:var(--accent-2)}
+.section{margin-top:42px}.section.filtered-out{display:none}.section h2{font-size:25px;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:-.025em}.section h3{font-size:19px;margin:28px 0 10px;letter-spacing:-.02em}.anchor-no{color:var(--muted);font-weight:500;margin-right:8px}
+p{margin:10px 0} ul,ol{padding-left:25px} li{margin:4px 0}.tight li{margin:2px 0}
+.rule{border:1px solid var(--line);background:var(--panel-2);border-radius:7px;padding:15px 17px;margin:14px 0}.rule-title{font-weight:900;margin-bottom:5px}.rule.core{border-left:4px solid var(--accent)}
+blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--line-strong);background:var(--panel-2);color:var(--text)}
+code,kbd{background:var(--code);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.92em}pre{overflow:auto;background:var(--code);border:1px solid var(--line);padding:14px;border-radius:6px;line-height:1.5}
+.table-wrap{overflow:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:6px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th:last-child,td:last-child{border-right:0}tr:last-child td{border-bottom:0}th{background:var(--panel-2);font-weight:800}td:first-child{font-weight:700}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:14px 0}.flow span{border:1px solid var(--line);background:var(--panel-2);padding:6px 10px;border-radius:5px;font-weight:700}.flow b{color:var(--muted)}
+.kicker{font-size:12px;font-weight:900;color:var(--accent-2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}.muted{color:var(--muted)}.danger{color:var(--danger);font-weight:800}.ok{color:var(--ok);font-weight:800}
+mark{background:#ffe477;color:#1d1d1d;border-radius:2px;padding:0 1px}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:800;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);width:42px;height:42px;border-radius:50%;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
+.overlay{display:none}
+.no-results{display:none;padding:24px;border:1px dashed var(--line-strong);border-radius:7px;text-align:center;color:var(--muted);margin-top:20px}
+.no-results.show{display:block}
+.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:900px){
+  :root{--header-h:58px}.topbar{padding:0 10px}.brand small{display:none}.search-wrap{max-width:none}.menu-btn{display:inline-flex;align-items:center;justify-content:center;min-width:52px;color:#fff !important;background:var(--accent) !important;border-color:var(--accent) !important}
+  .layout{display:block}.sidebar{position:fixed;left:0;top:var(--header-h);z-index:1200;width:min(86vw,320px);height:calc(100vh - var(--header-h));transform:translateX(-105%);transition:transform .2s ease;box-shadow:var(--shadow);border-right:1px solid var(--line)}
+  .sidebar.open{transform:translateX(0)}.overlay{position:fixed;display:block;inset:var(--header-h) 0 0 0;background:rgba(0,0,0,.45);z-index:1100;opacity:0;pointer-events:none;transition:opacity .2s}.overlay.open{opacity:1;pointer-events:auto}
+  .main{padding:14px}.doc{padding:25px 18px 45px}.doc-header h1{font-size:28px}.section h2{font-size:22px}.section h3{font-size:18px}.toolbar .theme-label{display:none}
+}
+@media(max-width:560px){.brand{font-size:14px}.search-wrap input{padding-left:9px}.search-count{display:none}.icon-btn{min-width:38px;padding:0 8px}.menu-btn{min-width:48px}.doc{border-left:0;border-right:0}.main{padding:10px 0}.doc-header h1{font-size:25px}}
+@media print{.topbar,.sidebar,.backtop,.overlay{display:none!important}.layout{display:block}.main{padding:0}.doc{border:0;box-shadow:none;max-width:none;padding:0}.section{break-inside:avoid-page}a{color:inherit;text-decoration:none}}
+
+.report{padding:0;margin:14px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel-2)}
+.report p{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:14px;overflow-wrap:anywhere}
+.report p:last-child{border-bottom:0}.related{font-size:14px}.source-ref{font-size:12px;vertical-align:super}
+.doc a{overflow-wrap:anywhere}.topbar .brand{font-size:15px}
+@media(max-width:560px){.topbar{gap:7px}.search-wrap{min-width:0}.brand{font-size:13px!important}.report p{padding:9px 10px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="목차 열기" aria-controls="sidebar" aria-expanded="false">목차</button>
+  <div class="brand">예약 QA 위키 <small>BLOOM Reference</small></div>
+  <div class="spacer"></div>
+  <div class="search-wrap"><input id="search" type="search" aria-label="문서 검색" placeholder="문서 검색 (예: 10줄, 수정, 재현)" autocomplete="off"><span id="searchCount" class="search-count" aria-live="polite"></span></div>
+  <div class="toolbar"><button class="icon-btn" id="themeBtn" title="다크모드 전환" aria-label="테마 전환"><span class="theme-label">테마</span> ◐</button></div>
+</header>
+<div class="overlay" id="overlay"></div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav aria-label="문서 목차">
+      <div class="toc-title">목차</div>
+      <ul class="toc" id="toc">
+        <li><a href="#overview">1. 개요</a></li>
+        <li><a href="#report">2. 전체 이력 10줄 원칙</a></li>
+        <li class="sub"><a href="#eli13">2.1 ELI13 설명을 기본으로</a></li>
+        <li class="sub"><a href="#report-example">2.2 판단 가능한 이력 예시</a></li>
+        <li><a href="#references">3. 조사한 운영 사례</a></li>
+        <li><a href="#scope">4. 탐지와 수정의 범위</a></li>
+        <li><a href="#detection">5. 효과적인 검사 구성</a></li>
+        <li><a href="#operation">6. 실행·중복·업무 관리</a></li>
+        <li><a href="#scheduler">7. 스케줄러 선택</a></li>
+        <li><a href="#pilot">8. 초기 운영과 평가</a></li>
+        <li><a href="#rally">9. RALLY FRONTIER 적용 예</a></li>
+        <li><a href="#sources">10. 출처와 관련 문서</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="main">
+    <article class="doc" id="doc">
+      <header class="doc-header">
+        <div class="kicker">Scheduled Bug Detection · Research &amp; Operating Guide</div>
+        <h1>예약 버그 탐지와 자동 수정</h1>
+        <p class="subtitle">출근 중 실행하는 QA의 범위, 처리 기준, 판단 가능한 짧은 이력을 정리한 운영 레퍼런스.</p>
+        <div class="meta"><span class="badge core">전체 이력 10줄 이내 · ELI13</span><span class="badge">조사 기준 2026-10-08</span><span class="badge">운영 제안 · 예약 미등록</span><span class="badge">단일 HTML 원본</span></div>
+      </header>
+      <div class="notice"><strong>핵심 요구</strong><br><b>핵심 버그 현상 → 원인 → 수정 방안</b> 순서로, 코드를 모르는 13살도 바로 이해할 수 있게 짧게 쓴다. 전체 10줄은 최대 길이이며 더 짧게 전달할 수 있으면 압축한다. 이력만 읽고 문제와 처리 방향을 판단할 수 있어야 한다.</div>
+      <p class="related">분류: 개발 운영 · 자동 QA · 버그 보고 | 관련: <a href="project-management.html">공통 프로젝트 관리 규칙</a> · <a href="development.html">공통 개발 규칙</a> · <a href="../README.md">레퍼런스 목록</a></p>
+
+      <section class="section" id="overview" data-search>
+        <h2><span class="anchor-no">1.</span>개요</h2>
+        <p>예약 QA는 정해진 시간에 현재 실행물을 검사하고, 발견한 문제를 재현하여 사람이 처리할 수 있는 결과로 남기는 작업이다. 효과는 발견한 개수보다 <b>신규 문제의 재현 가능성, 사용자가 판단할 수 있는 이력, 실제 채택되는 수정</b>으로 평가한다.</p>
+        <div class="rule core"><div class="rule-title">권장 기본 운영</div>자동 탐지·재현·중복 확인·짧은 기록을 기본으로 하고, 기대 동작과 원인이 확실한 작은 문제만 격리된 작업 공간에서 수정 PR까지 만든다.</div>
+        <p>이 문서는 조사한 사실과 BLOOM에 적용할 제안을 구분한다. 구체적인 예약 시각, 검사 시간, 수정 상한은 초기 실행에서 측정해 조정한다. 문서 수록은 실제 스케줄러 등록이나 게임 검증 완료를 뜻하지 않는다.</p>
+        <p>제품의 기대 동작은 해당 프로젝트의 개발 계약과 사용자 지시에서 확인한다. 밸런스·표현 의도나 아키텍처를 자동 QA가 새로 정하지 않는다. 버전·Stable·Git·배포 기준은 <a href="project-management.html">공통 프로젝트 관리 규칙</a>과 각 저장소의 지침을 따른다.</p>
+      </section>
+
+      <section class="section" id="report" data-search>
+        <h2><span class="anchor-no">2.</span>전체 이력 10줄 원칙</h2>
+        <p><b>한 실행의 전체 보고는 최대 10줄이며, 같은 판단을 할 수 있다면 더 짧게 쓴다.</b> 기본 흐름은 핵심 버그 현상 → 원인 → 수정 방안이다. 항목별 줄 수나 문장 수는 정하지 않는다. 줄 수를 채우거나 문단을 한 줄에 몰아 제한을 피하지 않는다.</p>
+        <div class="rule core"><div class="rule-title">압축 기준</div>무슨 문제가 생겼고, 왜 생겼으며, 어떻게 고칠지 바로 이해할 수 있으면 충분하다. 같은 뜻을 반복한 문장과 판단에 영향을 주지 않는 정보는 뺀다.</div>
+        <p><b>핵심 버그 현상</b>에는 사용자에게 일어난 문제와 중요한 불편·손해를 함께 쓴다. <b>원인</b>에는 확인한 이유를 쉬운 말로 쓰고, 아직 모르거나 추정이면 그대로 표시한다. <b>수정 방안</b>에는 무엇을 바꿀지 쓰며, 원인이 불명확하면 고치기 전에 무엇을 더 확인할지 쓴다.</p>
+        <p>발생 횟수, 검사 범위, 실행물 식별자와 미검증 사실은 판단에 필요한 만큼만 덧붙인다. 자세한 재현 순서·코드·로그·전체 SHA는 증거에 보존하고 필요하면 링크로 연결한다. 원인이 불명확하거나 검증이 막혀 판단을 제한하는 사실은 압축하면서 숨기지 않는다.</p>
+        <p>조사할 문제 수는 검사 예산과 중요도로 정하며 보고 양식에 맞춰 고정하지 않는다. 같은 원인은 묶고 누적된 항목은 변한 상태만 남긴다. 여러 발견을 압축할 때도 중요한 문제와 미처리 상태를 누락하지 않는다.</p>
+        <h3 id="eli13"><span class="anchor-no">2.1.</span>ELI13 설명을 기본으로</h3>
+        <p><b>ELI13은 코드를 모르는 13살에게 설명하듯 쓰는 기준</b>이다. 쉬운 말로 정확하게 설명하며 원인·위험·불확실성도 그대로 전달한다. 읽는 사람을 어린아이처럼 대하거나 과장된 비유를 덧붙이지 않는다.</p>
+        <ul>
+          <li><b>장면부터:</b> 플레이어가 누른 버튼이나 하던 행동과 눈에 보이는 결과를 먼저 쓴다.</li>
+          <li><b>차이를 바로:</b> 원래 어떻게 되어야 하는지와 지금 무엇이 다른지 붙여 쓴다. 확인한 금액·횟수 등 구체적인 값이 도움이 되면 사용한다.</li>
+          <li><b>불편을 연결:</b> “환불 누락”을 “취소하면 건물도 못 짓고 돈만 잃는다”처럼 사용자에게 생기는 손해로 풀어 쓴다.</li>
+          <li><b>원인도 쉽게:</b> 함수명·오류 코드·개발 용어는 증거에 둔다. 본문에는 “취소할 때 돈을 돌려주는 처리가 빠졌다”처럼 풀어 쓴다. 필요한 용어는 처음에 짧게 설명한다.</li>
+          <li><b>결정과 이유:</b> “수정 권장”만 적지 않는다. 왜 지금 고칠지, 왜 더 확인해야 할지와 실제로 확인한 결과를 쉬운 말로 쓴다.</li>
+        </ul>
+        <div class="rule"><div class="rule-title">같은 문제를 더 직관적으로 설명하기</div><p>기술 표현: “건설 예약 취소 경로에서 환불 누락.”</p><p><b>ELI13: “짓기 전에 건설을 취소해도 돈이 돌아오지 않아, 건물도 못 짓고 돈만 잃는다.”</b></p></div>
+        <h3 id="report-example"><span class="anchor-no">2.2.</span>판단 가능한 이력 예시</h3>
+        <p class="muted">아래는 기본 흐름을 짧게 보여 주는 <b>가상 예시</b>이며 실제 발견·검증 결과가 아니다. 이 예시의 줄 수를 맞출 필요는 없다.</p>
+        <div class="report" id="reportExample">
+          <p><b>핵심 버그 현상:</b> 짓기 전에 건설을 취소하면 건물도 못 짓고 돈만 잃는다.</p>
+          <p><b>원인:</b> 짓기 전에 취소했을 때 돈을 돌려주는 처리가 빠져 있다.</p>
+          <p><b>수정 방안:</b> 짓기 전에 취소하면 쓴 돈을 전부 돌려주도록 고친다.</p>
+        </div>
+        <div class="rule"><div class="rule-title">보고 완료 판정</div>코드를 모르는 독자가 현상·원인·수정 방안을 이해하고 판단할 수 있는가? 뜻을 잃지 않고 더 줄일 수 있는가? 이해가 부족하면 보완하고 같은 판단이 가능하면 압축한다. 전체 10줄 이내는 이 과정의 상한이다.</div>
+      </section>
+
+      <section class="section" id="references" data-search>
+        <h2><span class="anchor-no">3.</span>조사한 운영 사례</h2>
+        <div class="table-wrap"><table><thead><tr><th>레퍼런스</th><th>출처에서 확인한 사실</th><th>BLOOM 적용 해석</th></tr></thead><tbody>
+          <tr><td>GitHub Next · Adhoc QA <a class="source-ref" href="#source-1">[1]</a></td><td>매일 실행하며 중복을 확인하고 재현 단계가 있는 보고를 남긴다. 매우 확신하는 작은 문제만 Draft PR로 만든다. 예제 제한은 실행 15분, 열린 자동 QA PR 8개 이상일 때 예약 실행 중단이다.</td><td>매번 수정으로 끝내지 않고 확신도와 검토 대기량을 제한한다. 이 예제는 버그 감소율을 입증한 실험이 아니다.</td></tr>
+          <tr><td>Meta · Sapienz / SapFix <a class="source-ref" href="#source-2">[2]</a></td><td>2018년 Android 운영 사례에서 Sapienz가 월 수백 건의 버그 보고를 생성했고 약 ¾이 개발자 수정으로 이어졌다. SapFix는 컴파일·기존 크래시·새 크래시를 검사한 뒤 사람의 승인과 배포를 거쳤다.</td><td>정확한 이력만으로도 후속 수정에 도움이 된다. ¾은 보고 이후 개발자 수정 비율이며 AI 자동 수정 성공률이 아니다.</td></tr>
+          <tr><td>SapFix 배포 경험 논문 <a class="source-ref" href="#source-3">[3]</a></td><td>6개 실제 Android 시스템에 적용하고 초기에는 null pointer exception처럼 위치가 좁은 결함에 집중했다. 테스트를 통과한 패치에도 원인 은폐·잘못된 위치·부작용 우려로 거절된 제안이 있었다.</td><td>테스트 통과만으로 올바른 수정을 보장하지 않는다. 초기 자동 수정은 재현·원인·기대 동작이 명확한 문제로 제한한다.</td></tr>
+          <tr><td>Playwright · Retries / Trace Viewer <a class="source-ref" href="#source-4">[4]</a> <a class="source-ref" href="#source-5">[5]</a></td><td>첫 실행 성공, 재시도 성공(flaky), 모든 재시도 실패를 구분한다. Trace Viewer에서 동작별 화면과 실패 경로를 확인할 수 있다.</td><td>한 번의 실패를 바로 제품 결함으로 확정하지 않는다. 재실행 성공도 안정적인 성공과 구분하고 첫 실패 증거를 보존한다.</td></tr>
+          <tr><td>GitHub · Measuring Impact <a class="source-ref" href="#source-6">[6]</a></td><td>실행 성공·비용과 실제 채택 결과를 분리하고 유용한 결과 비율·채택·리뷰 시간·중복을 측정하도록 안내한다.</td><td>판단 가능한 신규 결과와 채택된 수정이 늘었는지 평가한다. 반복 등록과 불필요한 리뷰 부담도 비용이다.</td></tr>
+        </tbody></table></div>
+        <p>오래된 산업 사례는 운영 패턴의 근거로 사용한다. 특정 도구의 역사적 성과를 오늘의 Codex나 BLOOM 게임의 성공률로 일반화하지 않는다. 아래 검사 분량과 주기는 이 조사에서 도출한 <b>초기 제안</b>이다.</p>
+      </section>
+
+      <section class="section" id="scope" data-search>
+        <h2><span class="anchor-no">4.</span>탐지와 수정의 범위</h2>
+        <div class="table-wrap"><table><thead><tr><th>문제 상태</th><th>진행 범위</th><th>판단 이유</th></tr></thead><tbody>
+          <tr><td>미재현·환경 불명확</td><td>이력과 증거를 남기고 추가 재현. 제품 버그 확정과 자동 수정은 보류.</td><td>검사 환경·외부 서비스·간헐적 실패를 먼저 구분해야 한다.</td></tr>
+          <tr><td>재현되지만 의도·영향 범위 불명확</td><td>확정 현상·영향·처리 선택지를 기록하고 사람의 판단 또는 담당 배정으로 연결.</td><td>밸런스·UX·시각 의도·공통 상태 변경에는 제품 결정이 필요하다.</td></tr>
+          <tr><td>재현·원인·기대 동작이 명확한 작은 결함</td><td>중복·담당 겹침 확인 → 격리 worktree 수정 → 필요한 검증 → PR.</td><td>수정 전 실패와 수정 후 성공, 직접 영향받는 회귀를 같은 조건으로 확인할 수 있다.</td></tr>
+          <tr><td>넓은 계약·공통 기반 변경</td><td>재현 이력과 수정 제안까지. 별도 업무로 배정해 검토.</td><td>넷코드·상태 소유권·저장 구조·SDK·공통 지형/길찾기 변경은 여러 경로에 영향을 준다.</td></tr>
+        </tbody></table></div>
+        <p>작은 변경은 줄 수나 파일 수로 판단하지 않는다. 함수·Definition·상태 소유자·공통 mechanic·호출 관계에서의 영향을 확인한다. 다른 대화가 맡은 영역이면 기존 PR에 근거를 연결하고 중복 수정하지 않는다.</p>
+        <p>자동 수정은 기존 계약을 유지한다. 실패를 없애기 위해 검사를 약화하거나 예외를 숨기거나 대체 경로를 임의 추가하지 않는다. 게임 변경에는 해당 프로젝트가 요구하는 실제 UI E2E, 시각 확인, 관련 결정론·성능 검증이 적용된다.</p>
+        <div class="rule core"><div class="rule-title">권한의 끝</div>예약 QA의 기본 끝은 이력 또는 리뷰 가능한 PR이다. 자동 머지·공개 배포·Stable 승격은 이 운영안에 포함하지 않으며 각각 프로젝트 지침과 사용자의 명시적 지시를 따른다. 검증이 부족한 PR은 후보 상태와 미검증 내용을 표시한다.</div>
+      </section>
+
+      <section class="section" id="detection" data-search>
+        <h2><span class="anchor-no">5.</span>효과적인 검사 구성</h2>
+        <p>기존의 재현 가능한 검사를 먼저 실행하고 에이전트가 결과를 분류한다. 정해진 빌드·검사·수치 비교는 스크립트로 수행하고 AI는 새로운 재현 경로·원인·처리 판단에 사용한다. <a class="source-ref" href="#source-6">[6]</a></p>
+        <div class="table-wrap"><table><thead><tr><th>검사 묶음</th><th>대상</th><th>초기 주기 제안</th></tr></thead><tbody>
+          <tr><td>핵심 사용자 흐름</td><td>실제 UI에서 시작 → 주요 행동 → 전투/진행 → 정상 종료 → 재시작 또는 결과·리플레이. 예외·멈춤·UI 막힘·자원/상태 이상 확인.</td><td>평일 1회. 전체 플레이 검증과 짧은 smoke 검사를 구분해 기록.</td></tr>
+          <tr><td>최근 변경과 경계 상황</td><td>변경된 기능, 반복 클릭, 취소·환불, 로딩 실패·재시도, 저장·재로드, 손상 파일, blur·탭 복귀 등 한 영역.</td><td>매 실행 한 영역씩 회전. 같은 커밋에서도 미검사 조건·seed를 탐색할 수 있음.</td></tr>
+          <tr><td>결정론·복원</td><td>같은 seed와 입력에서 같은 결과, 저장→복원→다음 틱 동등성, 롤백·리플레이·상태 격리.</td><td>관련 변경 시 우선 실행하고 회전 검사에도 포함.</td></tr>
+          <tr><td>시각·성능</td><td>실제 렌더 화면 확인, 같은 fixture·장비·브라우저에서 프레임/틱 비용 비교.</td><td>관련 변경은 해당 실행에서 확인. 넓은 반복 비교는 주간 제안.</td></tr>
+        </tbody></table></div>
+        <p>고정 seed로 재현하고 다른 seed로 범위를 넓힌다. 기준 커밋·빌드·브라우저·환경·입력 순서·첫 실패와 재실행 결과를 증거에 보존한다. 공개 실행물과 개발 실행물을 혼동하지 않으며 과거 PASS를 현재 결과로 사용하지 않는다.</p>
+        <p>재시도에서 성공한 문제는 간헐적 실패로 남긴다. 제품 결함인지 검사기의 준비 대기·GPU·RTC·네트워크 제약인지 분류한다. timeout 증가만으로 원인을 해결했다고 선언하지 않는다. 재현 횟수는 초기에는 한 번의 확인 재실행부터 시작하되 간헐적 오류에는 필요한 추가 관측을 한다.</p>
+        <p>software GPU의 FPS를 실제 물리 GPU 성능으로 단정하지 않는다. 실제 모바일 기기, 외부 NAT를 건너는 두 기기 연결, 장시간 다중 브라우저 검사는 장비와 환경을 확보한 별도 검증 범위로 남긴다.</p>
+      </section>
+
+      <section class="section" id="operation" data-search>
+        <h2><span class="anchor-no">6.</span>실행·중복·업무 관리</h2>
+        <div class="flow"><span>기준 실행물 확인</span><b>→</b><span>검사</span><b>→</b><span>재현·분류</span><b>→</b><span>중복 확인</span><b>→</b><span>이력 또는 수정 PR</span></div>
+        <p>시작할 때 최신 통합 커밋, 열린 PR의 담당과 변경 영역, worktree·미커밋 변경을 확인한다. 이전 실행이 진행 중이면 같은 예약을 겹쳐 실행하지 않는다. 저장소·도구 조회 실패를 “진행 업무 없음”으로 취급하지 않는다.</p>
+        <p>사용자 현상·발생 조건·원인과 기존 기록을 비교한다. 동일 문제의 재발은 기존 항목의 상태와 증거를 갱신하고 해결된 문제가 새 커밋에서 재발하면 그 기준을 남긴다. 제목만으로 동일 문제를 판단하지 않는다.</p>
+        <p>각 실행의 짧은 이력은 결과 요약이며, 개별 업무의 의도·담당·현재 상태는 프로젝트가 정한 원본에서 관리한다. <b>PR 본문을 업무 SSOT로 사용하는 저장소에서는 확정 업무를 기존 PR 또는 새 Draft PR로 연결</b>한다. 같은 업무를 issue·계획 파일·인벤토리에 중복 등록하지 않는다. 미확정 후보는 실행 결과에 남긴다.</p>
+        <p>수정은 대상 저장소의 Git 공통 디렉터리를 공유하는 별도 worktree와 작업 브랜치에서 수행한다. 필요한 후보를 보존하면서 완료된 실행의 불필요한 작업 공간을 정리한다. 예약마다 새 worktree를 무한히 쌓지 않는다.</p>
+        <p>실행 시간·추론 사용량·수정 시도·열린 자동 PR 수에 상한을 둔다. 예산 소진이나 실행 실패 시 현재 결과와 남은 작업을 최대 10줄 안에서 필요한 만큼만 보고한다. 설치·서버·브라우저 실행이 막힌 경우도 검사하지 못했다는 결과를 남긴다. 정상 검사에 새 발견이 없으면 짧게 끝낸다.</p>
+      </section>
+
+      <section class="section" id="scheduler" data-search>
+        <h2><span class="anchor-no">7.</span>스케줄러 선택</h2>
+        <div class="table-wrap"><table><thead><tr><th>방식</th><th>적합한 상황</th><th>필요 조건과 고려점</th></tr></thead><tbody>
+          <tr><td>로컬 Codex 예약 실행 <a class="source-ref" href="#source-7">[7]</a></td><td>기존 PC의 브라우저·파일·검사 도구를 활용하며 출근 중 실행.</td><td>PC와 데스크톱 앱을 켜 두고 프로젝트 접근·검증 도구를 준비한다. Git 프로젝트는 worktree로 변경을 격리할 수 있다. 무인 실행에 필요한 파일·네트워크 권한이 사전에 동작해야 한다.</td></tr>
+          <tr><td>GitHub Actions + Codex Action <a class="source-ref" href="#source-8">[8]</a></td><td>개인 PC가 꺼져도 원격 runner에서 실행하고 결과를 남김.</td><td>현재 공식 Codex Action 방식은 API 키 secret 설정이 필요하다. runner 실행 시간·AI 사용 비용과 브라우저/GPU/RTC 환경을 확인한다. 게임 실행과 증거를 지원하는 검사 환경이 먼저 필요하다.</td></tr>
+          <tr><td>GitHub Agentic Workflows <a class="source-ref" href="#source-9">[9]</a></td><td>조사 권한과 issue·comment·PR 쓰기 작업을 선언적으로 분리.</td><td>Safe Outputs로 외부 쓰기를 제한할 수 있다. 중복 제거 기능이 원인·재현 비교까지 대신하지는 않는다. 엔진·인증·runner 조건은 선택한 구성에서 확인한다.</td></tr>
+        </tbody></table></div>
+        <p>초기에는 기존 로컬 QA를 활용하는 방식이 단순하다. PC 가동을 유지하기 어렵거나 원격 운영이 필요하면 Actions 환경으로 옮긴다. 재현 품질과 운영 비용을 확인한 뒤 결정한다.</p>
+        <p>독립 검사 실행은 매번 같은 저장된 지시로 시작하는 예약이 적합하고 같은 조사 맥락을 이어야 하면 대화에 연결된 예약을 사용할 수 있다. 프롬프트는 기준 실행물·검사 범위·수정 경계·중복 처리·ELI13으로 최대 10줄 안에서 간결하게 보고하는 기준·종료 조건을 포함하며 등록 전에 수동으로 시험한다. <a class="source-ref" href="#source-7">[7]</a></p>
+      </section>
+
+      <section class="section" id="pilot" data-search>
+        <h2><span class="anchor-no">8.</span>초기 운영과 평가</h2>
+        <div class="rule core"><div class="rule-title">초기 제안 · 최적값으로 검증된 수치가 아님</div>평일 하루 1회, 핵심 흐름과 경계 영역 하나를 검사한다. 첫 5회는 탐지·재현·기록 중심으로 운영하고 품질 확인 뒤 작은 수정 PR을 하루 최대 하나 허용한다. 실제 출근 시간과 실행 예산은 별도로 정한다.</div>
+        <p>첫 실행에서 검사별 소요 시간과 실패 양상을 측정해 일일 예산을 정한다. 수정은 해당 게임의 필수 검증까지 가능한 예산을 확보한 경우에만 시작한다. 환경 실패·오탐·중복이 많으면 검사 환경과 범위를 먼저 정리한다.</p>
+        <div class="table-wrap"><table><thead><tr><th>평가 지표</th><th>관측 방법</th></tr></thead><tbody>
+          <tr><td>추가 질문 없이 판단된 비율</td><td>사용자가 이력만으로 수정·보류·기각을 결정한 결과 / 검토한 결과. 질문이 필요했던 이유로 보고 형식을 보완.</td></tr>
+          <tr><td>재현·오탐·중복</td><td>신규 제품 결함, 미확정·환경 문제, 기존 항목 재발을 분리. 간헐적 실패를 성공으로 숨기지 않음.</td></tr>
+          <tr><td>실제 채택</td><td>접수·수정·머지·보류·기각을 구분. PR 생성 자체를 해결로 계산하지 않음.</td></tr>
+          <tr><td>운영과 리뷰 비용</td><td>검사/추론 사용량·실행 시간·사용자 검토 시간·남은 PR 수를 함께 확인.</td></tr>
+        </tbody></table></div>
+        <p>채택에는 시간이 걸린다. 한 실행의 수치로 효과를 단정하지 않고 추세를 본다. 판단 가능성과 실제 처리율이 좋아질 때만 자동 수정 범위를 넓힌다. <a class="source-ref" href="#source-6">[6]</a></p>
+      </section>
+
+      <section class="section" id="rally" data-search>
+        <h2><span class="anchor-no">9.</span>RALLY FRONTIER 적용 예</h2>
+        <p><b>2026-10-08의 main <code>77e5798</code>을 읽기 전용으로 조사한 예</b>다. 이 조사에서는 게임 검사를 새로 실행하지 않았으며 아래 존재 여부를 현재 PASS로 해석하지 않는다. 코드 현황은 고정 커밋 링크에서 확인하고 실제 예약은 최신 실행물로 다시 점검한다.</p>
+        <ul>
+          <li><a href="https://github.com/byh-playground/rally-frontier/blob/77e5798/scripts/netcode-ui-e2e.cjs">netcode-ui-e2e.cjs</a>에는 실제 UI·RTC·WebGL·건설/생산·AI 전투·항복 결과·리플레이·로비 복귀 검사가 있다. 항복 종료를 자연 승패 완료 검증으로 확대 해석하지 않으며 자연 승패 종료를 별도로 보강한다.</li>
+          <li>건설 취소·환불, 캠페인 모듈 실패·재시도, 덱 저장 후 재로드, 손상 리플레이, 포인터 취소·blur·탭 복귀는 실제 기능 중심의 회전 탐색 후보다. 기능 전체가 매번 검증됐다고 보고하지 않는다.</li>
+          <li><a href="https://github.com/byh-playground/rally-frontier/blob/77e5798/.github/workflows/pages.yml">현재 pages.yml</a>은 빌드·배포 중심이며 schedule이 없다. 별도 예약 QA를 구성할 수 있지만 CI를 무조건 무겁게 복구해야 한다는 뜻은 아니다.</li>
+          <li>Node ≥22와 고정 Playwright가 선언돼 있고 회귀·성능 스크립트가 있다. 일부 오래된 스크립트의 소스 제공 방식·경로는 현재 모듈 구조와 맞는지 먼저 확인한다. 지원되는 검사부터 묶고 환경 실패를 제품 버그로 등록하지 않는다.</li>
+          <li><a href="https://github.com/byh-playground/rally-frontier/blob/77e5798/index.html">Development Contract</a>가 게임 검증 기준이다. 실제 UI 싱글 한 판과 종료, 시각 변경의 실제 renderer 확인, 해당 결정론·성능 검증을 정적 검사로 대신하지 않는다. 미검증 결과를 VALIDATED/Stable로 표시하지 않는다.</li>
+        </ul>
+        <p>시작할 순서는 지원되는 빌드/실행 검사 묶음 확인 → 수동 기준 실행 → 10줄 결과 평가 → 예약 등록 → 좁은 자동 수정 허용이다. 환경 오류를 매일 재등록하는 상태에서는 자동 수정 범위를 넓히지 않는다.</p>
+      </section>
+
+      <section class="section" id="sources" data-search>
+        <h2><span class="anchor-no">10.</span>출처와 관련 문서</h2>
+        <p>자료 확인일: 2026-10-08. 운영 예제·제품 문서는 바뀔 수 있으므로 실제 설정 시 원문을 다시 확인한다.</p>
+        <ol>
+          <li id="source-1"><a href="https://github.com/githubnext/agentics/blob/main/workflows/adhoc-qa.md">GitHub Next · Adhoc QA 실제 워크플로</a> — daily-qa 링크가 현재 연결하는 운영 예제. 재현 보고·작은 Draft PR·실행/백로그 상한.</li>
+          <li id="source-2"><a href="https://engineering.fb.com/2018/09/13/developer-tools/finding-and-fixing-software-bugs-automatically-with-sapfix-and-sapienz/">Meta · Finding and fixing software bugs automatically with SapFix and Sapienz</a> — 2018년 실제 Android 운영 소개.</li>
+          <li id="source-3"><a href="https://eecs481.org/readings/SapFix-Automated-End-to-End-Repair-at-Scale-v2.pdf">SapFix: Automated End-to-End Repair at Scale</a> — 산업 적용 논문. 자동 패치 검증과 개발자 검토 경험.</li>
+          <li id="source-4"><a href="https://playwright.dev/docs/test-retries">Playwright · Retries</a> — passed·flaky·failed 구분.</li>
+          <li id="source-5"><a href="https://playwright.dev/docs/trace-viewer-intro">Playwright · Trace Viewer</a> — 실패 동작과 화면 확인.</li>
+          <li id="source-6"><a href="https://github.github.io/gh-aw/practices/measuring-impact/">GitHub Agentic Workflows · Measuring Impact</a> — 실행·비용·채택 결과와 중복/검토 부담 평가.</li>
+          <li id="source-7"><a href="https://learn.chatgpt.com/docs/automations">OpenAI 공식 문서 · Scheduled tasks</a> — 로컬 예약의 가동 조건, worktree, 독립 실행과 대화 연결 실행, 수동 사전 시험.</li>
+          <li id="source-8"><a href="https://learn.chatgpt.com/docs/github-action">OpenAI 공식 문서 · Codex GitHub Action</a> — CI에서 Codex 실행 및 API 키 설정.</li>
+          <li id="source-9"><a href="https://github.github.io/gh-aw/reference/safe-outputs/">GitHub Agentic Workflows · Safe Outputs</a> — 조사와 외부 쓰기 권한 분리·중복 처리.</li>
+        </ol>
+        <p>함께 읽기: <a href="project-management.html">공통 프로젝트 관리 규칙</a> · <a href="development.html">공통 개발 규칙</a> · <a href="../algorithms/index.html">알고리즘 레퍼런스</a>.</p>
+      </section>
+      <div id="noResults" class="no-results" role="status">검색어와 일치하는 절이 없습니다.</div>
+      <footer class="footer">BLOOM Reference · 예약 버그 탐지 운영 레퍼런스 · HTML이 원본이며 같은 본문을 Markdown으로 중복 관리하지 않는다.</footer>
+    </article>
+  </main>
+</div>
+<button class="backtop" id="backtop" title="맨 위로" aria-label="맨 위로">↑</button>
+<script>
+(() => {
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  let saved;
+  try { saved = localStorage.getItem('scheduledQaTheme'); } catch {}
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('scheduledQaTheme', next); } catch {}
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenu = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(sidebar.classList.contains('open'))); });
+  overlay.addEventListener('click', closeMenu);
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', closeMenu));
+
+  document.getElementById('backtop').addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+
+  const links = [...document.querySelectorAll('.toc a')];
+  const targets = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if (!visible) return;
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + visible.target.id));
+  }, {rootMargin:'-70px 0px -72% 0px',threshold:[0,1]});
+  targets.forEach(t => observer.observe(t));
+
+  const search = document.getElementById('search');
+  const count = document.getElementById('searchCount');
+  const sections = [...document.querySelectorAll('[data-search]')];
+  const noResults = document.getElementById('noResults');
+  const normalize = s => s.toLowerCase().replace(/\s+/g,' ').trim();
+  const runSearch = () => {
+    const q = normalize(search.value);
+    let shown = 0;
+    sections.forEach(sec => {
+      const hit = !q || normalize(sec.textContent).includes(q);
+      sec.classList.toggle('filtered-out', !hit);
+      if (hit) shown++;
+    });
+    count.textContent = q ? `${shown}/${sections.length}` : '';
+    noResults.classList.toggle('show', !!q && shown === 0);
+  };
+  search.addEventListener('input', runSearch);
+  search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value=''; runSearch(); search.blur(); } });
+  addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); search.focus(); search.select(); } });
+})();
+</script>
+</body>
+</html>
