@@ -8,6 +8,9 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 시각 실험을 
 | --- | --- | --- |
 | 공통 개발 규칙 · 비용 우선순위 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.html](rules/development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable·Git·배포 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.html](rules/project-management.html) |
+| 공통 시각·UX 규칙 · 정보 우선순위·피드백·모바일 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
+| 공통 STAT 사전 · 의미·단위·계산 계약·게임 프로필 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/stats.html) | [rules/stats.html](rules/stats.html) |
+| 절차적 지형 생성 · FastNoise·유형별 선택·검증 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/algorithms/terrain-generation.html) | [algorithms/terrain-generation.html](algorithms/terrain-generation.html) |
 | 예약 버그 탐지 · 자동 수정 범위·전체 이력 10줄 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/scheduled-bug-qa.html) | [rules/scheduled-bug-qa.html](rules/scheduled-bug-qa.html) |
 | 구체 개발규칙 · 알고리즘 레퍼런스 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/algorithms/index.html) | [algorithms/index.html](algorithms/index.html) |
 | 파티클 연구소 v3 · 74종·수치·UI | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/labs/particles.html) | [labs/particles.html](labs/particles.html) |
@@ -29,12 +32,15 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 시각 실험을 
 
 ## 수록 원본
 
-2026-10-07에 수록한 자료와 2026-10-08에 추가한 운영 레퍼런스를 아래 고정 경로에서 관리합니다. 기존 원본의 수정일은 UTC 기준이며 새 운영 레퍼런스는 조사·작성일을 표시합니다.
+2026-10-07에 수록한 자료와 이후 추가한 공통·운영 레퍼런스를 아래 고정 경로에서 관리합니다. 기존 원본의 수정일은 UTC 기준이며 새 운영 레퍼런스는 조사·작성일을 표시합니다.
 
 | 저장 경로 | 원본 파일 | 수정일 |
 | --- | --- | --- |
 | `rules/development.html` | `common-development-rules-priority-wiki-v14.html` | 2026-10-07 |
 | `rules/project-management.html` | `common_project_management_rules.html` | 2026-10-07 |
+| `rules/visual-ux.html` | 공통 시각·UX 설계 규칙 (이 저장소에서 작성) | 2026-10-10 |
+| `rules/stats.html` | 공통 STAT 의미·계약 사전 (이 저장소에서 작성) | 2026-10-10 |
+| `algorithms/terrain-generation.html` | FastNoise 공식 원문 기반 지형 생성 조사 (이 저장소에서 작성) | 2026-10-10 |
 | `rules/scheduled-bug-qa.html` | 예약 버그 탐지·자동 수정 운영 조사 (이 저장소에서 작성) | 2026-10-08 |
 | `algorithms/index.html` | `specific-development-algorithm-wiki-v3.html` | 2026-10-07 |
 | `labs/particles.html` | `BLOOM_Particle_Lab_v3_GameKit.html` | 2026-10-07 |
@@ -45,6 +51,8 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 시각 실험을 
 Style Lab v9는 기존 8종 스타일·스틱맨 횡스크롤·블룸 탑다운 예제를 유지하면서 털실/손뜨개 스타일과 재질 비교를 추가한 완료본입니다. 같은 고정 경로를 갱신했으며 이전 중간본은 중복 수록하지 않았습니다. 갱신할 때는 고정 경로의 HTML과 위 원본 정보를 함께 바꾸고, 이전 내용은 Git 이력으로 확인합니다.
 
 2026-10-07 런타임 이관에 맞춰 `algorithms/index.html`의 Rollback 계약 링크 한 곳을 bloom-gamekit의 `modules/rollback-netcode/CONTRACT.md`로 갱신했습니다. 원본 자료의 설명·알고리즘·화면과 다른 링크는 바꾸지 않았습니다.
+
+2026-10-10에는 나무위키형 목차·검색·테마를 갖춘 공통 시각·UX 규칙, STAT 사전, 지형 생성 문서를 추가했습니다. 기존 개발·관리 규칙에는 재사용 capability/config 예시, 전문 문서 연결, 실제 의존성·mock·fallback·RTC 및 실패 단계 구분만 보강했습니다. 180초 버그 검증 상한은 유지합니다. 새 문서의 원칙·계산 예시는 프로젝트 설계 규약이며 모든 게임에 모든 STAT이나 고정 수치를 강제하지 않습니다. 지형 기술 출처는 [FastNoiseLite](https://github.com/Auburn/FastNoiseLite), [FastNoise2](https://github.com/Auburn/FastNoise2), [Jordan Peck](https://jordanpeck.me) 및 각 HTML의 출처 절에서 관리합니다. 게임 산출물·런타임·SDK 적용 결과는 포함하지 않습니다.
 
 ## 파티클 v3 모듈과 소스
 
@@ -57,3 +65,4 @@ Style Lab v9는 기존 8종 스타일·스틱맨 횡스크롤·블룸 탑다운 
 이 자료는 GameKit 원본 커밋 `421e04145c89b827d280f5774e8d502486cc3074`를 고정 사용합니다. 더 최신 GameKit으로 바꾼 자료가 아니며, 버드모리·랠리 프론티어 저장소와 정식 GameKit 모듈은 이번 레퍼런스 갱신으로 수정하지 않습니다. 단위·브라우저 검사 상세는 원본 ZIP의 `validation/TEST-REPORT.md`에 포함되어 있습니다.
 
 HTML Preview가 script의 type 속성을 보존하지 않아, 파티클 연구소와 UI·HUD HTML은 내장 JSON 저장 태그와 비동기 시작 래퍼만 실행 가능한 형태로 포장했습니다. 내장 ESM 소스·효과·설정은 원본과 동일하고, 전체 소스 ZIP과 열람용 ESM은 원본 바이트를 유지합니다.
+
