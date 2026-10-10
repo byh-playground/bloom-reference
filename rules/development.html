@@ -111,6 +111,7 @@ th{background:var(--code)}
 <section id="principle">
   <h1>공통 개발 규칙</h1>
   <div class="subtitle">유지보수성과 확장성을 위한 비용 우선순위판</div>
+  <p>함께 읽기: <a href="visual-ux.html">공통 시각·UX 규칙</a> · <a href="stats.html">공통 STAT 사전</a> · <a href="../algorithms/terrain-generation.html">절차적 지형 생성</a>. 이 문서는 구조 원칙을, 각 전문 문서는 정보 우선순위·수치 계약·생성 파이프라인을 소유한다.</p>
 
   <div class="summary">
     <strong>정렬 기준:</strong> “얼마나 멋진 원칙인가”가 아니라
@@ -452,6 +453,7 @@ unit.iaiSlash(enemy);</code></pre>
   <h3>이름이 아니라 능력으로 분기</h3>
   <div class="meta">빈도: 매우 높음 · 나중 수정비용: 큼</div>
   <p>특정 유닛명·타입명·ID가 로직 분기의 핵심이 되지 않게 한다.</p>
+  <p>보스·맵도 같다. 돌진·소환·단계 전환은 각각 재사용 가능한 capability로 구현하고, 보스별 구성은 능력 조합과 설정으로 표현한다. 맵 이름을 검사해 충돌·스폰을 갈라 놓지 말고 지형 데이터와 이동·스폰 규약을 사용한다. 단, 실제로 행동이 다른 경우에는 새 capability가 필요하며 모든 차이를 거대한 설정 분기로 숨기지 않는다.</p>
   <div class="compare">
     <div class="box bad"><strong>나쁜 예</strong><pre><code>if (unit.type === "shadowFlea") {
     jump();
@@ -625,6 +627,22 @@ abilities.register(
 <div class="rule" id="data-driven">
   <div class="headline"><span class="badge p1b">P1</span><span class="tag">#DataDrivenDesign</span></div>
   <h3>Behavior는 코드, Parameters는 데이터</h3>
+  <p>같은 돌진 행동의 경고 시간·거리, 같은 지형 생성기의 주파수·통로 폭처럼 <strong>값이 다른 부분</strong>은 설정으로 둔다. 설정에 없는 독립 행동까지 임의 플래그로 흉내 내지는 않는다.</p>
+  <pre><code>// 개념 예시. 특정 런타임 API나 공통 기본값을 강제하지 않는다.
+const encounter = {
+  boss: {
+    capabilities: ["charge", "summon"],
+    charge: { warning: { duration: 0.8 }, travel: { distance: 12 } },
+    summon: { capacity: 3 }
+  },
+  map: {
+    generator: { id: "island", version: "1" },
+    terrain: { noise: { frequency: 0.03 } },
+    traversal: { minimumWidth: 3 },
+    spawn: { safeRadius: 5 }
+  }
+};</code></pre>
+  <p>예시 단위는 시간=초, 거리=프로젝트 월드 단위다. 보스의 능력 상태와 지형 생성 결과는 각 owner가 소유한다. 실제 STAT은 <a href="stats.html">STAT 사전과 활성 게임 프로필</a>, 지형 설정·결정론은 <a href="../algorithms/terrain-generation.html">지형 생성 규약</a>을 따른다.</p>
   <div class="meta">빈도: 높음 · 나중 수정비용: 중간</div>
   <div class="compare">
     <div class="box bad"><strong>나쁜 예</strong><pre><code>if (type === "A") damage = 10;
@@ -1130,3 +1148,4 @@ class Crate extends mixin(
 </div>
 </body>
 </html>
+
