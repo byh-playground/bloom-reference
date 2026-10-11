@@ -254,7 +254,7 @@ Build: 20261007T193500+0900-a1b2c3d</code></pre>
           <li>실패: 의존성 로드 → 초기화 → 연결 → 입력 → 화면/상태 결과 중 실패한 단계와 관찰 증거. 환경 차단과 제품 결함을 구분한다.</li>
           <li>범위: PASS·FAIL·미실행·환경 차단을 각각 표시한다. 뒤 단계까지 실행하지 못했다면 앞 단계 성공으로 전체 성공을 선언하지 않는다.</li>
         </ul>
-        <p>시각·모바일 변경은 <a href="visual-ux.html#verification">시각·UX 확인 기준</a>, 수치 변경은 <a href="stats.html">STAT 계약</a>, 지형 변경은 <a href="../algorithms/terrain-generation.html">생성·이동 가능성 검증</a>과 연결한다. 이 항목은 위 실행 상한과 테스트 보존 정책을 대체하지 않는다.</p>
+        <p>시각·모바일 변경은 <a href="visual-ux.html#verification">UI/UX 확인 기준</a>, 수치 변경은 <a href="stats.html">STAT 계약</a>, 지형 변경은 <a href="../algorithms/terrain-generation.html">생성·이동 가능성 검증</a>과 연결한다. 이 항목은 위 실행 상한과 테스트 보존 정책을 대체하지 않는다.</p>
         <p>다음 상태를 서로 같은 것으로 취급하지 않는다.</p>
         <div class="flow"><span>구현 완료</span><b>≠</b><span>검증 완료</span><b>≠</b><span>Stable 승격</span><b>≠</b><span>배포 완료</span></div>
         <p>파일 생성은 배포 완료가 아니며, CI 실행은 검증 성공을 의미하지 않는다. <b>실제 결과</b>를 기록한다.</p>
