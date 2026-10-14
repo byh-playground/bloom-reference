@@ -1,0 +1,222 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>게임 기획 가이드 · BLOOM Reference</title><style>
+:root{
+  --bg:#f5f6f7; --panel:#fff; --panel-2:#f8f9fa; --text:#202122; --muted:#72777d;
+  --line:#d9dde1; --line-strong:#b9bec4; --accent:#00a495; --accent-2:#007c70;
+  --link:#0275d8; --danger:#d33; --warn:#b26a00; --ok:#14866d; --code:#eef1f3;
+  --shadow:0 2px 10px rgba(0,0,0,.08); --header-h:56px; --sidebar-w:285px;
+}
+[data-theme="dark"]{
+  --bg:#181a1b; --panel:#222426; --panel-2:#292c2f; --text:#e8eaed; --muted:#a9b0b6;
+  --line:#3b4045; --line-strong:#555c62; --accent:#28c6b6; --accent-2:#50ddce;
+  --link:#7ab8ff; --danger:#ff6b6b; --warn:#f0b45d; --ok:#57d2b1; --code:#303438;
+  --shadow:0 2px 14px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;line-height:1.72}
+a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;height:var(--header-h);display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.brand{font-weight:800;white-space:nowrap;letter-spacing:-.02em}.brand small{font-weight:600;color:var(--muted);margin-left:6px}
+.spacer{flex:1}.toolbar{display:flex;align-items:center;gap:8px}
+.icon-btn{border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);border-radius:6px;min-width:40px;height:38px;padding:0 11px;cursor:pointer;font-weight:800}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-2)}
+.menu-btn{display:none;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:900;text-shadow:0 1px 1px rgba(0,0,0,.28)}
+.menu-btn:hover{color:#fff;background:var(--accent-2)}
+.search-wrap{position:relative;max-width:520px;flex:1}.search-wrap input{width:100%;height:38px;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);border-radius:6px;padding:0 36px 0 12px;outline:none}.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 18%,transparent)}
+.search-count{position:absolute;right:9px;top:8px;color:var(--muted);font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);max-width:1480px;margin:0 auto}
+.sidebar{position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow:auto;padding:20px 14px 32px;border-right:1px solid var(--line);background:var(--panel)}
+.toc-title{font-size:13px;color:var(--muted);font-weight:800;margin:0 8px 10px;text-transform:uppercase;letter-spacing:.08em}
+.toc{list-style:none;padding:0;margin:0}.toc li{margin:2px 0}.toc a{display:block;padding:7px 9px;border-radius:5px;color:var(--text);font-size:14px;line-height:1.4}.toc a:hover{background:var(--panel-2);text-decoration:none}.toc a.active{background:color-mix(in srgb,var(--accent) 14%,var(--panel));color:var(--accent-2);font-weight:800}.toc .sub a{padding-left:24px;font-size:13px;color:var(--muted)}
+.main{min-width:0;padding:28px 34px 80px}.doc{max-width:1040px;margin:0 auto;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 42px 58px}
+.doc-header{border-bottom:2px solid var(--line-strong);padding-bottom:20px;margin-bottom:28px}.doc-header h1{font-size:34px;line-height:1.2;margin:0 0 10px;letter-spacing:-.04em}.subtitle{color:var(--muted);margin:0 0 16px}.meta{display:flex;gap:7px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--muted)}.badge.core{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent-2);background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.notice{margin:18px 0;padding:14px 16px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-radius:0 6px 6px 0}.notice strong{color:var(--accent-2)}
+.section{margin-top:42px}.section.filtered-out{display:none}.section h2{font-size:25px;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:-.025em}.section h3{font-size:19px;margin:28px 0 10px;letter-spacing:-.02em}.anchor-no{color:var(--muted);font-weight:500;margin-right:8px}
+p{margin:10px 0} ul,ol{padding-left:25px} li{margin:4px 0}.tight li{margin:2px 0}
+.rule{border:1px solid var(--line);background:var(--panel-2);border-radius:7px;padding:15px 17px;margin:14px 0}.rule-title{font-weight:900;margin-bottom:5px}.rule.core{border-left:4px solid var(--accent)}
+blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--line-strong);background:var(--panel-2);color:var(--text)}
+code,kbd{background:var(--code);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.92em}pre{overflow:auto;background:var(--code);border:1px solid var(--line);padding:14px;border-radius:6px;line-height:1.5}
+.table-wrap{overflow:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:6px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th:last-child,td:last-child{border-right:0}tr:last-child td{border-bottom:0}th{background:var(--panel-2);font-weight:800}td:first-child{font-weight:700}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:14px 0}.flow span{border:1px solid var(--line);background:var(--panel-2);padding:6px 10px;border-radius:5px;font-weight:700}.flow b{color:var(--muted)}
+.kicker{font-size:12px;font-weight:900;color:var(--accent-2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}.muted{color:var(--muted)}.danger{color:var(--danger);font-weight:800}.ok{color:var(--ok);font-weight:800}
+mark{background:#ffe477;color:#1d1d1d;border-radius:2px;padding:0 1px}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:800;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);width:42px;height:42px;border-radius:50%;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
+.overlay{display:none}
+.no-results{display:none;padding:24px;border:1px dashed var(--line-strong);border-radius:7px;text-align:center;color:var(--muted);margin-top:20px}
+.no-results.show{display:block}
+.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:900px){
+  :root{--header-h:58px}.topbar{padding:0 10px}.brand small{display:none}.search-wrap{max-width:none}.menu-btn{display:inline-flex;align-items:center;justify-content:center;min-width:52px;color:#fff !important;background:var(--accent) !important;border-color:var(--accent) !important}
+  .layout{display:block}.sidebar{position:fixed;left:0;top:var(--header-h);z-index:1200;width:min(86vw,320px);height:calc(100vh - var(--header-h));transform:translateX(-105%);transition:transform .2s ease;box-shadow:var(--shadow);border-right:1px solid var(--line)}
+  .sidebar.open{transform:translateX(0)}.overlay{position:fixed;display:block;inset:var(--header-h) 0 0 0;background:rgba(0,0,0,.45);z-index:1100;opacity:0;pointer-events:none;transition:opacity .2s}.overlay.open{opacity:1;pointer-events:auto}
+  .main{padding:14px}.doc{padding:25px 18px 45px}.doc-header h1{font-size:28px}.section h2{font-size:22px}.section h3{font-size:18px}.toolbar .theme-label{display:none}
+}
+@media(max-width:560px){.brand{font-size:14px}.search-wrap input{padding-left:9px}.search-count{display:none}.icon-btn{min-width:38px;padding:0 8px}.menu-btn{min-width:48px}.doc{border-left:0;border-right:0}.main{padding:10px 0}.doc-header h1{font-size:25px}}
+@media print{.topbar,.sidebar,.backtop,.overlay{display:none!important}.layout{display:block}.main{padding:0}.doc{border:0;box-shadow:none;max-width:none;padding:0}.section{break-inside:avoid-page}a{color:inherit;text-decoration:none}}
+
+.report{padding:0;margin:14px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel-2)}
+.report p{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:14px;overflow-wrap:anywhere}
+.report p:last-child{border-bottom:0}.related{font-size:14px}.source-ref{font-size:12px;vertical-align:super}
+.doc a{overflow-wrap:anywhere}.topbar .brand{font-size:15px}
+@media(max-width:560px){.topbar{gap:7px}.search-wrap{min-width:0}.brand{font-size:13px!important}.report p{padding:9px 10px}}
+
+.wiki-section>summary{cursor:pointer;list-style:none;position:relative;padding-left:24px}
+.wiki-section>summary::-webkit-details-marker{display:none}
+.wiki-section>summary:before{content:'▸';position:absolute;left:0;top:2px;color:var(--accent-2);font-weight:800}
+.wiki-section[open]>summary:before{content:'▾'}
+.wiki-section>summary h2{margin-bottom:0}.section-body{padding-top:16px}
+.wiki-section>summary:focus-visible,.example-detail>summary:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+.example-detail{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:16px 0}
+.example-detail>summary{cursor:pointer;font-weight:700;min-height:32px}
+.completion{border-left:4px solid var(--ok)}.priority-list li{margin:9px 0}
+.doc{overflow-wrap:anywhere}.search-wrap input{padding-right:50px}
+.icon-btn{min-height:44px}.topbar{min-height:56px}
+@media(max-width:560px){.brand{max-width:65px}.topbar{gap:5px;padding:0 7px}.icon-btn{padding:0 7px}.search-wrap input{font-size:14px;padding-right:8px}.section h2{font-size:20px}.spacer{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sidebar,.overlay{transition:none}}
+
+.checklist{list-style:none;padding-left:0}.checklist li::before{content:'□ ';color:var(--accent-2)}h3{scroll-margin-top:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere}@media print{details:not([open])>.section-body{display:block}}</style></head><body>
+<header class="topbar"><button class="icon-btn menu-btn" id="menuBtn" aria-label="목차 열기" aria-controls="sidebar" aria-expanded="false">목차</button><div class="brand">기획 가이드 <small>BLOOM Reference</small></div><div class="spacer"></div><div class="search-wrap"><input id="search" type="search" aria-label="문서 검색" placeholder="검색: 합체, 조작, 보상" autocomplete="off"><span id="searchCount" class="search-count" aria-live="polite"></span></div><div class="toolbar"><button class="icon-btn" id="themeBtn" aria-label="테마 전환"><span class="theme-label">테마</span> ◐</button></div></header>
+<div class="overlay" id="overlay"></div><div class="layout"><aside class="sidebar" id="sidebar"><nav aria-label="문서 목차"><div class="toc-title">목차</div><ul class="toc" id="toc"><li><a href="#overview">0. 이 문서를 읽는 법</a></li><li><a href="#chain-reaction">1. 연쇄 반응의 재미</a></li><li class="sub"><a href="#chain-why">1.1. 왜 재미있는가</a></li><li class="sub"><a href="#chain-bounko">1.2. 바운코</a></li><li class="sub"><a href="#chain-yarn">1.3. 털실 대소동</a></li><li class="sub"><a href="#chain-control">1.4. 조작과 자동 연쇄</a></li><li class="sub"><a href="#chain-types">1.5. 세 가지 유형</a></li><li class="sub"><a href="#chain-feedback">1.6. 시각·소리·시간</a></li><li class="sub"><a href="#chain-failures">1.7. 실패 패턴</a></li><li class="sub"><a href="#chain-checklist">1.8. 체크리스트</a></li><li class="sub"><a href="#chain-template">1.9. 재사용 템플릿</a></li><li><a href="#sources">2. 사례 근거와 문서 확장</a></li></ul></nav></aside><main class="main"><article class="doc" id="doc"><header class="doc-header"><div class="kicker">Game design notes</div><h1>게임 기획 가이드</h1><p class="subtitle">재미를 만드는 시스템을 사례와 질문으로 정리한다.</p><div class="meta"><span class="badge core">첫 주제 · 연쇄 반응</span><span class="badge">바운코 × 털실 대소동</span><span class="badge">2026-10-14</span></div></header>
+<section class="section" id="overview" data-search><details class="wiki-section" open><summary><h2>0. 이 문서를 읽는 법</h2></summary><div class="section-body">
+<p>게임을 만들 때 반복해서 꺼내 볼 <b>기획 팁 모음</b>이다. 첫 주제는 바운코와 털실 대소동을 대표 레퍼런스로 삼은 <b>연쇄 반응의 재미</b>다. 이후 주제는 독립된 장으로 덧붙인다. 구현 알고리즘보다 플레이어가 무엇을 보고, 예상하고, 조작하며, 다음 선택을 하게 되는지를 기록한다.</p>
+<div class="rule core"><div class="rule-title">먼저 남길 한 문장</div>한 번의 행동이 눈에 보이는 여러 결과로 이어지고, 그 결과가 다음 행동의 판을 바꾸면 재미있는 핵심 시스템이 될 수 있다.</div>
+<ul><li><b>사용자 기획 방향:</b> 연쇄 반응을 핵심 시스템으로 다루고, 대표 사례로 바운코와 털실 대소동을 사용한다.</li><li><b>구현 확인:</b> 아래 고정 커밋의 코드에서 읽은 동작이다. 최신 배포 전체나 모든 상황을 직접 플레이해 검증했다는 뜻은 아니다.</li><li><b>설계 해석·제안:</b> 왜 재미있을 수 있는지와 다른 게임에 옮기는 방법이다. 사용자 테스트나 연구로 입증된 보편 법칙이 아니다.</li></ul>
+<p>사용자가 선택한 레퍼런스와 기획 의도를 출발점으로 삼되, 실제 플레이어의 즐거움·몰입·재도전 여부는 별도 관찰로 확인한다. 아래 권장안 전체가 사용자 확정 사양이라는 뜻은 아니다.</p></div></details></section><section class="section" id="chain-reaction" data-search><details class="wiki-section" open><summary><h2>1. 연쇄 반응의 재미</h2></summary><div class="section-body">
+<div class="kicker">첫 번째 기획 주제 · Chain reaction</div>
+<p><b>연쇄 반응</b>은 앞선 사건이 다음 사건의 조건을 만들며 이어지는 구조다. “공격력 +10%”처럼 결과값만 커지는 것과 달리, 튕김·이동·합체·전파처럼 <b>원인에서 결과까지의 변화가 화면에 남는 것</b>이 이 문서의 초점이다. 조건부 추가 피해도 그 자체로 유효한 성장 요소지만, 숫자만 바뀌면 여기서 말하는 연쇄의 경험은 약하다.</p>
+<div class="flow" aria-label="연쇄 반응의 기본 흐름"><span>판을 읽는다</span><b>→</b><span>한 번 건드린다</span><b>→</b><span>결과가 이어진다</span><b>→</b><span>달라진 판을 읽는다</span></div>
+<h3 id="chain-why">1.1. 왜 재미있을 수 있는가</h3>
+<ol><li><b>관찰 가능한 인과:</b> “내가 저기를 건드려서 이쪽까지 바뀌었다”를 움직임으로 이해한다. 시작점·이동 경로·도착점이 읽혀야 내 행동으로 받아들인다.</li><li><b>예상과 작은 놀라움:</b> 첫 번째 결과는 예상 가능하고, 그다음은 배치에 따라 조금 달라진다. 모든 것이 확정이면 반복 시청이 되고, 아무것도 예상할 수 없으면 운에 맡긴다.</li><li><b>한 행동의 여러 결과:</b> 입력 한 번이 충돌·도탄·합체로 확장된다. 입력의 수보다 내가 만든 변화가 커 보인다. 중간 과정을 읽을 시간이 있어야 이 이득을 느낄 수 있다.</li><li><b>다음 상태의 변화:</b> 적의 위치, 밀도, 크기, 위험 구역이 바뀐다. 연쇄가 끝나면 다음에 노릴 대상이나 피할 이유가 생긴다.</li></ol>
+<div class="notice"><strong>재미의 설계 가설</strong><br>중요한 것은 폭발 횟수 자체가 아니라 “내가 시작했고, 이어지는 이유를 알며, 그 결과를 다음 선택에 쓸 수 있다”는 경험이다. </div>
+<h3 id="chain-bounko">1.2. 대표 사례 A · 바운코: 충돌에서 다음 돌진으로</h3>
+<p><span class="badge core">구현 확인</span> 충돌을 중심으로 그림자 발사와 돌진이 이어지는 연격. 주변 적이 서로 부딪히기만 하면 모두 피해를 받는 무제한 도미노로 설명하지 않는다.</p>
+<div class="table-wrap"><table><thead><tr><th>단계</th><th>코드에서 확인한 구조</th><th>기획에서 읽을 점</th></tr></thead><tbody>
+<tr><td>조건</td><td>관련 기술이 열려 있고 후속 대상과 공격 탄이 남아 있어야 한다. 첫 수동 적중에는 충전 조건이 적용된다.</td><td>플레이어가 연쇄를 만들 준비를 하고, 시작 타이밍을 고른다.</td></tr>
+<tr><td>촉발</td><td>돌진 중 실제 충돌에서 양의 피해가 발생하면 후속 연격을 준비한다.</td><td>버튼을 눌렀다는 사실보다 몸이 닿는 순간이 출발점이다.</td></tr>
+<tr><td>전파</td><td>돌진 후 동작 회복·거리 조건 뒤 후속 그림자를 발사한다. 자동 연격은 그림자 도착 뒤 돌진으로 이어진다. 기술에 따라 같은 생존 대상 또는 주변 다른 대상으로 이어진다.</td><td>충돌 → 떨어짐/다음 목표 → 재접근이라는 궤적을 읽는다. 적 배치가 다음 경로를 바꾼다.</td></tr>
+<tr><td>종료</td><td>탄이나 유효 대상이 없으면 종료한다. 후속 발사에 필요한 거리가 확보되지 않아도 이어지지 않는다. 수동 발사가 실제 성공하면 기존 자동 연쇄를 끊는다.</td><td>언제 자동 행동이 멈추고 다시 개입하는지 납득할 수 있어야 한다.</td></tr>
+<tr><td>보상</td><td>실제 피해 적중이 콤보를 올리고 충돌 피드백을 낸다. 적중만으로 성장 화폐를 얻는 것은 아니다. 성장 획득은 처치·수집 흐름과 구별한다.</td><td>당장의 타격·리듬과 전투 성과를 나누어 설계한다.</td></tr>
+</tbody></table></div>
+<p><b>설계 해석:</b> 시작 타이밍과 충돌 위치를 고른 뒤 자동 후속 행동을 잠깐 즐기고, 탄·대상·위치가 달라진 시점에 다시 판단하는 순환이다. “연쇄가 길수록 재미있다”보다 <b>내 선택이 다음 궤적을 만든다</b>가 중심이다.</p>
+<h3 id="chain-yarn">1.3. 대표 사례 B · 털실 대소동: 수박식 동등 티어 합체</h3>
+<p><span class="badge core">구현 확인</span> 같은 티어의 적 둘이 실제 접촉하면 한 단계 높은 적 하나가 된다. 플레이어 자신의 강화 합성이 아니라 <b>적의 변화</b>라서, 시각적 보상과 전투 위험이 함께 커질 수 있다.</p>
+<div class="table-wrap"><table><thead><tr><th>단계</th><th>코드에서 확인한 구조</th><th>기획에서 읽을 점</th></tr></thead><tbody>
+<tr><td>조건</td><td>살아 있는 같은 티어 둘이며 최고 티어 미만이어야 한다. 제어 상태나 분열 직후 합체 제한 중에는 합쳐지지 않는다.</td><td>모양·크기·티어를 보고 “둘이 만나면 합쳐지겠다”를 예상한다.</td></tr>
+<tr><td>촉발</td><td>물리 접촉을 계기로 두 적을 제거하고 상위 티어 적 하나를 만든다.</td><td>추상적 수치 갱신보다 두 덩어리가 하나로 모이는 사건이 분명하다.</td></tr>
+<tr><td>전파</td><td>새 적은 더 큰 몸체·해당 티어의 최대 체력·공격 특성을 갖는다. 이후 같은 새 티어의 적과 접촉하면 다시 합체할 수 있다.</td><td>커진 몸과 바뀐 배치가 다음 만남의 조건을 만든다. 합체 한 번이 다음 합체를 보장하지는 않는다.</td></tr>
+<tr><td>종료</td><td>같은 티어 접촉 상대가 없거나 최고 티어에 도달하면 해당 합체는 더 이어지지 않는다.</td><td>실패나 끝을 이해할 수 있는 명확한 경계가 필요하다.</td></tr>
+<tr><td>보상과 위험</td><td>흡수 연출·링·문구·효과음으로 변화를 알린다. 티어에 따라 체력·공격·XP 값이 바뀐다. 합체 순간 XP를 플레이어에게 지급하는 구조로 설명하지 않는다.</td><td>큰 덩어리가 완성되는 만족감과 강한 적을 만든 위험이 공존한다.</td></tr>
+</tbody></table></div>
+<p><b>설계 해석:</b> 플레이어의 공격은 적의 위치와 생존 상태에 영향을 주고 적 AI도 합체 상대를 찾는다. 따라서 모든 합체를 플레이어가 직접 실행한 것으로 과장하지 않는다. 기획 질문은 “어떻게 합체를 유도하거나 끊을까, 지금 강한 적을 만드는 것이 이득일까?”다.</p>
+<details class="example-detail"><summary>확장 사례 · 바늘 튕김은 합체와 별개의 전파 방식</summary><p>확인한 털실 코드에는 바늘이 실제 적중 지점에서 주변 미적중 적을 향해 방향을 바꾸고, 최대 세 적까지 닿는 기능도 있다. 대상 수·거리·수명으로 끝나며 접촉할 때 피해를 준다. 한 발의 궤적이 다음 목표로 이어지는 참고 사례다. 이 문서의 대표 핵심인 <b>동등 티어 합체</b>를 대체하지 않는다. 이 수치들은 해당 구현의 값이며 공통 권장값이 아니다.</p></details>
+<h3 id="chain-control">1.4. 조작과 자동 연쇄의 균형</h3>
+<ul><li><b>시작 전:</b> 첫 대상, 각도, 타이밍, 밀집도를 고를 여지를 둔다. 어떤 선택이 좋은 결과를 만들었는지 나중에 추적할 수 있어야 한다.</li><li><b>진행 중:</b> 모든 단계를 다시 누르게 하기보다 일부는 자동으로 이어지게 한다. 대신 회피·다음 위치 선정·다음 시작점 준비처럼 살아 있는 판단을 남긴다.</li><li><b>끝날 때:</b> 마지막 충돌이나 합체를 읽은 뒤 다음 입력으로 자연스럽게 넘어간다. 자동 연출이 생존 입력을 오래 막으면 보상이 답답함이 된다.</li><li><b>제어권:</b> 중단·전환을 허용할지, 연쇄 중 감수할 위험이 무엇인지 먼저 정한다. 시작 뒤 아무 의미 있는 선택도 없다면 감상 시간이 너무 길지 않은지 확인한다.</li></ul>
+<h3 id="chain-types">1.5. 세 가지 유형으로 생각하기</h3>
+<div class="table-wrap"><table><thead><tr><th>유형</th><th>이어지는 것</th><th>플레이어가 읽을 단서</th><th>주의점</th></tr></thead><tbody>
+<tr><td>물리·궤적 연쇄</td><td>충돌, 반동, 이동, 다음 적중</td><td>각도·거리·속도·대상 위치</td><td>튕기는 모양과 실제 타격 대상이 어긋나지 않는다. 바운코의 충돌·후속 돌진이 대표다.</td></tr>
+<tr><td>합체 연쇄</td><td>동등 조합 → 상위 개체 → 새 조합 가능성</td><td>티어·크기·접촉 위치</td><td>상위 개체가 아군 성장인지 적 위협인지 구분한다. 털실 대소동이 대표다.</td></tr>
+<tr><td>상태 전파</td><td>불·전기·표식 같은 상태가 인접 대상으로 이동</td><td>상태 보유자·연결 경로·전파 범위</td><td>일반 설계 유형이다. 단순히 표식 대상에게 추가 피해만 주면 전파와 다르다.</td></tr>
+</tbody></table></div>
+
+<h3 id="chain-feedback">1.6. 시각·오디오·시간 간격</h3>
+<ol><li><b>예고:</b> 시작 대상·같은 티어·곧 닿을 위치를 읽게 한다. 정확한 미래 전체를 보여 줄 필요는 없다.</li><li><b>촉발:</b> 첫 접촉 순간에 눌림, 짧은 멈춤, 타격음처럼 출발 신호를 준다. 과도한 흔들림보다 원인이 먼저 보여야 한다.</li><li><b>전파:</b> 이동 경로·흡수 방향·대상 변화로 다음 결과까지 연결한다. 숫자를 숨겨도 무엇이 이어졌는지 이해할 수 있어야 한다.</li><li><b>리듬:</b> 첫 사건을 인지한 다음 후속 사건을 읽을 간격을 둔다. 너무 빠르면 한 덩어리, 너무 느리면 끊긴 별도 행동처럼 보인다. 고정된 정답 시간을 쓰지 말고 실제 전투 속도와 화면 밀도로 조정한다.</li><li><b>마무리:</b> 마지막 합체나 적중, 정리된 공간을 잠깐 읽게 한다. 매 단계 같은 최대 음량·같은 폭발을 반복하지 않는다.</li></ol>
+<p>소리는 실제 사건의 순서와 맞추고, 연쇄 상승감은 음색·리듬 변화로 표현할 수 있다. 무음·효과 축소 상태에서도 원인과 결과가 보여야 하며, 색만으로 티어나 상태를 구분하지 않는다. 시각적 흡수 애니메이션과 실제 판정 시점이 다르다면 위험한 몸체의 위치·크기를 오해하게 만들지 않는다.</p>
+<h3 id="chain-failures">1.7. 피해야 할 실패 패턴</h3>
+<div class="rule"><div class="rule-title">한 프레임의 광역 숫자</div>한 번에 많은 대상의 피해 숫자만 뜬다. 강함은 전해도 “무엇이 어디로 이어졌는지”는 남지 않는다. 실제 규칙이 연쇄라면 원인·경로·결과를 구별해서 전달한다. 단순 광역 공격이 목적이라면 억지로 연쇄처럼 포장할 필요는 없다.</div>
+<div class="rule"><div class="rule-title">읽을 수 없는 무한 폭발</div>연쇄가 다음 연쇄를 끝없이 만들고 플레이어·적·위협이 모두 가려진다. 전파 거리·횟수·자원·대상 조건 등 <b>이해 가능한 상한</b>을 기획한다. 같은 사건의 중복 보상과 같은 쌍의 반복 발동을 허용할지도 명시한다. 화면 효과와 소리의 동시량도 제한한다.</div>
+<div class="rule"><div class="rule-title">장르와 목적의 불일치</div>정밀 조준이 핵심인데 모든 대상을 자동으로 처리하거나, 차분한 배치 퍼즐에서 합체 결과를 볼 틈도 없이 자동 전개하면 원래의 재미가 사라진다. 연쇄가 장르의 핵심 판단을 강화하는지 먼저 묻는다.</div>
+<p>성능은 “밀집 상황에서도 입력·경로·결과가 읽힌다”는 경험의 상한으로 관리한다. 구체적인 충돌 알고리즘·큐·자료구조 선택은 구현 문서로 넘긴다.</p>
+<h3 id="chain-checklist">1.8. 설계 체크리스트와 확인 방법</h3>
+<ul class="checklist"><li>시작 전, 플레이어가 바꿀 수 있는 선택을 한 문장으로 설명할 수 있는가?</li><li>조건 → 촉발 → 전파 → 종료 → 보상을 각각 적었는가?</li><li>숫자를 가려도 무엇이 어디로 이어졌는지 보이는가?</li><li>예상한 결과와 뜻밖의 결과가 함께 있으며, 다음 시도에서 조절할 여지가 있는가?</li><li>연쇄 후 배치·위협·목표가 달라져 다음 선택이 생기는가?</li><li>자동 진행 중에도 필요한 회피·전환·다음 준비를 할 수 있는가?</li><li>상한·중복 발동·최고 단계·대상 없음의 종료가 납득 가능한가?</li><li>성공의 시각적 보상과 실제 성장/점수 지급 시점을 혼동하지 않는가?</li><li>작은 화면·밀집 전투·무음·효과 축소에서도 원인과 위협이 남는가?</li><li>구현 확인, 사용자 체감, 설계 가설을 나누어 기록했는가?</li></ul>
+<div class="notice"><strong>작은 플레이 테스트 제안</strong><br>같은 규칙을 유지한 채 경로·시간 간격을 달리한 두 안을 비교한다. “무엇 때문에 다음 사건이 났나요?”, “다음에는 어디를 노리고 싶나요?”를 물어본다. 예상 적중·조작 변경·자발적 재시도를 관찰하되, 관찰한 범위와 결과를 함께 남긴다.</div>
+<h3 id="chain-template">1.9. 다음 기획에 복사할 짧은 템플릿</h3>
+<pre>주제 / 노리는 재미:
+대표 레퍼런스 / 확인한 버전:
+플레이어가 고르는 것:
+조건 → 촉발 → 전파 → 종료 → 보상:
+눈에 보이는 인과 / 소리·시간 간격:
+연쇄 뒤 달라지는 판과 다음 선택:
+자동 진행 중 남겨 둘 조작:
+상한 / 중복 발동 / 실패·예외:
+구현 확인 / 사용자 체감 / 설계 가설:
+작게 검증할 질문과 관찰 결과:</pre>
+<p>새 주제를 추가할 때도 “멋있다”에서 끝내지 않고, 어떤 행동이 어떤 다음 선택을 만드는지 남긴다.</p></div></details></section><section class="section" id="sources" data-search><details class="wiki-section" open><summary><h2>2. 사례 근거와 문서 확장</h2></summary><div class="section-body">
+<p><a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html">게임 기획 가이드 바로 보기</a> · <a href="https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html">HTML 원본</a> · <a href="https://github.com/byh-playground/bloom-reference/blob/main/README.md">레퍼런스 목록</a></p><p>작성일 2026-10-14. 프로젝트 코드에서 확인한 동작을 아래 공개 고정 커밋으로 연결한다. 링크는 사례 근거용 원본 저장소다.</p>
+<ul><li><a href="https://github.com/byh-playground/bloom-bounko/blob/288341bc227f2807d327f87196ca4b5aba36b814/index.html">바운코 index.html · 288341b</a>: prepareChainFollowup / followTargetAfterHit / handleCollision 및 후속 발사 처리. 조건·충돌·탄·전환·종료의 근거.</li><li><a href="https://github.com/byh-playground/yarn-mayhem/blob/69ce00511a221620ce19e9ac6aee456425983eb7/index.html">털실 대소동 index.html · 69ce005</a>: TIER_DEFS / createEnemy / handleMergeContacts / pickPartner / updateShots. 같은 티어 접촉·상위 개체·합체 제한과 바늘 튕김의 근거.</li><li><a href="https://github.com/byh-playground/bloom-reference/blob/1ab53f97402638ae58ae8c77fba8d18530dea7d6/rules/visual-ux.html">BLOOM 공통 UI/UX 레퍼런스 · 1ab53f9</a>: 접이식 목차·검색·테마와 원인/판정/표현을 구별하는 기존 문서 관례.</li></ul>
+<div class="rule"><div class="rule-title">확장 원칙</div><p>주제 1은 연쇄 반응만 다루는 독립 장이다. 새 주제는 별도 section과 고유 앵커를 추가하고 목차를 연결한다. 각 주제에 핵심 문장·대표 사례·설계 해석·실패 패턴·체크리스트·근거를 붙인다. 기존 주제의 앵커와 사례 버전은 보존한다.</p><p>HTML 한 파일을 원본으로 유지한다. 특정 게임의 시간·수치·성장 보상을 모든 게임에 그대로 복사하지 않는다. 이 문서는 rules/game-design.html을 원본으로 유지하며 README의 HTML Preview 링크로 연다.</p></div></div></details></section>
+<div id="noResults" class="no-results" role="status">검색어와 일치하는 절이 없습니다.</div><footer class="footer">BLOOM Reference · 게임 기획 가이드 · 구현 사실과 설계 가설을 구분하는 기획 팁 모음.</footer></article></main></div><button class="backtop" id="backtop" aria-label="맨 위로">↑</button><script>
+(() => {
+  // HTML Preview rewrites links containing a hash as document anchors.
+  document.querySelectorAll('a[data-public-url]').forEach(a => { a.href = a.dataset.publicUrl; });
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  let saved;
+  try { saved = localStorage.getItem('gameDesignGuideTheme'); } catch {}
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('gameDesignGuideTheme', next); } catch {}
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenu = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(sidebar.classList.contains('open'))); });
+  overlay.addEventListener('click', closeMenu);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && sidebar.classList.contains('open')) { closeMenu(); menuBtn.focus(); } });
+  document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', () => {
+    closeMenu();
+    if (search.value) { search.value = ''; runSearch(); }
+    const target = document.getElementById(decodeURIComponent(new URL(a.href).hash.slice(1)));
+    const detail = target?.closest('.wiki-section') || target?.querySelector('.wiki-section');
+    if (detail) detail.open = true;
+  }));
+
+  document.getElementById('backtop').addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+
+  const links = [...document.querySelectorAll('.toc a')];
+  const anchorId = a => decodeURIComponent(new URL(a.href, location.href).hash.slice(1));
+  const targets = links.map(a => document.getElementById(anchorId(a))).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if (!visible) return;
+    links.forEach(a => a.classList.toggle('active', anchorId(a) === visible.target.id));
+  }, {rootMargin:'-70px 0px -72% 0px',threshold:[0,1]});
+  targets.forEach(t => observer.observe(t));
+
+  const search = document.getElementById('search');
+  const count = document.getElementById('searchCount');
+  const sections = [...document.querySelectorAll('[data-search]')];
+  const noResults = document.getElementById('noResults');
+  const normalize = s => s.toLowerCase().replace(/\s+/g,' ').trim();
+  const runSearch = () => {
+    const q = normalize(search.value);
+    let shown = 0;
+    sections.forEach(sec => {
+      const hit = !q || normalize(sec.textContent).includes(q);
+      sec.classList.toggle('filtered-out', !hit);
+      if (hit) { shown++; if (q) sec.querySelectorAll('details').forEach(d => d.open = true); }
+    });
+    count.textContent = q ? `${shown}/${sections.length}` : '';
+    noResults.classList.toggle('show', !!q && shown === 0);
+  };
+  const revealHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = document.getElementById(id);
+    const section = target?.closest('[data-search]');
+    if (!section) return;
+    if (search.value) { search.value = ''; runSearch(); }
+    section.querySelector('.wiki-section').open = true;
+    requestAnimationFrame(() => target.scrollIntoView());
+  };
+  addEventListener('hashchange', revealHash);
+  revealHash();
+  search.addEventListener('input', runSearch);
+  search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value=''; runSearch(); search.blur(); } });
+  addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); search.focus(); search.select(); } });
+})();
+</script></body></html>
