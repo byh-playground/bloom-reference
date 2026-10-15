@@ -1,0 +1,182 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI 개발 규칙 · BLOOM Reference</title><style>
+:root{
+  --bg:#f5f6f7; --panel:#fff; --panel-2:#f8f9fa; --text:#202122; --muted:#72777d;
+  --line:#d9dde1; --line-strong:#b9bec4; --accent:#00a495; --accent-2:#007c70;
+  --link:#0275d8; --danger:#d33; --warn:#b26a00; --ok:#14866d; --code:#eef1f3;
+  --shadow:0 2px 10px rgba(0,0,0,.08); --header-h:56px; --sidebar-w:285px;
+}
+[data-theme="dark"]{
+  --bg:#181a1b; --panel:#222426; --panel-2:#292c2f; --text:#e8eaed; --muted:#a9b0b6;
+  --line:#3b4045; --line-strong:#555c62; --accent:#28c6b6; --accent-2:#50ddce;
+  --link:#7ab8ff; --danger:#ff6b6b; --warn:#f0b45d; --ok:#57d2b1; --code:#303438;
+  --shadow:0 2px 14px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;line-height:1.72}
+a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;height:var(--header-h);display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.brand{font-weight:800;white-space:nowrap;letter-spacing:-.02em}.brand small{font-weight:600;color:var(--muted);margin-left:6px}
+.spacer{flex:1}.toolbar{display:flex;align-items:center;gap:8px}
+.icon-btn{border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);border-radius:6px;min-width:40px;height:38px;padding:0 11px;cursor:pointer;font-weight:800}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-2)}
+.menu-btn{display:none;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:900;text-shadow:0 1px 1px rgba(0,0,0,.28)}
+.menu-btn:hover{color:#fff;background:var(--accent-2)}
+.search-wrap{position:relative;max-width:520px;flex:1}.search-wrap input{width:100%;height:38px;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);border-radius:6px;padding:0 36px 0 12px;outline:none}.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 18%,transparent)}
+.search-count{position:absolute;right:9px;top:8px;color:var(--muted);font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);max-width:1480px;margin:0 auto}
+.sidebar{position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow:auto;padding:20px 14px 32px;border-right:1px solid var(--line);background:var(--panel)}
+.toc-title{font-size:13px;color:var(--muted);font-weight:800;margin:0 8px 10px;text-transform:uppercase;letter-spacing:.08em}
+.toc{list-style:none;padding:0;margin:0}.toc li{margin:2px 0}.toc a{display:block;padding:7px 9px;border-radius:5px;color:var(--text);font-size:14px;line-height:1.4}.toc a:hover{background:var(--panel-2);text-decoration:none}.toc a.active{background:color-mix(in srgb,var(--accent) 14%,var(--panel));color:var(--accent-2);font-weight:800}.toc .sub a{padding-left:24px;font-size:13px;color:var(--muted)}
+.main{min-width:0;padding:28px 34px 80px}.doc{max-width:1040px;margin:0 auto;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 42px 58px}
+.doc-header{border-bottom:2px solid var(--line-strong);padding-bottom:20px;margin-bottom:28px}.doc-header h1{font-size:34px;line-height:1.2;margin:0 0 10px;letter-spacing:-.04em}.subtitle{color:var(--muted);margin:0 0 16px}.meta{display:flex;gap:7px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--muted)}.badge.core{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent-2);background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.notice{margin:18px 0;padding:14px 16px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-radius:0 6px 6px 0}.notice strong{color:var(--accent-2)}
+.section{margin-top:42px}.section.filtered-out{display:none}.section h2{font-size:25px;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:-.025em}.section h3{font-size:19px;margin:28px 0 10px;letter-spacing:-.02em}.anchor-no{color:var(--muted);font-weight:500;margin-right:8px}
+p{margin:10px 0} ul,ol{padding-left:25px} li{margin:4px 0}.tight li{margin:2px 0}
+.rule{border:1px solid var(--line);background:var(--panel-2);border-radius:7px;padding:15px 17px;margin:14px 0}.rule-title{font-weight:900;margin-bottom:5px}.rule.core{border-left:4px solid var(--accent)}
+blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--line-strong);background:var(--panel-2);color:var(--text)}
+code,kbd{background:var(--code);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.92em}pre{overflow:auto;background:var(--code);border:1px solid var(--line);padding:14px;border-radius:6px;line-height:1.5}
+.table-wrap{overflow:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:6px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th:last-child,td:last-child{border-right:0}tr:last-child td{border-bottom:0}th{background:var(--panel-2);font-weight:800}td:first-child{font-weight:700}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:14px 0}.flow span{border:1px solid var(--line);background:var(--panel-2);padding:6px 10px;border-radius:5px;font-weight:700}.flow b{color:var(--muted)}
+.kicker{font-size:12px;font-weight:900;color:var(--accent-2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}.muted{color:var(--muted)}.danger{color:var(--danger);font-weight:800}.ok{color:var(--ok);font-weight:800}
+mark{background:#ffe477;color:#1d1d1d;border-radius:2px;padding:0 1px}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:800;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);width:42px;height:42px;border-radius:50%;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
+.overlay{display:none}
+.no-results{display:none;padding:24px;border:1px dashed var(--line-strong);border-radius:7px;text-align:center;color:var(--muted);margin-top:20px}
+.no-results.show{display:block}
+.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:900px){
+  :root{--header-h:58px}.topbar{padding:0 10px}.brand small{display:none}.search-wrap{max-width:none}.menu-btn{display:inline-flex;align-items:center;justify-content:center;min-width:52px;color:#fff !important;background:var(--accent) !important;border-color:var(--accent) !important}
+  .layout{display:block}.sidebar{position:fixed;left:0;top:var(--header-h);z-index:1200;width:min(86vw,320px);height:calc(100vh - var(--header-h));transform:translateX(-105%);transition:transform .2s ease;box-shadow:var(--shadow);border-right:1px solid var(--line)}
+  .sidebar.open{transform:translateX(0)}.overlay{position:fixed;display:block;inset:var(--header-h) 0 0 0;background:rgba(0,0,0,.45);z-index:1100;opacity:0;pointer-events:none;transition:opacity .2s}.overlay.open{opacity:1;pointer-events:auto}
+  .main{padding:14px}.doc{padding:25px 18px 45px}.doc-header h1{font-size:28px}.section h2{font-size:22px}.section h3{font-size:18px}.toolbar .theme-label{display:none}
+}
+@media(max-width:560px){.brand{font-size:14px}.search-wrap input{padding-left:9px}.search-count{display:none}.icon-btn{min-width:38px;padding:0 8px}.menu-btn{min-width:48px}.doc{border-left:0;border-right:0}.main{padding:10px 0}.doc-header h1{font-size:25px}}
+@media print{.topbar,.sidebar,.backtop,.overlay{display:none!important}.layout{display:block}.main{padding:0}.doc{border:0;box-shadow:none;max-width:none;padding:0}.section{break-inside:avoid-page}a{color:inherit;text-decoration:none}}
+
+.report{padding:0;margin:14px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel-2)}
+.report p{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:14px;overflow-wrap:anywhere}
+.report p:last-child{border-bottom:0}.related{font-size:14px}.source-ref{font-size:12px;vertical-align:super}
+.doc a{overflow-wrap:anywhere}.topbar .brand{font-size:15px}
+@media(max-width:560px){.topbar{gap:7px}.search-wrap{min-width:0}.brand{font-size:13px!important}.report p{padding:9px 10px}}
+
+.wiki-section>summary{cursor:pointer;list-style:none;position:relative;padding-left:24px}
+.wiki-section>summary::-webkit-details-marker{display:none}
+.wiki-section>summary:before{content:'▸';position:absolute;left:0;top:2px;color:var(--accent-2);font-weight:800}
+.wiki-section[open]>summary:before{content:'▾'}
+.wiki-section>summary h2{margin-bottom:0}.section-body{padding-top:16px}
+.wiki-section>summary:focus-visible,.example-detail>summary:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+.example-detail{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:16px 0}
+.example-detail>summary{cursor:pointer;font-weight:700;min-height:32px}
+.completion{border-left:4px solid var(--ok)}.priority-list li{margin:9px 0}
+.doc{overflow-wrap:anywhere}.search-wrap input{padding-right:50px}
+.icon-btn{min-height:44px}.topbar{min-height:56px}
+@media(max-width:560px){.brand{max-width:65px}.topbar{gap:5px;padding:0 7px}.icon-btn{padding:0 7px}.search-wrap input{font-size:14px;padding-right:8px}.section h2{font-size:20px}.spacer{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sidebar,.overlay{transition:none}}
+
+.checklist{list-style:none;padding-left:0}.checklist li::before{content:'□ ';color:var(--accent-2)}h3{scroll-margin-top:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere}@media print{details:not([open])>.section-body{display:block}}</style></head><body>
+<header class="topbar"><button class="icon-btn menu-btn" id="menuBtn" aria-label="목차 열기" aria-controls="sidebar" aria-expanded="false">목차</button><div class="brand">AI 개발 규칙 <small>BLOOM Reference</small></div><div class="spacer"></div><div class="search-wrap"><input id="search" type="search" aria-label="문서 검색" placeholder="검색: 의도, 검색, 고양이" autocomplete="off"><span id="searchCount" class="search-count" aria-live="polite"></span></div><button class="icon-btn" id="themeBtn" aria-label="테마 전환">◐</button></header>
+<div class="overlay" id="overlay"></div><div class="layout"><aside class="sidebar" id="sidebar"><nav aria-label="문서 목차"><div class="toc-title">목차</div><ul class="toc"><li><a href="#principle">0. 핵심 원칙</a></li><li><a href="#workflow">1. 구현 전 · 의도와 일반적인 방식을 대조</a></li><li><a href="#damage-example">2. 요구 해석 예시 · 공과 고양이</a></li><li><a href="#verification">3. 구현 후 · 확정한 사례로 검증</a></li><li><a href="#checklist">4. 최소 체크리스트</a></li><li><a href="#sources">5. 근거와 문서 역할</a></li></ul></nav></aside><main class="main"><article class="doc"><header class="doc-header"><div class="kicker">AI development rules</div><h1>AI 개발 규칙</h1><p class="subtitle">요청한 방향을 구체적인 동작과 검증 결과로 맞춘다.</p><div class="meta"><span class="badge core">사용자 확정 작업 원칙</span><span class="badge">2026-10-15</span></div></header>
+<section class="section" id="principle" data-search><details class="wiki-section" open><summary><h2>0. 핵심 원칙</h2></summary><div class="section-body"><div class="notice"><strong>의도 정리 → 최소 한 번 검색·비교 → 구체 동작 확정 → 구현 → 같은 사례로 검증</strong><br>AI는 용어를 맞췄다는 이유로 사용자의 의도까지 이해했다고 간주하지 않는다.</div>
+<p>모든 프로젝트의 AI 개발 작업에 적용하는 <b>사용자 확정 작업 원칙</b>이다. 구현 전에 요청한 목적·기대 결과와 일반적인 처리 방식을 함께 검토하고, 수용 가능한 구체 동작으로 방향을 정한다. 기술적으로 가능한 구현이어도 사용자가 기대한 결과와 다르면 완료가 아니다.</p>
+<p>관련 원본: <a href="development.html">공통 개발 규칙</a> · <a href="project-management.html">프로젝트 관리 규칙</a> · <a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html">AI 개발 규칙 HTML 프리뷰</a>. 이 문서는 AI의 요청 해석·작업 순서를 소유하며 구조 원칙이나 검증 정책 전문을 복제하지 않는다.</p></div></details></section>
+<section class="section" id="workflow" data-search><details class="wiki-section" open><summary><h2>1. 구현 전 · 의도와 일반적인 방식을 대조</h2></summary><div class="section-body"><ol><li><b>기대 결과를 먼저 적는다.</b> 누가 어떤 상황에서 무엇을 하면 어떤 결과가 나와야 하는지 짧게 정리한다. 최신 저장소·기존 합의·제약을 읽고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다.</li>
+<li><b>항상 최소 한 번 검색·비교한다.</b> 요청한 기능의 일반적인 처리 방식과 관련 공식 문서·일차 자료를 검색하고 실제 내용을 읽는다. 검색어만 입력하거나 결과 제목을 보는 것으로 검토를 끝내지 않는다. 현재 API·구현도 필요한 범위에서 대조한다.</li>
+<li><b>일치와 차이를 설명한다.</b> 사용자 요구 / 조사에서 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교한다. 출처 링크·조회 기준과 중요한 가정을 남긴다. 검색 결과를 사용자 의도의 대체물로 쓰지 않는다.</li>
+<li><b>동작 사례로 방향을 확정한다.</b> 정상 상황과 해석이 갈리는 반례를 각각 적고 기대 결과를 정한다. 같은 용어라도 결과가 달라지는 해석을 비교한 뒤 구현한다.</li></ol>
+<div class="rule core"><div class="rule-title">방향 확정은 매번 승인 대기가 아니다</div><p>명확한 요청이나 기존 합의로 정할 수 있으면 그 근거와 동작을 정리하고 진행한다. 해석에 따라 결과가 달라지는 <b>중요한 미결정 사항만</b> 선택지와 차이를 붙여 최소한으로 질문한다. 이미 정한 내용을 반복 승인받지 않는다.</p></div>
+<p>기술적 관례와 게임 기획 선택을 구분한다. 관례와 요청이 다르면 그 차이·기술적 한계·대안을 설명하고 사용자가 의도한 결과를 보존한다. 검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 말고 미확인 범위와 영향부터 알린다.</p>
+<div class="report"><p><b>나쁜 예</b> “충격량 기반”이라는 단어만 보고 익숙한 공통 충돌 공식을 적용한다. 자료를 찾았다는 이유로 그 결과가 사용자의 요구라고 단정한다.</p><p><b>좋은 예</b> 일반 물리의 충돌 처리와 게임에서 피해를 주는 공격원의 의미를 비교한다. 어떤 장면에서 누가 피해를 받아야 하는지 먼저 적고 기존 합의로 정할 수 없는 부분만 묻는다.</p></div></div></details></section>
+<section class="section" id="damage-example" data-search><details class="wiki-section" open><summary><h2>2. 요구 해석 예시 · 공과 고양이</h2></summary><div class="section-body"><p><span class="badge">특정 게임의 요청 해석 사례</span> “충격량 기반 피해”라는 표현만으로 양쪽 공통 solver 충격량이나 상대속도를 피해식에 연결하면, <b>고양이가 정지한 공에 달려들어도 고양이가 피해를 받는</b> 결과가 생길 수 있다. 이 사례에서 사용자가 원한 결과와 다르다.</p>
+<div class="report"><p><b>나쁜 처리</b> 양쪽의 공통 충돌값이 커졌으므로 고양이의 자체 이동이 만든 충돌도 같은 피해로 처리한다. 물리 충돌 테스트 통과를 요구 충족으로 보고한다.</p><p><b>요구에 맞는 처리</b> 고양이의 자체 속도가 아니라 <b>고양이에게 날아오는 공격원인 공의 동작</b>이 피해를 결정한다는 계약을 먼저 확정한다. solver의 물리 반작용과 공격원별 게임플레이 피해는 별도로 정의한다.</p></div>
+<ul><li><b>반례:</b> 고양이가 정지한 공으로 달려듦 → 고양이 자체 속도만으로 고양이 피해가 생기지 않아야 한다.</li><li><b>공격 사례:</b> 공이 고양이에게 날아옴 → 공의 공격 동작에 따른 피해 계약을 적용한다. 피해를 산정하는 동작·조건·수식은 해당 게임의 합의로 정한다.</li><li><b>동일 사례 검증:</b> 구현 뒤 두 상황을 다시 실행해 물리 반응과 피해 결과를 각각 확인한다. 공의 동작은 같고 고양이 자체 속도만 달라질 때 의도와 다르게 피해를 키우지 않는지도 확인한다.</li></ul>
+<p>이 예시는 일반 물리의 절대 법칙이나 모든 게임의 공통 피해식을 정하지 않는다. 다른 공격원·장르·기획에서는 다른 피해 계약이 가능하다. 핵심은 용어가 아니라 <b>요청한 원인과 결과</b>를 구현하는 것이다.</p></div></details></section>
+<section class="section" id="verification" data-search><details class="wiki-section" open><summary><h2>3. 구현 후 · 확정한 사례로 검증</h2></summary><div class="section-body"><p>구현 전 정한 정상·반례 시나리오를 그대로 실행해 관찰 가능한 결과와 비교한다. 내부 함수명·수식이 의도대로 작성됐다는 확인만으로 사용자 결과 검증을 대신하지 않는다.</p>
+<ul><li><b>보고할 것:</b> 확정한 기대 동작, 실제 관찰 결과, 실행 환경·커밋과 근거, 실패·미실행·환경 차단 범위.</li><li><b>다르면:</b> 요구 해석·규칙·구현 중 어디가 달라졌는지 찾아 수정하고 같은 사례를 다시 확인한다. 기대 결과를 구현에 맞춰 몰래 바꾸지 않는다.</li><li><b>문서 동기화:</b> 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남긴다. 검증 완료와 병합·공개 완료는 각각 확인한다.</li></ul>
+<p>실행 상한·검증 기록·임시 검사 보존 등 운영 정책은 <a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html">프로젝트 관리 규칙 HTML 프리뷰</a>의 검증 정책을 따른다.</p></div></details></section>
+<section class="section" id="checklist" data-search><details class="wiki-section" open><summary><h2>4. 최소 체크리스트</h2></summary><div class="section-body"><ul class="checklist"><li>요청 의도·기대 결과와 기존 합의를 정리했는가?</li><li>일반적인 처리 방식·공식/일차 자료를 최소 한 번 검색해 읽고 비교했는가?</li><li>관례·기술 제약과 사용자 기획 선택의 차이를 근거와 함께 구분했는가?</li><li>정상 사례와 반례의 기대 동작을 확정하고, 중요한 미결정만 최소 질문했는가?</li><li>구현 뒤 같은 사례로 확인하고 실제 결과·미검증 범위를 보고했는가?</li></ul>
+<pre>의도 / 기대 결과 / 기존 합의:
+검색한 일반 방식·공식 자료 / 출처·조회 기준:
+선택한 동작 / 관례와 차이 / 중요한 미결정:
+정상 사례 / 반례 / 기대 결과:
+실제 관찰 / 환경·커밋 / 실패·미검증:</pre></div></details></section>
+<section class="section" id="sources" data-search><details class="wiki-section" open><summary><h2>5. 근거와 문서 역할</h2></summary><div class="section-body"><p>작성·조회 2026-10-15 UTC. “최소 한 번 검색·비교하고 구체 사례로 의도를 확정한다”는 <b>사용자 작업 원칙</b>이다. 공과 고양이는 사용자 요구를 해석하는 사례이며 새로운 보편 물리 규칙이 아니다.</p>
+<p><a href="https://www.nasa.gov/reference/appendix-c-how-to-write-a-good-requirement/">NASA · How to Write a Good Requirement</a>는 필요한 결과와 구현 방법을 구분하고 명확성·가정·검증 가능성을 살피는 공식 참고 자료다. <a href="https://www.nasa.gov/reference/4-0-system-design-processes/">NASA · System Design Processes</a>는 사용 시나리오로 기대를 정리하고 설계를 기대 결과와 대조하는 접근을 설명한다. 이 자료가 AI의 검색 횟수나 이번 게임의 피해식을 정한다는 뜻은 아니다.</p>
+<p><a href="development.html">공통 개발 규칙</a>은 구조·코딩 원칙, <a href="project-management.html">관리 규칙</a>은 검증·Git·배포 정책, <b>이 문서</b>는 AI의 요청 해석·검색 비교·동작 확정 순서를 소유한다. 관련 정책을 여러 문서에 복사하지 않는다.</p>
+<p><a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html">AI 개발 규칙 main HTML 프리뷰</a> · <a href="https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html">HTML 원본</a>. 기존 HTML Preview 공개 방식을 유지한다.</p></div></details></section>
+<div id="noResults" class="no-results" role="status">검색어와 일치하는 절이 없습니다.</div><footer class="footer">BLOOM Reference · AI 개발 규칙 · 용어와 의도, 구현과 결과를 함께 확인한다.</footer></article></main></div><button class="backtop" id="backtop" aria-label="맨 위로">↑</button><script>
+(() => {
+  // HTML Preview rewrites links containing a hash as document anchors.
+  document.querySelectorAll('a[data-public-url]').forEach(a => { a.href = a.dataset.publicUrl; });
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  let saved;
+  try { saved = localStorage.getItem('aiDevelopmentRulesTheme'); } catch {}
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('aiDevelopmentRulesTheme', next); } catch {}
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenu = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(sidebar.classList.contains('open'))); });
+  overlay.addEventListener('click', closeMenu);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && sidebar.classList.contains('open')) { closeMenu(); menuBtn.focus(); } });
+  document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', () => {
+    closeMenu();
+    if (search.value) { search.value = ''; runSearch(); }
+    const target = document.getElementById(decodeURIComponent(new URL(a.href).hash.slice(1)));
+    const detail = target?.closest('.wiki-section') || target?.querySelector('.wiki-section');
+    if (detail) detail.open = true;
+  }));
+
+  document.getElementById('backtop').addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+
+  const links = [...document.querySelectorAll('.toc a')];
+  const anchorId = a => decodeURIComponent(new URL(a.href, location.href).hash.slice(1));
+  const targets = links.map(a => document.getElementById(anchorId(a))).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if (!visible) return;
+    links.forEach(a => a.classList.toggle('active', anchorId(a) === visible.target.id));
+  }, {rootMargin:'-70px 0px -72% 0px',threshold:[0,1]});
+  targets.forEach(t => observer.observe(t));
+
+  const search = document.getElementById('search');
+  const count = document.getElementById('searchCount');
+  const sections = [...document.querySelectorAll('[data-search]')];
+  const noResults = document.getElementById('noResults');
+  const normalize = s => s.toLowerCase().replace(/\s+/g,' ').trim();
+  const runSearch = () => {
+    const q = normalize(search.value);
+    let shown = 0;
+    sections.forEach(sec => {
+      const hit = !q || normalize(sec.textContent).includes(q);
+      sec.classList.toggle('filtered-out', !hit);
+      if (hit) { shown++; if (q) sec.querySelectorAll('details').forEach(d => d.open = true); }
+    });
+    count.textContent = q ? `${shown}/${sections.length}` : '';
+    noResults.classList.toggle('show', !!q && shown === 0);
+  };
+  const revealHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = document.getElementById(id);
+    const section = target?.closest('[data-search]');
+    if (!section) return;
+    if (search.value) { search.value = ''; runSearch(); }
+    section.querySelector('.wiki-section').open = true;
+    requestAnimationFrame(() => target.scrollIntoView());
+  };
+  addEventListener('hashchange', revealHash);
+  revealHash();
+  search.addEventListener('input', runSearch);
+  search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value=''; runSearch(); search.blur(); } });
+  addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); search.focus(); search.select(); } });
+})();
+</script></body></html>
