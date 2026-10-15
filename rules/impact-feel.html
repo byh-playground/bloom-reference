@@ -1,0 +1,219 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>타격감 종합 가이드 · BLOOM Reference</title><style>
+:root{
+  --bg:#f5f6f7; --panel:#fff; --panel-2:#f8f9fa; --text:#202122; --muted:#72777d;
+  --line:#d9dde1; --line-strong:#b9bec4; --accent:#00a495; --accent-2:#007c70;
+  --link:#0275d8; --danger:#d33; --warn:#b26a00; --ok:#14866d; --code:#eef1f3;
+  --shadow:0 2px 10px rgba(0,0,0,.08); --header-h:56px; --sidebar-w:285px;
+}
+[data-theme="dark"]{
+  --bg:#181a1b; --panel:#222426; --panel-2:#292c2f; --text:#e8eaed; --muted:#a9b0b6;
+  --line:#3b4045; --line-strong:#555c62; --accent:#28c6b6; --accent-2:#50ddce;
+  --link:#7ab8ff; --danger:#ff6b6b; --warn:#f0b45d; --ok:#57d2b1; --code:#303438;
+  --shadow:0 2px 14px rgba(0,0,0,.32);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;line-height:1.72}
+a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+button,input{font:inherit}
+.topbar{position:sticky;top:0;z-index:1000;height:var(--header-h);display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.brand{font-weight:800;white-space:nowrap;letter-spacing:-.02em}.brand small{font-weight:600;color:var(--muted);margin-left:6px}
+.spacer{flex:1}.toolbar{display:flex;align-items:center;gap:8px}
+.icon-btn{border:1px solid var(--line-strong);background:var(--panel-2);color:var(--text);border-radius:6px;min-width:40px;height:38px;padding:0 11px;cursor:pointer;font-weight:800}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-2)}
+.menu-btn{display:none;background:var(--accent);border-color:var(--accent);color:#fff;font-weight:900;text-shadow:0 1px 1px rgba(0,0,0,.28)}
+.menu-btn:hover{color:#fff;background:var(--accent-2)}
+.search-wrap{position:relative;max-width:520px;flex:1}.search-wrap input{width:100%;height:38px;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);border-radius:6px;padding:0 36px 0 12px;outline:none}.search-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 18%,transparent)}
+.search-count{position:absolute;right:9px;top:8px;color:var(--muted);font-size:12px;font-weight:700}
+.layout{display:grid;grid-template-columns:var(--sidebar-w) minmax(0,1fr);max-width:1480px;margin:0 auto}
+.sidebar{position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow:auto;padding:20px 14px 32px;border-right:1px solid var(--line);background:var(--panel)}
+.toc-title{font-size:13px;color:var(--muted);font-weight:800;margin:0 8px 10px;text-transform:uppercase;letter-spacing:.08em}
+.toc{list-style:none;padding:0;margin:0}.toc li{margin:2px 0}.toc a{display:block;padding:7px 9px;border-radius:5px;color:var(--text);font-size:14px;line-height:1.4}.toc a:hover{background:var(--panel-2);text-decoration:none}.toc a.active{background:color-mix(in srgb,var(--accent) 14%,var(--panel));color:var(--accent-2);font-weight:800}.toc .sub a{padding-left:24px;font-size:13px;color:var(--muted)}
+.main{min-width:0;padding:28px 34px 80px}.doc{max-width:1040px;margin:0 auto;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);padding:34px 42px 58px}
+.doc-header{border-bottom:2px solid var(--line-strong);padding-bottom:20px;margin-bottom:28px}.doc-header h1{font-size:34px;line-height:1.2;margin:0 0 10px;letter-spacing:-.04em}.subtitle{color:var(--muted);margin:0 0 16px}.meta{display:flex;gap:7px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--panel-2);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;color:var(--muted)}.badge.core{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));color:var(--accent-2);background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.notice{margin:18px 0;padding:14px 16px;border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));border-radius:0 6px 6px 0}.notice strong{color:var(--accent-2)}
+.section{margin-top:42px}.section.filtered-out{display:none}.section h2{font-size:25px;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);letter-spacing:-.025em}.section h3{font-size:19px;margin:28px 0 10px;letter-spacing:-.02em}.anchor-no{color:var(--muted);font-weight:500;margin-right:8px}
+p{margin:10px 0} ul,ol{padding-left:25px} li{margin:4px 0}.tight li{margin:2px 0}
+.rule{border:1px solid var(--line);background:var(--panel-2);border-radius:7px;padding:15px 17px;margin:14px 0}.rule-title{font-weight:900;margin-bottom:5px}.rule.core{border-left:4px solid var(--accent)}
+blockquote{margin:16px 0;padding:12px 16px;border-left:4px solid var(--line-strong);background:var(--panel-2);color:var(--text)}
+code,kbd{background:var(--code);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:.92em}pre{overflow:auto;background:var(--code);border:1px solid var(--line);padding:14px;border-radius:6px;line-height:1.5}
+.table-wrap{overflow:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:6px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th:last-child,td:last-child{border-right:0}tr:last-child td{border-bottom:0}th{background:var(--panel-2);font-weight:800}td:first-child{font-weight:700}
+.flow{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:14px 0}.flow span{border:1px solid var(--line);background:var(--panel-2);padding:6px 10px;border-radius:5px;font-weight:700}.flow b{color:var(--muted)}
+.kicker{font-size:12px;font-weight:900;color:var(--accent-2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}.muted{color:var(--muted)}.danger{color:var(--danger);font-weight:800}.ok{color:var(--ok);font-weight:800}
+mark{background:#ffe477;color:#1d1d1d;border-radius:2px;padding:0 1px}
+.backtop{position:fixed;right:20px;bottom:20px;z-index:800;border:1px solid var(--line-strong);background:var(--panel);color:var(--text);width:42px;height:42px;border-radius:50%;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
+.overlay{display:none}
+.no-results{display:none;padding:24px;border:1px dashed var(--line-strong);border-radius:7px;text-align:center;color:var(--muted);margin-top:20px}
+.no-results.show{display:block}
+.footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:900px){
+  :root{--header-h:58px}.topbar{padding:0 10px}.brand small{display:none}.search-wrap{max-width:none}.menu-btn{display:inline-flex;align-items:center;justify-content:center;min-width:52px;color:#fff !important;background:var(--accent) !important;border-color:var(--accent) !important}
+  .layout{display:block}.sidebar{position:fixed;left:0;top:var(--header-h);z-index:1200;width:min(86vw,320px);height:calc(100vh - var(--header-h));transform:translateX(-105%);transition:transform .2s ease;box-shadow:var(--shadow);border-right:1px solid var(--line)}
+  .sidebar.open{transform:translateX(0)}.overlay{position:fixed;display:block;inset:var(--header-h) 0 0 0;background:rgba(0,0,0,.45);z-index:1100;opacity:0;pointer-events:none;transition:opacity .2s}.overlay.open{opacity:1;pointer-events:auto}
+  .main{padding:14px}.doc{padding:25px 18px 45px}.doc-header h1{font-size:28px}.section h2{font-size:22px}.section h3{font-size:18px}.toolbar .theme-label{display:none}
+}
+@media(max-width:560px){.brand{font-size:14px}.search-wrap input{padding-left:9px}.search-count{display:none}.icon-btn{min-width:38px;padding:0 8px}.menu-btn{min-width:48px}.doc{border-left:0;border-right:0}.main{padding:10px 0}.doc-header h1{font-size:25px}}
+@media print{.topbar,.sidebar,.backtop,.overlay{display:none!important}.layout{display:block}.main{padding:0}.doc{border:0;box-shadow:none;max-width:none;padding:0}.section{break-inside:avoid-page}a{color:inherit;text-decoration:none}}
+
+.report{padding:0;margin:14px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel-2)}
+.report p{margin:0;padding:10px 12px;border-bottom:1px solid var(--line);font-size:14px;overflow-wrap:anywhere}
+.report p:last-child{border-bottom:0}.related{font-size:14px}.source-ref{font-size:12px;vertical-align:super}
+.doc a{overflow-wrap:anywhere}.topbar .brand{font-size:15px}
+@media(max-width:560px){.topbar{gap:7px}.search-wrap{min-width:0}.brand{font-size:13px!important}.report p{padding:9px 10px}}
+
+.wiki-section>summary{cursor:pointer;list-style:none;position:relative;padding-left:24px}
+.wiki-section>summary::-webkit-details-marker{display:none}
+.wiki-section>summary:before{content:'▸';position:absolute;left:0;top:2px;color:var(--accent-2);font-weight:800}
+.wiki-section[open]>summary:before{content:'▾'}
+.wiki-section>summary h2{margin-bottom:0}.section-body{padding-top:16px}
+.wiki-section>summary:focus-visible,.example-detail>summary:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+.example-detail{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:16px 0}
+.example-detail>summary{cursor:pointer;font-weight:700;min-height:32px}
+.completion{border-left:4px solid var(--ok)}.priority-list li{margin:9px 0}
+.doc{overflow-wrap:anywhere}.search-wrap input{padding-right:50px}
+.icon-btn{min-height:44px}.topbar{min-height:56px}
+@media(max-width:560px){.brand{max-width:65px}.topbar{gap:5px;padding:0 7px}.icon-btn{padding:0 7px}.search-wrap input{font-size:14px;padding-right:8px}.section h2{font-size:20px}.spacer{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sidebar,.overlay{transition:none}}
+
+.checklist{list-style:none;padding-left:0}.checklist li::before{content:'□ ';color:var(--accent-2)}h3{scroll-margin-top:85px}pre{white-space:pre-wrap;overflow-wrap:anywhere}@media print{details:not([open])>.section-body{display:block}}</style></head><body>
+<header class="topbar"><button class="icon-btn menu-btn" id="menuBtn" aria-label="목차 열기" aria-controls="sidebar" aria-expanded="false">목차</button><div class="brand">타격감 <small>BLOOM Reference</small></div><div class="spacer"></div><div class="search-wrap"><input id="search" type="search" aria-label="문서 검색" placeholder="검색: 코요테, hitstop, 반동" autocomplete="off"><span id="searchCount" class="search-count" aria-live="polite"></span></div><div class="toolbar"><button class="icon-btn" id="themeBtn" aria-label="테마 전환"><span class="theme-label">테마</span> ◐</button></div></header>
+<div class="overlay" id="overlay"></div><div class="layout"><aside class="sidebar" id="sidebar"><nav aria-label="문서 목차"><div class="toc-title">목차</div><ul class="toc"><li><a href="#overview">0. 타격감의 기준과 투자 순서</a></li><li><a href="#anticipation">1. 예고·준비 → 행동을 예상하게 한다</a></li><li><a href="#release">2. 발사·반동 → 힘이 출발하는 순간</a></li><li><a href="#contact">3. 접촉 → 판정과 보이는 접점을 맞춘다</a></li><li><a href="#reaction">4. 피격 반응 → 맞은 뒤의 결과를 보여 준다</a></li><li><a href="#rhythm">5. 연쇄 리듬·마무리 → 작은 적중과 큰 종결을 구분한다</a></li><li><a href="#density">6. 화면 밀도·과용·접근성</a></li><li><a href="#multiplayer">7. 멀티·롤백 계약</a></li><li class="sub"><a href="#net-grace">7.1. 유예·버퍼·지연 보상</a></li><li class="sub"><a href="#net-hitstop">7.2. 규칙·표현 정지</a></li><li class="sub"><a href="#net-events">7.3. 예측·확정·취소</a></li><li class="sub"><a href="#gamekit">7.4. GameKit 현재 API</a></li><li class="sub"><a href="#quantization">7.5. 낮은 TPS</a></li><li><a href="#checklist">8. 적용·검증 체크리스트</a></li><li><a href="#sources">9. 근거·원본·조회 기준</a></li></ul></nav></aside><main class="main"><article class="doc"><header class="doc-header"><div class="kicker">Impact &amp; game feel</div><h1>타격감 종합 가이드</h1><p class="subtitle">예고부터 접촉·피격·마무리까지, 바운코를 기준으로 읽는 선택과 검증.</p><div class="meta"><span class="badge core">대표 best practice · 바운코</span><span class="badge">멀티 · P2P · 롤백</span><span class="badge">2026-10-15</span></div></header>
+<section class="section" id="overview" data-search><details class="wiki-section" open><summary><h2>0. 타격감의 기준과 투자 순서</h2></summary><div class="section-body">
+<p><b>타격감은 내 행동 → 실제 접촉 → 상대와 세계의 반응을 짧고 분명하게 읽는 경험</b>이다. 파티클 양보다 입력의 신뢰, 접점, 시간 대비와 결과의 일치가 먼저다. 이 문서는 기법을 고르는 종합 진입점이며, 상세 시각 실험·알고리즘 원문은 기존 문서로 연결한다.</p>
+<p><a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/impact-feel.html">타격감 HTML 프리뷰</a> · <a href="visual-ux.html#feedback" data-guide-path="visual-ux.html#feedback">P8 단계별 피드백</a> · <a href="game-design.html#chain-feedback" data-guide-path="game-design.html#chain-feedback">연쇄의 시간·시각·오디오</a> · <a href="../labs/particles.html">파티클 74종 실험</a> · <a href="../labs/sketch-vfx.html">스케치 실제 전투 예제</a></p>
+<div class="notice"><strong>대표 best practice는 바운코</strong><br>사용자가 고른 기준은 바운코다. 아래는 최신 확인 커밋의 구현 사실과 다른 게임에 적용할 <b>설계 제안</b>을 구별한다. 체감 우선순위는 실험 출발점이며 사용자 연구로 입증된 보편 순위가 아니다.</div>
+<ol class="priority-list"><li><b>먼저 · 높은 체감 / 낮음~중간 비용:</b> 입력 누락·불필요한 잠금, 접점/방향 불일치를 고친다. 실제 명중에 짧은 국소 hitflash와 충격음을 맞춘다. 기존 상태·오디오 경로가 있다면 자산 추가보다 저렴하다.</li><li><b>다음 · 높은 체감 / 중간 비용:</b> 준비와 발사 반동, squash 복원, 피격 impulse를 조합한다. 물리·판정에 영향을 주면 구현/검증 비용도 함께 커진다.</li><li><b>조건부 · 중간~높은 비용:</b> hitstop·입력 유예·버퍼·연쇄 시간표. 게임 리듬과 멀티 계약까지 정하고 도입한다. 이미 반응이 좋은 게임은 정지를 추가하지 않아도 된다.</li><li><b>마지막 · 비용 증가 대비 체감이 쉽게 포화:</b> 카메라 흔들림, 큰 폭발, 긴 잔상, 후처리. 밀집 전투·효과 축소에서 의미가 유지될 때만 보강한다.</li></ol>
+<p><b>게임별 선택:</b> 묵직한 근접전은 접촉 자세와 짧은 정지가 유효할 수 있다. 연사·지속 빔은 매 타격 정지보다 소리·국소 펄스·지속 흔적이 읽기 쉽다. 정밀 플랫폼은 점프 유예·버퍼가, 대규모 전투는 국소 반응과 정보 밀도 제한이 먼저다. 경쟁전에서는 서로 합의한 규칙과 예측 정정 비용을 함께 고려한다.</p></div></details></section>
+<section class="section" id="anticipation" data-search><details class="wiki-section" open><summary><h2>1. 예고·준비 → 행동을 예상하게 한다</h2></summary><div class="section-body"><h3 id="tell">예고와 차징</h3><div class="report"><p><b>목적 · 언제</b> 공격 방향·범위·실행 시점을 미리 읽게 한다. 위험 공격, 모아 쏘기, 회피 가능한 큰 기술에 쓴다. 즉발 행동에 준비를 억지로 넣지 않는다.</p><p><b>과용·실패</b> 상시 빛남·긴 준비로 조작이 둔해지거나, 실제 취소/대상 이동과 예고가 다르게 남는다.</p><p><b>조절변수</b> 준비 시간, 실루엣 변화, 범위/방향 고정 시점, 차지 단계, 취소 복원 시간.</p><p><b>예제·원리</b> <a href="visual-ux.html#feedback" data-guide-path="visual-ux.html#feedback">P8 상태별 계약</a> · <a href="../labs/sketch-vfx.html">스케치 전투의 준비/공격 비교</a></p></div><p>예고는 공격 성공을 보장하는 표시가 아니다. 준비·활성·회복 상태가 판정의 원본이며, 취소·기절·대상 소실 때 예고도 같은 사건으로 끝낸다. 준비 중의 작은 입력 확인과 실제 성공 피드백의 강도를 나눈다.</p></div></details></section>
+<section class="section" id="release" data-search><details class="wiki-section" open><summary><h2>2. 발사·반동 → 힘이 출발하는 순간</h2></summary><div class="section-body"><h3 id="recoil">발사 반동과 분출</h3><div class="report"><p><b>목적 · 언제</b> 발사가 실제로 실행된 시점과 힘의 반대 방향을 전달한다. 투사체 생성, 총구·공전 탄 출발, 돌진 시작처럼 명확한 성공 사건에 쓴다.</p><p><b>과용·실패</b> 버튼마다 반동·탄 소비를 실행하거나, 렌더마다 impulse를 다시 주거나, 감쇠 종료가 전진 속도까지 지운다.</p><p><b>조절변수</b> 반동 속도/impulse와 단위, 감쇠, 최대 지속시간, 출발 접점, 꼬리 수명, 취소 시 잔여 속도 정리. 충돌 solver가 속도를 바꾼 뒤 이전 반동을 복원하지 않는다.</p><p><b>예제·원리</b> <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">바운코 공전 탄 정렬·발사와 반동</a> · <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/index.html">createShadow / updateLaunchRecoil</a></p></div><p><b>바운코 구현 사실:</b> 준비 탄이 기본 80ms 정렬한 궤도 위치에서 실제 잔상이 되며, 성공 사건에 반대 방향 45px/s 반동과 짧은 눌림·뒤쪽 분출을 연결한다. 전투 속도와 잔여 반동 성분을 분리한다. 이는 바운코의 크기·속도·물리에 맞춘 설정이다.</p></div></details></section>
+<section class="section" id="contact" data-search><details class="wiki-section" open><summary><h2>3. 접촉 → 판정과 보이는 접점을 맞춘다</h2></summary><div class="section-body"><h3 id="contact-point">판정·접점·방향의 일치</h3><div class="report"><p><b>목적 · 언제</b> 무엇이 어디에 맞았는지 납득시킨다. 모든 타격의 기반이다. 빠른 돌진/투사체는 한 틱 사이 통과와 높이 분리도 확인한다.</p><p><b>과용·실패</b> 피해는 안 났는데 성공 숫자가 뜨거나, 빔과 판정 방향이 다르거나, 접촉 반대편에서 폭발한다. 눈속임으로 판정 오류를 덮지 않는다.</p><p><b>조절변수</b> 충돌/스윕 결과, 법선, 접촉 위치, 피해 허용/방어/무적/중복 판정, 빔 두께와 높이, 렌더 보간 지연.</p><p><b>예제·원리</b> <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/index.html">바운코 handleCollision / sweepDashContact</a> · <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">레이저가 공유하는 빔 상태와 XYZ 접촉</a></p></div><p>효과 위치는 가능한 실제 충돌 결과를 재사용한다. 두 중심의 중간점 같은 근사는 큰 물체·긴 무기에서 어긋날 수 있으므로 화면으로 검토한다. 바운코 일반 돌진의 충격파는 중심 중간점을 사용한다. 레퍼런스의 강점을 가져와도 근사를 모든 게임의 접점 해법으로 복사하지 않는다.</p><h3 id="hitflash">Hitflash · 국소 명중 섬광</h3><div class="report"><p><b>목적 · 언제</b> 표적에 순간적인 대비를 만들어 명중 시점을 알린다. 빠른 적중, 작은 적, 피해와 방어 성공을 구분할 때 쓴다.</p><p><b>과용·실패</b> 매 타격마다 전신 백색·전체 화면 점멸이 겹쳐 외형·다음 예고를 가리고 피로를 준다. 색 하나로만 성공을 구분한다.</p><p><b>조절변수</b> 대상/접점 범위, 색·명도, 지속시간, 중첩 시 갱신/상한, 무적·방어 반응과 구분.</p><p><b>예제·원리</b> <a href="../labs/particles.html">파티클 연구소의 충격/광원 계열</a> · <a href="../labs/sketch-vfx.html">전투 중 국소 명중 예제</a></p></div><h3 id="squash">Squash · 압축과 복원</h3><div class="report"><p><b>목적 · 언제</b> 딱딱한 좌표 이동에 탄성과 질감을 더한다. 물렁한 캐릭터, 발사 압축, 접촉/착지 반응에 쓴다.</p><p><b>과용·실패</b> 연타마다 스케일을 곱해 몸이 찌그러진 채 남거나, 그림자/피격 경계까지 변해 실제 판정을 오해한다.</p><p><b>조절변수</b> 충격 방향 축, 압축 비율, 복원 곡선/감쇠, 최대 변형, 중첩 우선순위, 리셋 경계. 외형만 변할지 collider도 변할지 명시한다.</p><p><b>예제·원리</b> <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">바운코 씨앗 플레이어의 충돌 압축·지연 흔들림</a> · <a href="../algorithms/index.html#A063" data-guide-path="../algorithms/index.html#A063">A063 시간선 재타기팅</a></p></div><h3 id="hitstop">Hitstop · 짧은 멈춤으로 접촉을 읽힌다</h3><div class="report"><p><b>목적 · 언제</b> 이동 대비를 만들어 타격 자세와 무게를 강조한다. 강한 근접 접촉·마무리 등 리듬상 쉼이 필요한 사건에 선택한다.</p><p><b>과용·실패</b> 지속 빔/연타마다 누적해 조작이 끊기거나, 시간이 멈춘 화면에서 판정은 지나가 불공정하게 느껴진다.</p><p><b>조절변수</b> 게임 규칙/표현 전용, 공격자·피격자·세계 범위, 남은 tick 또는 표시 ms, 중첩 상한/최대값/연장 정책, 정지 중 각 시계 정책.</p><p><b>예제·원리</b> <a href="#net-hitstop">멀티 hitstop 계약</a> · <a href="#bounko">바운코의 서로 다른 정지 설정</a></p></div><h3 id="impact-audio">충격음 · 접촉의 시간 표식</h3><div class="report"><p><b>목적 · 언제</b> 짧은 시작음과 잔향으로 재질·힘·성공 여부를 보완한다. 명중·막힘·치명타를 분리하고 시각을 보지 못하는 순간에도 사건을 알려 줄 때 쓴다.</p><p><b>과용·실패</b> 모든 적중에 최대 음량/같은 고음을 겹치거나 소리만으로 필수 판정을 전달한다. 재시뮬마다 다시 재생한다.</p><p><b>조절변수</b> attack/decay, 피치 변이 범위, 재질 레이어, 동시 voice 상한, 거리/우선순위, 믹스 여유, 예측/확정 정책.</p><p><b>예제·원리</b> <a href="#net-events">소리 중복·취소 정책</a> · <a href="game-design.html#chain-feedback" data-guide-path="game-design.html#chain-feedback">연쇄 시각·오디오·시간</a></p></div></div></details></section>
+<section class="section" id="reaction" data-search><details class="wiki-section" open><summary><h2>4. 피격 반응 → 맞은 뒤의 결과를 보여 준다</h2></summary><div class="section-body"><h3 id="impulse">Impulse · 순간 운동량 변화</h3><div class="report"><p><b>목적 · 언제</b> 힘이 실제 이동으로 전달되게 한다. 물리 접촉·발사 반동·짧은 밀림처럼 이후 운동은 물리 solver에 맡길 때 쓴다.</p><p><b>과용·실패</b> 질량·단위를 무시하고 force와 혼용하거나, 매 프레임 재적용해 계속 가속한다.</p><p><b>조절변수</b> impulse 크기/방향, 질량 적용 여부, 속도 상한, 마찰·감쇠, 벽 충돌/기존 속도와 합성.</p><p><b>예제·원리</b> <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/index.html">바운코 applyImpulse / impactPush</a></p></div><h3 id="stun">Stun · 행동 제약</h3><div class="report"><p><b>목적 · 언제</b> 맞은 결과로 행동 가능 시간이 달라짐을 읽게 한다. 공격 끊기·경직·콤보 개입을 게임 규칙으로 의도할 때 쓴다.</p><p><b>과용·실패</b> 시각 흔들림을 실제 경직으로 오해하게 하거나, 모든 연타가 무한 경직을 만든다.</p><p><b>조절변수</b> 지속 tick, 중첩/면역/저항, 이동·공격·입력 예약 중 무엇을 막는지, 해제/복구 경계.</p><p><b>예제·원리</b> <a href="development.html#state-machine" data-guide-path="development.html#state-machine">상호 배타 상태와 독립 상태</a> · <a href="#net-hitstop">경직·정지의 복원 계약</a></p></div><h3 id="knockback">Knockback · 의도한 밀려남</h3><div class="report"><p><b>목적 · 언제</b> 방향·거리·회복 구간으로 공격 결과와 다음 전장을 만든다. 거리 벌리기, 벽 충돌, 무거운 적과 가벼운 적의 차이를 설계할 때 쓴다.</p><p><b>과용·실패</b> 모든 적을 멀리 날려 다음 공격이 빗나가거나 장애물을 통과한다. 피해량과 무조건 비례시켜 작은 공격이 무력화된다.</p><p><b>조절변수</b> 시작 속도/impulse 또는 이동 곡선, 거리, 제어권 회복, 벽/높이 제약, 저항/질량, 여러 공격 동시 합성.</p><p><b>예제·원리</b> <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">바운코 왕사슴의 특수 넉백과 실제 접근속도 피해</a> · <a href="game-design.html#chain-control" data-guide-path="game-design.html#chain-control">연쇄 중 개입과 조작</a></p></div><p><b>구분:</b> impulse는 운동을 바꾸는 수단, knockback은 밀려남의 게임 규칙/경험, stun은 행동 제약이다. 셋을 같은 timer로 취급하지 않는다. 외형 흔들림만으로 피격을 표현할 수도 있고, 밀려나면서도 입력은 허용할 수 있다.</p></div></details></section>
+<section class="section" id="rhythm" data-search><details class="wiki-section" open><summary><h2>5. 연쇄 리듬·마무리 → 작은 적중과 큰 종결을 구분한다</h2></summary><div class="section-body"><h3 id="chain-rhythm">연타의 간격과 강약</h3><div class="report"><p><b>목적 · 언제</b> 원인과 다음 타격의 연결을 읽고 마지막 결과를 느끼게 한다. 자동 후속 공격, 도탄, 콤보, 광역 다중 명중에 쓴다.</p><p><b>과용·실패</b> 모든 타격을 마무리처럼 크게 처리해 대비가 사라지거나 숫자를 한 번으로 합쳐 개별 적중 리듬을 지운다.</p><p><b>조절변수</b> 타격 간격, 준비/발사/접촉/회복 시간표, 강타 조건, 오디오 피치/레이어 상한, 잔상 수명, 동시 적중 우선순위.</p><p><b>예제·원리</b> <a href="game-design.html#chain-feedback" data-guide-path="game-design.html#chain-feedback">기존 연쇄 시간·시각·오디오 원문</a> · <a href="visual-ux.html#crowded" data-guide-path="visual-ux.html#crowded">혼잡 전투와 연타 숫자</a></p></div><p>마무리는 처치·콤보 종료·특수 방어 파괴 등 실제 사건에만 연결한다. 끝났는데 다음 공격이 남아 있으면 잘못된 신호다. 연쇄 중 수동 취소·대상 소실·탄 부족도 정상적인 종료로 읽히게 한다.</p>
+<h3 id="bounko">대표 best practice · 바운코 최신 코드 읽기</h3>
+<p><span class="badge core">구현 확인</span> 조회 2026-10-15 UTC · <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">README</a> · <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/index.html">게임 코드</a> · <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/ultimates.js">스킬 시퀀스</a> · <a href="https://byh-playground.github.io/bloom-bounko/#/showcase" data-public-url="https://byh-playground.github.io/bloom-bounko/#/showcase">현재 공개 소개</a>. 코드 기준은 <code>987e3e9</code>(README 0.22.6)이며, 공개 소개는 이동하는 배포다. 이번 문서 작업에서 게임 전체를 새로 플레이 검증했다는 뜻은 아니다.</p>
+<ul><li><b>접촉과 결과:</b> 실제 양수 피해의 돌진 충돌에서 명중·콤보·충격음·충격파·후속 대상 준비를 묶는다. 레이저는 표시와 판정이 같은 빔 상태를 읽는다.</li><li><b>강약의 차이:</b> 일반 돌진 명중 <code>C.timing.hitstopMs=50</code>, 그림자 도착 <code>shadowHitstopMs=50</code>. 스킬 연쇄 가속 release의 첫 유효 impact마다 45ms, 탄성 폭발 release의 첫 유효 impact 65ms다. 레이저 연타에는 hitstop이 없다. <code>impactShown</code>이 같은 단계에서의 재발동을 막는다. <b>45/65ms는 일반 명중 기본값이 아니다.</b></li><li><b>시간을 구분:</b> <code>step</code>의 tick은 계속 증가하고 입력·탄 충전·일부 상태를 처리한 뒤 hitstop 분기에서 물리/후속 전투 갱신을 건너뛴다. 모든 timer를 멈추는 구현이 아니다. 싱글 게임 사례이며 멀티 안전성을 입증하지 않는다.</li><li><b>유예의 게임별 의미:</b> 바운코 <code>COYOTE</code>는 발판 점프가 아니라 그림자 도착 후 돌진 입력의 유예다. 150ms 동안 charge가 .94→.70으로 줄어든다. <code>dash.inputBufferMs</code> 입력 예약과도 구분한다.</li><li><b>가져올 원리:</b> 준비 위치와 발사 위치 일치, 한 성공 사건의 반동/외형/소리, 실제 명중만의 보상, 기술별 쉼의 대비. 이 사례의 ms·속도·거리·피해 예산은 게임별 config로 다시 조절한다.</li></ul></div></details></section>
+<section class="section" id="density" data-search><details class="wiki-section" open><summary><h2>6. 화면 밀도·과용·접근성</h2></summary><div class="section-body"><h3 id="camera-shake">카메라 흔들림</h3><div class="report"><p><b>목적 · 언제</b> 힘의 크기를 화면 전체의 짧은 움직임으로 보완한다. 정말 큰 사건이나 속도 조건을 만족하는 강타에 한정한다.</p><p><b>과용·실패</b> 여러 적중을 단순 합산해 조준을 잃거나 HUD/클릭 좌표까지 어긋난다.</p><p><b>조절변수</b> CSS px 기준 진폭, 지속시간, 방향/주파수, 감쇠, 가장 강한 이벤트/누적 상한, 효과 축소 옵션, 실제 표시 카메라의 입력 역변환.</p><p><b>예제·원리</b> <a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/camera/README.md">GameKit CameraViewport.setShake</a> · <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">바운코 공통 shakeCamera와 5px 상한 사례</a></p></div><p><b>효과 예산:</b> 국소 hitflash·짧은 분출·실루엣 반응을 먼저 남기고 먼 장식, 긴 잔상, 과한 광원, 비핵심 텍스트부터 줄인다. 적중 리듬과 다음 공격 예고·위협 경계를 지우지 않는다. 색 이외에 형태·위치·움직임·짧은 문구를 함께 쓴다.</p>
+<ul><li>흔들림·점멸·잔상·파티클 밀도·소리/진동을 줄이거나 끌 수 있게 한다. OS reduced-motion 선호도 반영하고 문서 UI도 움직임 축소를 따른다.</li><li>화면 전체 고휘도 점멸을 연타로 쌓지 않는다. 자동 음성·오디오 잠금 해제 대기 때문에 게임/프리뷰 진행을 막지 않는다.</li><li>효과 축소는 필수 정보의 삭제가 아니다. 피해/방어/무적, 위험 범위, 다음 제어 가능 시점을 무음·흔들림 없음에서도 읽는다.</li><li>반복 전투의 피로와 motion sickness는 단일 효과 감상과 별개로 관찰한다. 390px·최대 개체 수·동시 다중 타격·저사양에서 비교한다.</li></ul>
+<p><a href="visual-ux.html#feedback" data-guide-path="visual-ux.html#feedback">P8 강도 원칙</a> · <a href="visual-ux.html#crowded" data-guide-path="visual-ux.html#crowded">P7 혼잡 전투</a> · <a href="../labs/particles.html">74종에서 강도·수명·중첩 비교</a>. 이 문서는 새 파티클 엔진이나 기존 효과의 복제본을 만들지 않는다.</p></div></details></section>
+<section class="section" id="multiplayer" data-search><details class="wiki-section" open><summary><h2>7. 멀티·롤백 계약</h2></summary><div class="section-body">
+<div class="notice"><strong>공식 사실과 BLOOM 권장 설계를 구분한다</strong><br>아래 공식 자료는 입력·결정론·상태 복원·표현 분리의 근거다. 특정 ms, freeze 범위, 유예/중첩 정책은 우리 게임이 선택하고 검증할 설계다. 멀티에서 hitstop이 불가능한 것은 아니다.</div>
+<p>P2P에서는 <b>공유 결정론 시뮬레이션</b>이 같은 입력/규칙을 실행한다. 서버 권위 예시에서는 승인된 입력으로 권위 상태를 계산하고 클라이언트가 예측한다. 둘 다 “무엇이 게임 결과를 바꾸는가”가 상태 복원의 기준이다. 서버 예측 구조가 모두 서버 전체를 롤백한다는 뜻은 아니다. 서버의 과거 hitbox 조회도 세계 전체 재시뮬과 다르다.</p>
+<h3 id="net-grace">7.1. 코요테·입력 버퍼·지연 보상은 별개다</h3>
+<div class="report"><p><b>코요테 타임</b> 발판을 떠난 뒤 짧게 점프를 허용하는 유예. <a href="https://www.maddymakesgames.com/articles/celeste_and_forgiveness/index.html">Celeste 개발자 설명</a>의 이동 관용 사례다. 바운코의 도착 후 돌진 유예는 이 이름을 다른 행동에 적용한 게임별 규칙이다.</p><p><b>게임플레이 입력 버퍼</b> 행동이 가능해지기 전에 들어온 입력을 제한 시간 보존해 가능 시 실행. 같은 개발자 글의 착지 직전 점프와 대응한다.</p><p><b>짧은 탭 캡처 latch</b> tick 사이 press/release를 수집 시점까지 잃지 않게 하는 장치 경계다. 이후 몇 tick 동안 행동을 예약하는 게임플레이 버퍼와 다르다. <a href="https://doc.photonengine.com/fusion/v2/manual/input/player-input">Fusion 입력 수집/틱 실행</a>.</p><p><b>네트워크 지연 보상</b> 예를 들어 서버 권위 슈터가 플레이어가 봤던 과거 타깃의 hitbox를 조회하는 판정 정책. <a href="https://doc.photonengine.com/fusion/v2/manual/advanced/lag-compensation">Fusion lag compensation</a>. 코요테나 버퍼를 RTT만큼 늘리는 것과 다르다.</p></div>
+<p><b>BLOOM 권장:</b> 유예 판정은 벽시계/패킷 도착 시간이 아니라 승인한 입력 대상 tick에서 한다. 입력 소유 player/entity와 command sequence, 대상 tick, 명령 종류를 확인한다. 임의의 클라이언트 과거 timestamp를 그대로 신뢰하지 않는다. P2P의 공동 규칙·허용 입력 범위와 서버의 검증 정책은 구조에 맞게 명시한다.</p>
+<ul><li><code>lastGroundedTick</code>, <code>bufferExpiryTick</code>, <code>jumpConsumed</code>, 이전 버튼 edge, 사용한 명령 sequence 등 <b>결과에 영향을 주는 모든 상태</b>를 save/load 및 rollback snapshot에 넣는다. 입력 로그만 되감고 timer를 남기지 않는다.</li><li>접지→이탈→유예→만료와 점프 성공의 전이를 정한다. 정상 점프 직후 코요테 재점프가 되지 않도록 접지 갱신 순서와 소비 flag를 관리한다. 성공하면 해당 버퍼와 유예를 함께 소비하고, 새 착지에서만 재무장한다.</li><li>버퍼의 성공·만료·새 입력 교체·취소·정지 중 보존 여부, 경계 비교의 포함/제외와 같은 tick 입력 우선순위를 결정한다. 만료 절대 tick을 쓰면 freeze 중에도 만료하므로 정지시키려면 별도 활성 tick 시계나 명시적 기한 조정이 필요하다.</li><li>입력 지연·유예·버퍼·클라이언트 예측·lag compensation의 목적과 값을 별도로 조정한다. RTT가 큰 사람에게 자동으로 더 긴 게임 유예를 주지 않는다.</li></ul>
+<p><a href="https://github.com/pond3r/ggpo/blob/master/doc/DeveloperGuide.md">GGPO 개발 가이드</a>는 결정론, 직렬화 가능한 완전 상태와 렌더 없이 한 프레임을 재실행할 수 있어야 함을 요구한다. 위 필드와 소비 규칙은 이를 이동/전투에 적용한 설계 예시이며 GGPO의 전용 coyote API가 아니다.</p>
+<h3 id="net-hitstop">7.2. 규칙을 멈추는가, 표현을 유지하는가</h3>
+<div class="table-wrap"><table><thead><tr><th>종류</th><th>무엇이 달라지는가</th><th>복원·운영 계약</th></tr></thead><tbody><tr><td>게임플레이 hitstop</td><td>이동·공격시간·충돌/히트 판정 기회가 달라진다. entity별 또는 전체 전투 세계 범위.</td><td>정지 대상/범위, 원인, 남은 tick, 중첩 정책을 canonical 상태에 저장. 모두 같은 tick에서 시작·해제·재시뮬.</td></tr><tr><td>표현 전용 hold</td><td>외형 pose·국소 VFX만 유지하고 권위 시뮬레이션은 진행한다.</td><td>렌더 시계와 자원 journal에서 관리. collider가 이미 움직이면 시각 오차·복귀 보정·조준 신뢰를 확인. 판정에 쓰는 뼈/pose를 멈추면 더 이상 표현 전용이 아니다.</td></tr></tbody></table></div>
+<p><a href="https://doc.photonengine.com/fusion/v2/concepts-and-patterns/animation">Fusion Animation</a>은 판정용 애니메이션과 표시를 구분할 근거이며, <a href="https://www.snapnet.dev/docs/core-concepts/simulation-vs-presentation/">SnapNet Simulation vs. Presentation</a>은 시뮬레이션과 연속 표현의 책임 분리를 설명한다. 아래 freeze 정책은 BLOOM의 적용 제안이다.</p>
+<ul><li><b>시뮬레이션 tick</b>은 계속 전진시키고 해당 entity/서브시스템의 업데이트를 gate한다. P2P/권위가 같은 freeze 상태를 적용한다. 전역 전투 정지는 다른 참가자의 전투까지 멈추게 하는 게임 규칙 선택이다.</li><li><b>입력·네트워크 시간</b>은 별도로 수집/송수신/정비하고 rollback 스케줄도 유지한다. hitstop 연출을 위해 global simloop/network를 <code>timeScale=0</code> 또는 loop stop으로 통째로 멈추지 않는다. 연결 정지·진짜 pause는 별도 계약이다.</li><li><b>렌더 시간</b>은 pose hold·쉐이크·오디오 수명에 사용한다. 권위 tick과 원격 보간 timeline을 구분하고 로컬 외형 보정이 명중 판정을 바꾸지 않게 한다.</li><li><b>시계별 표를 먼저 작성:</b> 움직임·attack active/recover·stun·coyote·buffer·cooldown·재장전·경기시간을 각각 freeze/진행 중 하나로 정한다. 바운코의 탄 충전 진행을 모든 게임에 강제하지 않는다.</li><li>다중 hitstop은 max(남은 값, 새 값), 더하기, 우선순위 중 규칙 하나와 상한을 정한다. 상대와 공격자 중 한쪽만 멈추면 충돌·거리·콤보가 어떻게 바뀌는지 확인한다. 이미 처리한 명중이 정지 중 반복 판정되지 않게 한다.</li></ul>
+<h3 id="net-events">7.3. 예측·확정·취소 · 중복도 유실도 막는다</h3>
+<p><a href="https://www.snapnet.dev/docs/unreal-engine-sdk/manual/events/">SnapNet Events</a>는 예측 이벤트의 재실행·취소와 외부 효과를 다루는 1차 자료다. <b>BLOOM 권장:</b> <code>공격자ID + 공격 instance + 피해자ID + 타격 index</code> 같은 안정적인 논리 키로 결과 집합을 비교한다. 좌표 float·패킷 도착 시간·렌더 프레임·재실행 때 바뀌는 난수는 identity로 삼지 않는다. entity 재사용에는 generation/세션 수명도 포함한다.</p>
+<ol><li>정규/재시뮬 step은 순수한 사건 데이터를 만든다. 사운드·DOM·VFX를 매 step에서 무조건 직접 실행하지 않는다. <code>resimulating이면 전부 버리기</code>도 새로 유효해진 타격을 유실한다.</li><li>같은 사건이 다시 나오면 기존 자원을 reconcile하고 확정 시 재시작하지 않는다. 새 유효 사건은 생성, 사라진 예측 사건은 취소한다. 이미 끝난 자원도 허용 롤백 구간 동안 dedup 기록을 유지한다.</li><li>예측 VFX/표현 freeze는 취소 시 남은 hold를 해제하고 실제 표시로 보정한다. 게임플레이 freeze는 snapshot 복원과 재시뮬 결과에서 제거한다. 화면 보정만으로 규칙 상태를 고치지 않는다.</li><li>이미 들린 소리는 되돌릴 수 없다. one-shot은 확정 후 재생하거나, 낮은 지연이 꼭 필요하면 남은 부분 fade/끝까지 재생 정책을 명시한다. 취소 가능 자원이라는 이유로 이미 들린 순간까지 되돌린다고 쓰지 않는다.</li></ol>
+<p><b>원격 표현:</b> <a href="https://www.snapnet.dev/docs/core-concepts/interpolation-vs-prediction/">SnapNet Interpolation vs. Prediction</a>처럼 로컬 예측과 원격 표시 시간선이 다를 수 있다. 사건 tick을 원격 render timeline의 시각에 매핑한다. 패킷 도착 즉시 항상 전체 효과를 시작하면 몸체와 타격이 어긋난다. 늦은 사건은 남은 수명만 재생/짧은 대체/생략 중 정책을 정한다. 필수 피해·상태 결과는 효과 생략과 무관하게 반영한다.</p>
+<h3 id="gamekit">7.4. 현재 GameKit 공식 API ↔ 실제 구현</h3>
+<p>조회 기준 <code>c6ed368</code>, 2026-10-15 UTC. 다음은 해당 README·CONTRACT와 구현을 함께 읽은 내용이다. Bounko는 자체 고정 SDK 핀을 쓰므로 최신 GameKit main과 같은 버전이라고 가정하지 않는다.</p>
+<ul><li><a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/input/README.md">input README</a> / <a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/input/actions.js">actions.js</a>: <code>ActionState</code>와 <code>createDOMInput</code>, 명시적 <code>consume()</code>으로 edge를 소비한다. input 모듈은 simulation tick·명령 큐·권위 상태·월드 좌표·게임플레이 유예를 소유하지 않는다.</li><li><a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/rollback/CONTRACT.md">rollback 계약</a> / <a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/rollback/README.md">공식 API</a> / <a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/rollback/core.js">core.js 구현</a>: 게임 어댑터의 <code>save/load/step</code>이 완전 상태와 규칙을 소유한다. <code>step({tick,inputs,resimulating,recovering,replaying})</code> 경계에서 게임이 사건을 만든다. 세션의 <code>submitInput(input,{commands})</code>는 명령별 불변 <code>executeTick</code>을 예약하며 그 호출 자체로 simulation을 진행하지 않는다. <code>queueCommand</code>도 같은 예약 경로다. ACK를 실행 확인으로 취급하지 않는다.</li><li><a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/simloop/README.md">simloop README</a> / <a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/simloop/loop.js">loop.js</a>: <code>createLoop</code>의 <code>observeInput/pollInput/pulse/render</code>는 장치 관측·정비·시뮬·표현 경계를 나눈다. hitstop 때문에 loop 자체를 중단하는 API 사용을 권하지 않는다.</li><li><a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/presentation-events/README.md">presentation-events README</a> / <a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/presentation-events/index.js">실제 index.js</a>: <code>PresentationEventQueue.emit</code>, <code>beginRollback/endRollback</code>, <code>confirmThrough/update/finish/dispose</code>가 있다. 실제 identity는 <code>[tick,sequence,entityId,generation,kind]</code>이다. 위 논리 공격 키를 이 필드들에 결정론적으로 매핑하는 것은 게임 책임이며 SDK identity를 다른 형태라고 설명하지 않는다.</li></ul>
+<p><b>journal 연결의 제약:</b> 기본 <code>confirmed</code>는 확정 뒤 start, <code>speculative</code>는 <code>reversible:true</code>와 stop이 있는 adapter만 허용된다. <code>rollback</code> 이벤트에서 begin, <code>reconciled</code>에서 end, <code>Math.min(session.confirmedTick,session.tick-1)</code>가 0 이상일 때 confirmThrough한다. recovery 후보는 성공 전 외부 자원을 만들지 않는다. 세션/epoch 교체는 기존 자원을 정리하고 별도 수명으로 분리한다.</p>
+<p><b>시각은 자동 매핑되지 않는다:</b> journal의 tick은 순서이고 <code>nowMs/durationMs</code>는 표현 시간이다. 실제 구현은 start 시각부터 수명을 잰다. 원격 사건 tick→표시 시각 매핑과 늦은 효과의 나이 계산은 게임 adapter에서 처리한다. SDK가 자동으로 과거 효과를 seek한다고 쓰지 않는다.</p>
+<p>위 모듈에 게임별 코요테/버퍼/hitstop 규칙을 제공하는 전용 API는 없다. <code>setCoyoteTime()</code>·<code>setHitstop()</code> 같은 가상의 GameKit API를 만들지 않는다. 게임이 상태와 freeze 정책을 구현하고 기존 입력·롤백·표현 경계를 연결한다. <a href="../algorithms/index.html#A051" data-guide-path="../algorithms/index.html#A051">A051 표현 이벤트 중복 제거</a> / <a href="../algorithms/index.html#A063" data-guide-path="../algorithms/index.html#A063">A063 시간선 재타기팅</a>의 원리도 함께 읽는다.</p>
+<h3 id="quantization">7.5. 낮은 TPS의 시간 양자화</h3>
+<div class="table-wrap"><table><thead><tr><th>simulation TPS</th><th>한 tick</th><th>40ms 규칙 정지 예시 · 올림 선택 시</th></tr></thead><tbody><tr><td>20</td><td>50ms</td><td>1 tick = 50ms</td></tr><tr><td>30</td><td>약 33.3ms</td><td>2 tick ≈ 66.7ms</td></tr><tr><td>60</td><td>약 16.7ms</td><td>3 tick = 50ms</td></tr></tbody></table></div>
+<p>40ms를 20TPS 정수 tick으로 정확히 표현할 수 없다. 올림·반올림·최소 한 tick 등 정책과 경계를 명시하고 실제 유효 시간을 기록한다. <b>“3 tick 규칙 정지”와 “50ms 표현 hold”는 별개</b>이며 3 tick은 TPS가 바뀌면 시간이 달라진다. ms timer를 써도 tick에서만 검사하면 해제 순간은 양자화된다. <a href="https://doc.photonengine.com/fusion/2-shared/manual/advanced/ticktimer">Fusion TickTimer</a>는 target tick 기반 timer의 공식 예시다. 더 높은 렌더 FPS만으로 규칙 분해능이 늘어나지 않는다.</p></div></details></section>
+<section class="section" id="checklist" data-search><details class="wiki-section" open><summary><h2>8. 적용·검증 체크리스트</h2></summary><div class="section-body">
+<p>다음은 <b>게임에 적용할 때의 권장 검증</b>이다. 이번 문서 편집에서 실제 멀티/전투 검증을 모두 실행했다는 뜻은 아니다. 문서 자체의 실행·링크 검사 결과는 PR에 기록한다.</p>
+<ul class="checklist"><li>행동 하나의 준비→발사→명중/실패→회복을 무음·효과 축소에서도 설명할 수 있다.</li><li>판정 접점/방향·실제 피해·hitflash·충격음이 같은 사건에 연결된다. 무적/막힘/빗나감은 성공과 구분한다.</li><li>각 효과를 하나씩 끄고 비교한다. 국소 효과만으로 충분한지 확인하고 밀집 전투에서 플레이어·아군·다음 위협을 추적한다.</li><li>게임별 config에 강도·수명·중첩 상한을 모으고 동일 상태를 렌더·물리·UI가 중복 소유하지 않는다. 리셋/사망/취소 뒤 잔여 효과·반동·오디오를 정리한다.</li><li>유예·버퍼 경계 ±1 tick, 정상 점프 직후 재점프 차단, 성공 시 한 번 소비, 정지 중 입력 예약·만료를 확인한다.</li><li>입력 지연·jitter·손실·중복을 주고 같은 대상 tick/sequence가 한 번 실행되는지 확인한다. packet ACK와 실제 실행 확인을 구분한다.</li><li>정지 직전/도중 snapshot을 복원해 같은 입력 뒤 같은 위치·피해·timer·타격 수가 나오는지 비교한다.</li><li>예측 타격을 rollback으로 취소하고 남은 freeze/VFX 정리, 중복 음향 없음, 새로 유효해진 사건의 유실 없음, 확정 재시작 없음을 확인한다.</li><li>다중 타격/동시 freeze, 상대만 정지/양쪽 정지, 관전자·원격 보간 시점, 늦은 효과 정책을 확인한다.</li><li>20/30/60TPS와 다른 렌더 FPS에서 실제 정지 시간·유예·버퍼·타격 수를 비교한다. 공격 시간 배율을 바꿔 피해 펄스가 늘지 않는지 확인한다.</li><li>390px/PC·장시간 반복·효과 축소·무음, 카메라 흔들림 중 조준 역변환과 HUD 고정을 확인한다.</li></ul>
+<pre>행동 / 실제 성공 사건:
+목적 / 먼저 바꿀 기법 / 비교할 기본 상태:
+규칙 상태와 소유자 / 표현 상태와 자원 수명:
+정지 대상·범위 / 각 timer의 freeze 정책 / 중첩 상한:
+입력 소유자·대상 tick·소비 / rollback snapshot 필드:
+안정적 사건 키 / 예측·확정·취소 / 원격 표시 시각:
+TPS와 유효 시간 / 실제 검증 환경·결과 / 미검증 범위:</pre></div></details></section>
+<section class="section" id="sources" data-search><details class="wiki-section" open><summary><h2>9. 근거·원본·조회 기준</h2></summary><div class="section-body">
+<p>작성·조회 2026-10-15 UTC. 원문에서 확인한 설명은 각 절에 직접 연결했다. 외부 공식 문서는 이후 바뀔 수 있으며, 내부 사례는 고정 커밋을 사용한다. 기법의 투자 우선순위·타이머 필드·freeze/보정 정책은 이 문서의 설계 제안이다.</p>
+<ul><li><a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/README.md">Bounko 987e3e9 README</a>, <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/index.html">index.html</a>, <a href="https://github.com/byh-playground/bloom-bounko/blob/987e3e92f6dee629f21f0e100fba21bb1715b088/ultimates.js">ultimates.js</a>: 실제 발사/접촉/정지/유예/시퀀스 확인. 과거 README의 후보 버전 검증을 최신 게임 전체 검증으로 승격하지 않는다.</li><li><a href="https://github.com/byh-playground/bloom-gamekit/blob/c6ed3685cdad35dbe65fb99a1b6e1297c9c60ce4/modules/rollback/CONTRACT.md">GameKit c6ed368 rollback 계약</a> 및 위 모듈 README/구현: 현재 공개 capability 확인. 기존 A051의 개념 설명과 현재 SDK 구현을 구별한다.</li><li><a href="https://www.maddymakesgames.com/articles/celeste_and_forgiveness/index.html">Maddy Makes Games · Celeste &amp; Forgiveness</a>: 이동 유예·입력 버퍼의 개발자 설명. 멀티 구현 근거가 아니다.</li><li><a href="https://doc.photonengine.com/fusion/v2/manual/input/player-input">Photon Fusion 2 · Player Input</a>, <a href="https://doc.photonengine.com/fusion/v2/manual/advanced/lag-compensation">Lag Compensation</a>, <a href="https://doc.photonengine.com/fusion/v2/concepts-and-patterns/animation">Animation</a>, <a href="https://doc.photonengine.com/fusion/2-shared/manual/advanced/ticktimer">Fusion 2 Shared · TickTimer</a>: 입력/실행/과거 판정/시간선의 공식 구분. Fusion API를 GameKit API로 옮겨 적지 않는다.</li><li><a href="https://github.com/pond3r/ggpo/blob/master/doc/DeveloperGuide.md">GGPO Developer Guide</a>: P2P 결정론과 완전 상태·렌더 없는 재실행의 계약.</li><li><a href="https://www.snapnet.dev/docs/core-concepts/simulation-vs-presentation/">SnapNet · Simulation vs. Presentation</a>, <a href="https://www.snapnet.dev/docs/core-concepts/interpolation-vs-prediction/">Interpolation vs. Prediction</a>, <a href="https://www.snapnet.dev/docs/unreal-engine-sdk/manual/events/">Events</a>: 표현 분리·원격 시간선·예측 사건 수명. 제품별 API를 공통 표준으로 주장하지 않는다.</li></ul>
+<p><b>기존 원문 소유:</b> <a href="visual-ux.html#feedback" data-guide-path="visual-ux.html#feedback">P8 상태·피드백</a>는 시각/UX 원칙, <a href="game-design.html#chain-feedback" data-guide-path="game-design.html#chain-feedback">연쇄 장</a>은 기획·리듬, <a href="../labs/particles.html">파티클 실험</a>·<a href="../labs/sketch-vfx.html">스케치 전투</a>는 실제 예제, <a href="../algorithms/index.html">알고리즘 위키</a>는 구현 원리를 소유한다. 전문 원문 전체를 복사하지 않고 이 문서에서 선택·연결한다.</p>
+<p><a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/impact-feel.html">타격감 main HTML 프리뷰</a> · <a href="https://github.com/byh-playground/bloom-reference/blob/main/rules/impact-feel.html">HTML 원본</a> · <a href="https://github.com/byh-playground/bloom-reference/commits/main/rules/impact-feel.html">변경 이력</a>. 기존 HTML Preview 공개 경로를 유지하며 별도 배포 체계는 추가하지 않는다.</p></div></details></section>
+<div id="noResults" class="no-results" role="status">검색어와 일치하는 절이 없습니다.</div><footer class="footer">BLOOM Reference · 타격감 종합 가이드 · 구현 사실과 적용 제안을 구분한다.</footer></article></main></div><button class="backtop" id="backtop" aria-label="맨 위로">↑</button><script>
+(() => {
+  // HTML Preview rewrites links containing a hash as document anchors.
+  document.querySelectorAll('a[data-public-url]').forEach(a => { a.href = a.dataset.publicUrl; });
+  document.querySelectorAll('a[data-guide-path]').forEach(a => {
+    const target = a.dataset.guidePath;
+    if (location.hostname === 'htmlpreview.github.io') {
+      const full = new URL(target, 'https://github.com/byh-playground/bloom-reference/blob/main/rules/impact-feel.html');
+      a.href = 'https://htmlpreview.github.io/?' + full.href;
+    } else a.href = target;
+  });
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  let saved;
+  try { saved = localStorage.getItem('impactGuideTheme'); } catch {}
+  if (saved) root.dataset.theme = saved;
+  else if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('impactGuideTheme', next); } catch {}
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenu = () => { sidebar.classList.remove('open'); overlay.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+  menuBtn.addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(sidebar.classList.contains('open'))); });
+  overlay.addEventListener('click', closeMenu);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && sidebar.classList.contains('open')) { closeMenu(); menuBtn.focus(); } });
+  document.querySelectorAll('.toc a').forEach(a => a.addEventListener('click', () => {
+    closeMenu();
+    if (search.value) { search.value = ''; runSearch(); }
+    const target = document.getElementById(decodeURIComponent(new URL(a.href).hash.slice(1)));
+    const detail = target?.closest('.wiki-section') || target?.querySelector('.wiki-section');
+    if (detail) detail.open = true;
+  }));
+
+  document.getElementById('backtop').addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+
+  const links = [...document.querySelectorAll('.toc a')];
+  const anchorId = a => decodeURIComponent(new URL(a.href, location.href).hash.slice(1));
+  const targets = links.map(a => document.getElementById(anchorId(a))).filter(Boolean);
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+    if (!visible) return;
+    links.forEach(a => a.classList.toggle('active', anchorId(a) === visible.target.id));
+  }, {rootMargin:'-70px 0px -72% 0px',threshold:[0,1]});
+  targets.forEach(t => observer.observe(t));
+
+  const search = document.getElementById('search');
+  const count = document.getElementById('searchCount');
+  const sections = [...document.querySelectorAll('[data-search]')];
+  const noResults = document.getElementById('noResults');
+  const normalize = s => s.toLowerCase().replace(/\s+/g,' ').trim();
+  const runSearch = () => {
+    const q = normalize(search.value);
+    let shown = 0;
+    sections.forEach(sec => {
+      const hit = !q || normalize(sec.textContent).includes(q);
+      sec.classList.toggle('filtered-out', !hit);
+      if (hit) { shown++; if (q) sec.querySelectorAll('details').forEach(d => d.open = true); }
+    });
+    count.textContent = q ? `${shown}/${sections.length}` : '';
+    noResults.classList.toggle('show', !!q && shown === 0);
+  };
+  const revealHash = () => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = document.getElementById(id);
+    const section = target?.closest('[data-search]');
+    if (!section) return;
+    if (search.value) { search.value = ''; runSearch(); }
+    section.querySelector('.wiki-section').open = true;
+    requestAnimationFrame(() => target.scrollIntoView());
+  };
+  addEventListener('hashchange', revealHash);
+  revealHash();
+  search.addEventListener('input', runSearch);
+  search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value=''; runSearch(); search.blur(); } });
+  addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') { e.preventDefault(); search.focus(); search.select(); } });
+})();
+</script></body></html>
