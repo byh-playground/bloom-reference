@@ -7,7 +7,7 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 | 자료 | 화면 열기 | HTML 원본 |
 | --- | --- | --- |
 | 공통 개발 규칙 · 비용 우선순위 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.html](rules/development.html) |
-| AI 개발 규칙 · 의도·검색 비교·동작 확정·공통 모듈 개선·검증 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.html](rules/ai-development.html) |
+| AI 개발 규칙 · 요구 해석·공통 모듈 개선·게임 적용·검증 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.html](rules/ai-development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable·Git·배포 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.html](rules/project-management.html) |
 | 공통 UI/UX 레퍼런스 · P1–P10 우선순위·URL·상태·모바일·시각 피드백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
 | 게임 기획 가이드 · 연쇄 반응·다음 경험의 해금 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
@@ -44,7 +44,7 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 | 저장 경로 | 원본 파일 | 수정일 |
 | --- | --- | --- |
 | `rules/development.html` | `common-development-rules-priority-wiki-v14.html` | 2026-10-07 |
-| `rules/ai-development.html` | AI 요청 해석·검색 비교·동작 확정·공통 모듈 개선 규칙 (이 저장소에서 작성) | 2026-10-16 |
+| `rules/ai-development.html` | AI 요청 해석·검색 비교·공통 모듈 개선·소비 게임 적용 규칙 (이 저장소에서 작성) | 2026-10-16 |
 | `rules/project-management.html` | `common_project_management_rules.html` | 2026-10-07 |
 | `rules/visual-ux.html` | 공통 UI/UX 레퍼런스 (기존 시각·UX 확장) | 2026-10-11 |
 | `rules/game-design.html` | 게임 기획 가이드 (이 저장소에서 작성) | 2026-10-14 |
