@@ -10,7 +10,7 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 | AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.html](rules/ai-development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable·Git·배포 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.html](rules/project-management.html) |
 | 공통 UI/UX 레퍼런스 · P1–P10 우선순위·URL·상태·모바일·시각 피드백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
-| 게임 기획 가이드 · 연쇄 반응·해금·수치 초안 정규화 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
+| 게임 기획 가이드 · 연쇄 반응·해금·규칙 단순화·수치 초안 정규화 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
 | 타격감 종합 가이드 · 바운코·영상·접촉/반동/피격·멀티/롤백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/impact-feel.html) | [rules/impact-feel.html](rules/impact-feel.html) |
 | 공통 STAT 사전 · 의미·단위·계산 계약·게임 프로필 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/stats.html) | [rules/stats.html](rules/stats.html) |
 | 절차적 지형 생성 · FastNoise·유형별 선택·검증 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/algorithms/terrain-generation.html) | [algorithms/terrain-generation.html](algorithms/terrain-generation.html) |
@@ -26,6 +26,8 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 2026-10-11 공통 UI/UX 문서는 기존 `rules/visual-ux.html`을 확장했습니다. URL·상태·생명주기부터 모바일·트리·전투·보상·소개까지 후변경 비용과 체감 효과에 따른 P1–P10 순서이며, 사용자 확정 원칙과 게임별 사례·새 권장안을 구별합니다. 기존 목차 앵커와 관련 링크를 유지합니다. 병합 전 리뷰는 바로 보기 주소의 `main`을 PR head commit SHA로 바꾸고, 병합 후에는 위 main 링크를 사용합니다.
 
 2026-10-14 게임 기획 가이드 `rules/game-design.html`을 추가했습니다. 첫 주제는 바운코의 충돌·후속 돌진과 털실 대소동의 동등 티어 합체를 대표 사례로 정리한 연쇄 반응의 재미입니다. 기존 위키형 목차·검색·테마 형식을 재사용하고 구현 확인·사용자 기획 방향·설계 가설을 구별합니다. 두 번째 주제는 다음 지역·스테이지·기능 해금이며, Nintendo(원더·메트로이드 드레드)와 Wube(Factorio: Space Age)의 공식 자료를 연결합니다. 이후 기획 팁은 독립 주제로 확장합니다. 2026-10-16 미지정 수치 초안의 정규화와 기준값 기반 파생 원칙을 AI 개발 규칙에 추가하고, 게임 기획 가이드에서 단일 원본으로 연결했습니다. 예시·기존 프로젝트 값의 임의 변경은 하지 않습니다. 같은 날 SVG 정적 벡터 아트의 원본 유지·브라우저 시작 시 1회 컴파일·캐시 재사용 규칙과 Farm의 과대 생성 메시 번들 사례도 AI 개발 규칙에 기록했습니다. Farm 0.6.1 저장 경로를 코드 기준으로 확인해 변경 없는 전체 직렬화·복원과 렌더 경로의 동기 I/O를 구분하는 자동 저장 안티패턴도 기록했습니다. 짧은 주기 자체를 금지하거나 기기 지연의 유일 원인으로 과장하지 않습니다.
+
+2026-10-20 게임 기획 가이드 `rules/game-design.html`에 세 번째 주제로 규칙 단순화를 추가했습니다. 수치를 뺀 한두 줄 메인 규칙과 한 줄씩의 예외로 규칙을 설명하는 구조, 소환수 시험판 예시, 맞지 않을 때의 리팩토링 기준과 체크리스트를 담았습니다. 기존 수치 초안·사례 근거 장은 번호만 4·5장으로 밀렸고 앵커는 그대로입니다.
 
 ## 역할과 경계
 
