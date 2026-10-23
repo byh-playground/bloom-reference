@@ -90,6 +90,7 @@ mark{background:#ffe477;color:#1d1d1d;border-radius:2px;padding:0 1px}
       <li class="sub"><a href="#migration-done">6.2 완료 기준</a></li>
       <li><a href="#states">7. Candidate · Validated · Stable</a></li>
       <li><a href="#stable">8. Stable 승격</a></li>
+      <li class="sub"><a href="#tag-preview">8.1 릴리즈 태그 · HTML 프리뷰</a></li>
       <li><a href="#git">9. Git 운영</a></li>
       <li><a href="#commit">10. 커밋 메시지</a></li>
       <li><a href="#consumer">11. 라이브러리 · Consumer</a></li>
@@ -209,6 +210,34 @@ Build: 20261007T193500+0900-a1b2c3d</code></pre>
         <p>변경 성격에 맞는 실제 실행과 고정 사용자 시나리오 E2E를 수행하며 <a href="#verification">검증 정책</a>을 따른다. 실제로 하지 않은 검증은 PASS로 기록하지 않는다.</p>
       </section>
 
+
+      <section class="section" id="tag-preview" data-search>
+        <h2><span class="anchor-no">8.1.</span>릴리즈 태그 · HTML 프리뷰 배포</h2>
+        <div class="rule core"><div class="rule-title">공통 원칙</div>게임 전시용 릴리즈는 <b>각 Git 태그가 가리키는 시점의 HTML 스냅샷</b>을 직접 프리뷰한다. Stable/Nightly용 배포 브랜치·저장소·고정 URL을 별도로 만드는 것은 필수가 아니다. <b>한 게임이 두 채널을 동시에 가질 수 있다.</b></div>
+        <div class="table-wrap"><table><thead><tr><th>채널</th><th>태그 예시</th><th>생성·공개 기준</th></tr></thead><tbody>
+          <tr><td>Stable</td><td><code>v0.28.14</code></td><td><a href="#stable">Validated 검증과 승인</a>을 마친 동일 산출물에 고유 태그 부여. 기존 Stable 기준선을 임의로 교체하지 않는다.</td></tr>
+          <tr><td>Nightly</td><td><code>nightly-20261023-a1b2c3d</code></td><td>개발 버전의 HTML 스냅샷이 만들어진 시점에 고유 태그를 자동 발행할 수 있다. 실행·플레이·회귀 검증은 발행 조건이 아니며 실행 실패, 미완성 기능, 버그를 허용한다.</td></tr>
+        </tbody></table></div>
+        <p>Nightly는 Candidate/Validated/Stable과 같은 <b>품질 등급이 아니라 공개 채널</b>이다. Nightly 태그 생성만으로 검증 완료·Stable 승격으로 간주하지 않는다. Nightly 변경이 Stable 배포를 자동 갱신하지 않는다. 두 채널 모두 과거 태그를 재지정·삭제하지 않고 새 태그로 갱신한다.</p>
+        <h3>태그가 담아야 하는 파일</h3>
+        <ul>
+          <li><b>기본 진입점은 태그 루트의 <code>index.html</code>이다.</b> 추가 JS/CSS/SVG/WASM 등 파일이 필요하면 같은 태그 스냅샷에 포함하고 상대 경로가 그 스냅샷 안에서 해결되도록 한다. 단일 HTML에 내장해도 된다.</li>
+          <li>외부 SDK·CDN 의존성은 불변 버전·커밋으로 고정한다. 가변 <code>main</code>/<code>latest</code>를 참조해 과거 태그의 동작이 바뀌게 하지 않는다.</li>
+          <li><b>소스 트리에 빌드 결과가 없어도 된다.</b> 디그모리처럼 빌드 시 HTML을 생성하는 게임은 선택한 소스 커밋을 빌드한 뒤 <code>index.html</code>과 실행에 필요한 자산을 포함하는 <b>배포용 커밋에 태그</b>를 붙여도 된다. 메인 브랜치에 생성물을 억지로 커밋하지 않는다. 원본 소스 커밋·빌드 식별자를 추적 가능하게 남긴다.</li>
+          <li>HTML 파일이 없거나 자산 경로가 누락되면 <b>프리뷰를 제공할 수 없음</b>으로 표시한다. 특히 Nightly는 HTML이 존재한다는 사실만으로 정상 작동을 보장하지 않으며, 깨진 최신 빌드를 Stable이나 과거 Nightly로 몰래 바꿔 보여주지 않는다.</li>
+        </ul>
+        <h3>전시 사이트의 채널·실행 계약</h3>
+        <ul>
+          <li>사이트의 상단 탭은 <b>전체 게임 / Stable / Nightly</b>로 구분한다. 작품 목록은 게임 단위로 중복 없이 표시하며 해당 채널의 태그가 없는 게임은 그 탭에서 제외한다.</li>
+          <li>플레이 버튼은 현재 탭의 태그를 실행한다. <b>전체 게임에서는 Stable 우선, Stable이 없으면 Nightly</b>를 선택한다. 상세 화면에서는 채널을 바꿀 수 있다.</li>
+          <li>태그를 조회해 채널별 최신 릴리즈를 선택하고, <b>리포지토리·태그·<code>index.html</code> 경로</b>로 프리뷰 URL을 구성한다. 제품 버전은 기존 버전 규칙을 따르고, Nightly 날짜·커밋 식별자를 별도 제품 버전으로 취급하지 않는다.</li>
+          <li>Nightly 실행 전 <b>“개발 중인 버전으로 정상 작동을 보장하지 않습니다”</b>를 표시한다. 실행 실패 시 프리뷰 이용 불가 또는 오류 상태를 숨기지 않는다.</li>
+        </ul>
+        <h3>프리뷰 호스팅과 한계</h3>
+        <p>GitHub의 원본 파일 주소는 브라우저용 HTML/JavaScript 호스팅이 아니다. 예를 들어 <a href="https://raw.githack.com/" target="_blank" rel="noopener noreferrer">GitHack</a>의 불변 태그 CDN URL은 <code>https://rawcdn.githack.com/&lt;owner&gt;/&lt;repo&gt;/&lt;tag&gt;/index.html</code> 형태로 만들 수 있다. <b>태그 자체가 웹서버인 것은 아니며</b> MIME·상대 파일·CORS·보안 정책을 충족하는 HTTPS 제공자가 필요하다.</p>
+        <p>GitHack은 HTML 첫 진입에서 확인 화면이 나올 수 있고 무료 서비스라 가용성을 보장하지 않는다. 서비스 장애나 게임별 리소스 제약이 생기면 해당 프리뷰만 이용 불가로 안내하거나 별도 검증된 호스팅 URL을 사용할 수 있다. 기존 GitHub Pages Stable 주소는 유지 가능하지만 <b>전시용 태그마다 별도의 Pages 배포를 의무화하지 않는다.</b> 실제 브라우저 실행 여부는 게임별로 검증한 범위만 표기한다.</p>
+      </section>
+
       <section class="section" id="git" data-search>
         <h2><span class="anchor-no">9.</span>Git 운영</h2>
         <ul><li><code>main</code>은 기본적으로 안정 기준선을 나타낸다.</li><li>Candidate와 Stable을 혼동하지 않는다.</li><li>PR/브랜치 작업 전 실제 Git 상태를 먼저 확인한다.</li><li>이미 병합된 PR, 오래된 커밋, Draft 상태, CI 실패 상태를 Stable로 착각하지 않는다.</li></ul>
@@ -233,6 +262,7 @@ Build: 20261007T193500+0900-a1b2c3d</code></pre>
       <section class="section" id="delivery" data-search>
         <h2><span class="anchor-no">12.</span>결과물 전달</h2>
         <p>사용자에게 최종 결과물처럼 전달하는 파일은 검증이 끝난 결과물이어야 한다.</p>
+        <p><a href="#tag-preview">Nightly 프리뷰</a>는 최종본 전달과 구분하여 <b>개발 중·미검증 상태</b>를 명시할 때만 공개한다.</p>
         <ul><li>중간본·부분 구현본·실패 후보본·검증 전 파일을 최종본처럼 전달하지 않는다.</li><li>내부 Candidate는 여러 개 만들 수 있지만 최종 전달은 가능한 한 하나로 정리한다.</li><li>최종 전달 시 파일/커밋, 메인 버전, 필요 시 BUILD_ID, 기준 베이스, 주요 변경, 검증 결과를 남긴다.</li></ul>
       </section>
 
@@ -299,6 +329,7 @@ Build: 20261007T193500+0900-a1b2c3d</code></pre>
           <tr><td>마이그레이션</td><td><b>교체 후 정리. 호환 계층은 명시적 예외.</b></td></tr>
           <tr><td>기준본</td><td>항상 하나의 명확한 Stable / SSOT에서 시작</td></tr>
           <tr><td>승격</td><td>Candidate → Validated → Stable</td></tr>
+          <tr><td>전시 배포</td><td>고유 Git 태그의 HTML 스냅샷을 직접 프리뷰. Stable은 검증·승인, Nightly는 실행 보장 없음.</td></tr>
           <tr><td>완료</td><td>구현 + 시나리오 검증 + 임시 검사·Legacy 정리 + 관련 문서 동기화</td></tr>
           <tr><td>복잡성</td><td>실제 필요가 없는 버전·호환 계층·문서·분기를 만들지 않음</td></tr>
         </tbody></table></div>
