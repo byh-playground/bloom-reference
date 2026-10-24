@@ -1,0 +1,92 @@
+name: Game release tag contract
+on:
+  workflow_call:
+    inputs:
+      channel:
+        description: Stable or Nightly
+        type: string
+        required: true
+      commit_sha:
+        description: Source snapshot SHA
+        type: string
+        required: true
+      stable_version:
+        description: Approved product version
+        type: string
+        required: false
+        default: ''
+      stable_approved:
+        description: Confirmed validation and approval
+        type: boolean
+        required: false
+        default: false
+permissions:
+  contents: write
+jobs:
+  immutable-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out original source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Tag original HTML snapshot
+        shell: bash
+        env:
+          CHANNEL: ${{ inputs.channel }}
+          TARGET_SHA: ${{ inputs.commit_sha }}
+          STABLE_VERSION: ${{ inputs.stable_version }}
+          STABLE_APPROVED: ${{ inputs.stable_approved }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "A full source commit SHA is required" >&2
+            exit 1
+          fi
+          git fetch --no-tags origin main
+          git cat-file -e "${TARGET_SHA}^{commit}"
+          if ! git merge-base --is-ancestor "$TARGET_SHA" origin/main; then
+            echo "Release snapshot must be in the main history" >&2
+            exit 1
+          fi
+          if ! git cat-file -e "${TARGET_SHA}:index.html"; then
+            echo "The tagged snapshot must contain its original root index.html" >&2
+            exit 1
+          fi
+          if [[ "$CHANNEL" == "nightly" ]]; then
+            # Commit timestamp + full 12-char prefix: stable across workflow retries.
+            STAMP=$(date -u -d "@$(git show -s --format=%ct "$TARGET_SHA")" +%Y%m%dT%H%M%SZ)
+            TAG="nightly-${STAMP}-${TARGET_SHA:0:12}"
+          elif [[ "$CHANNEL" == "stable" ]]; then
+            if [[ "$STABLE_APPROVED" != "true" ]]; then
+              echo "Stable requires an explicit validated approval" >&2
+              exit 1
+            fi
+            if [[ ! "$STABLE_VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Stable tag must use vMAJOR.MINOR.PATCH" >&2
+              exit 1
+            fi
+            TAG="v${STABLE_VERSION#v}"
+          else
+            echo "Unsupported release channel" >&2
+            exit 1
+          fi
+          # Never move an immutable tag, including on concurrent or retry runs.
+          git fetch --tags origin
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            EXISTING=$(git rev-parse "refs/tags/$TAG^{}")
+            if [[ "$EXISTING" == "$TARGET_SHA" ]]; then
+              echo "Already tagged: $TAG ($TARGET_SHA)"
+              exit 0
+            fi
+            echo "Refusing to move immutable tag $TAG" >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "$TAG" "$TARGET_SHA" -m "$CHANNEL snapshot: $TARGET_SHA"
+          git push origin "refs/tags/$TAG"
+          echo "Published $TAG ($TARGET_SHA)"
