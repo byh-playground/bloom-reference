@@ -4,7 +4,7 @@ kicker: Project Management Rules
 subtitle: 버전, 기준본, 마이그레이션, 검증, 배포, Git, 산출물, 핸드오프를 위한 공통 운영 규칙.
 brand_small: 운영·버전·배포 SSOT
 badges: 관리 규칙 SSOT*, MAJOR.MINOR.PATCH, Candidate → Validated → Stable
-search_placeholder: 규칙 검색 (예: 버전, 마이그레이션, Stable)
+search_placeholder: 규칙 검색 (예: 버전, 마이그레이션, Stable, 태그)
 footer: 공통 세계관 / 게임 프로젝트 · 개발 외 관리 규칙 SSOT
 ---
 
