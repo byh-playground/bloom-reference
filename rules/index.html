@@ -113,8 +113,8 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <header class="doc-header">
         <div class="kicker">Agent Entry Document</div>
         <h1>BLOOM 에이전트 작업 규칙</h1>
-        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 54개와 상세 문서 링크.</p>
-        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 54개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
+        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 55개와 상세 문서 링크.</p>
+        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 55개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
       </header>
 <div class="notice"><strong>이 문서 사용법</strong><br>이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 <code>- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …</code> 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: <code>DEV-001 위반</code>). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 <code>tools/build-rules.py</code>가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 <code>P0/P1/P2</code>는 구조 규칙의 나중 수정 비용 순서이고, <code>-</code>는 우선순위가 없는 규칙이다.</div>
 <section class="section" id="terminology" data-search>
@@ -142,6 +142,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li class="rule-line" id="AI-012" data-priority="-"><span class="rule-id">AI-012</span><strong>Fixed Timestep / Sub-stepping · Functional ≠ Non-functional</strong> — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다. <a class="rule-detail" href="ai-development.html#simulation-cadence">상세</a></li>
 <li class="rule-line" id="AI-013" data-priority="-"><span class="rule-id">AI-013</span><strong>Acceptance Test · Moving the Goalposts 금지</strong> — 구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다. <a class="rule-detail" href="ai-development.html#verification">상세</a></li>
 <li class="rule-line" id="AI-014" data-priority="-"><span class="rule-id">AI-014</span><strong>Definition of Done · Docs as Code</strong> — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다. <a class="rule-detail" href="ai-development.html#verification">상세</a></li>
+<li class="rule-line" id="AI-015" data-priority="-"><span class="rule-id">AI-015</span><strong>Observable Evidence · Show, Don't Tell</strong> — 완료의 기준은 코드를 쓴 것이 아니라 AI가 실제 실행 결과를 직접 본 것이다. 변경한 장면·파라미터를 실제로 실행해 관찰물(화면·연출은 스크린샷이나 키프레임, 로직·수치는 실행 로그나 출력값)을 얻어 기대 결과와 비교하고, 그 관찰물과 비교 결과를 보고에 첨부한다. 위반 판별: 관찰물 없이 "구현했다"고 보고했거나, 사용자가 직접 실행해야 결과를 알 수 있다. <a class="rule-detail" href="ai-development.html#verification">상세</a></li>
 </ul>
 </section>
 <section class="section" id="dev" data-search>
