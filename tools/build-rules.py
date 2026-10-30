@@ -118,7 +118,11 @@ def convert_rule_lines(body: str, page_rules: dict[str, str]) -> str:
 
     def repl(m: re.Match) -> str:
         rid, pri, text = m.group(1), m.group(2), m.group(3).strip()
-        plain = re.sub(r"<[^>]+>", "", text).strip()
+        # 진입 문서의 규칙 줄은 끝에 [상세](…) 링크를 달 수 있다. 비교·표시용 문장에서는 뺀다.
+        detail = re.search(r'\s*<a href="([^"]+)">상세</a>\s*$', text)
+        if detail:
+            text = text[: detail.start()].rstrip() + f' <a class="rule-detail" href="{detail.group(1)}">상세</a>'
+        plain = re.sub(r"<[^>]+>", "", text).replace(" 상세", "").strip()
         if rid in page_rules:
             raise BuildError(f"규칙 ID 중복: {rid}")
         page_rules[rid] = plain

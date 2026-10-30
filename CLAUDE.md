@@ -1,6 +1,9 @@
 # bloom-reference 작업 지침
 
-- 규칙 문서(`rules/*.md`)는 Markdown이 원본이고 같은 이름의 `rules/*.html`은 `tools/build-rules.py`의 생성물입니다. 생성물은 직접 고치지 않습니다. 원본을 고쳐 push하면 `rules-build` Action이 HTML을 재생성해 커밋합니다. 로컬 확인은 `python3 tools/build-rules.py`(변환) 또는 `--check`(일치 확인)입니다.
+@AGENTS.md
+
+- 위 진입 문서(`AGENTS.md`)의 규칙 줄 53개가 모든 작업의 기본 규칙이다. 규칙 위반·적용은 ID로 보고한다(예: `DEV-001 위반`). 상세는 규칙 줄 끝의 [상세] 링크 절만 읽는다.
+- 규칙 문서(`AGENTS.md`, `rules/*.md`)는 Markdown이 원본이고 `rules/*.html`(`AGENTS.md`는 `rules/index.html`)은 `tools/build-rules.py`의 생성물입니다. 규칙을 고칠 때는 상세 문서의 규칙 줄과 `AGENTS.md`의 같은 줄을 함께 고칩니다(변환기가 불일치를 실패로 처리). 생성물은 직접 고치지 않습니다. 원본을 고쳐 push하면 `rules-build` Action이 HTML을 재생성해 커밋합니다. 로컬 확인은 `python3 tools/build-rules.py`(변환) 또는 `--check`(일치 확인)입니다.
 - 그 밖의 문서와 실험의 원본은 각 HTML 파일입니다. 같은 내용을 Markdown으로 중복 관리하지 않습니다.
 - 자료를 추가하거나 고치면 README의 "바로 보기" 표(htmlpreview 링크와 HTML 원본 링크)와 "수록 원본" 표를 함께 갱신합니다.
 - 역할 경계: `rules/`는 개발 원칙·리뷰 기준과 프로젝트 관리 규칙, `algorithms/`는 적용 조건·비용·대안이 있는 알고리즘 레퍼런스, `labs/`는 독립 HTML 실험입니다. 세계관은 bloom-world, 런타임 코드와 API는 bloom-gamekit이 원본입니다.
