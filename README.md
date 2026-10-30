@@ -10,7 +10,7 @@ AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 
 작업 전에 https://raw.githubusercontent.com/byh-playground/bloom-reference/main/AGENTS.md 를 받아 전부 읽고 규칙 줄을 따른다. 상세는 각 줄 끝 [상세] 링크 절만 읽고, 규칙 적용·위반은 ID(예: DEV-001)로 보고한다.
 ```
 
-- 진입 문서는 [AGENTS.md](AGENTS.md) 1개(규칙 줄 57개, 약 15,000자)이고 [위키 화면](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html)으로도 볼 수 있다.
+- 진입 문서는 [AGENTS.md](AGENTS.md) 1개(규칙 줄 58개, 약 15,000자)이고 [위키 화면](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html)으로도 볼 수 있다.
 - 상세 링크는 `rules/*.md` 상대 경로다. raw URL로 읽는 AI는 같은 raw 경로(`https://raw.githubusercontent.com/byh-playground/bloom-reference/main/rules/<파일>.md`)로 바꿔 읽는다.
 - 이 저장소 안에서는 `CLAUDE.md`가 `@AGENTS.md`로 자동으로 불러오므로 붙여 넣을 필요가 없다.
 
@@ -25,9 +25,9 @@ AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 
 
 | 자료 | 화면 열기 | HTML 원본 |
 | --- | --- | --- |
-| **에이전트 진입 문서** · 규칙 줄 57개(AI·DEV·PM) + 상세 링크 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html) | [AGENTS.md](AGENTS.md) (원본) · [HTML 생성물](rules/index.html) |
+| **에이전트 진입 문서** · 규칙 줄 58개(AI·DEV·PM) + 상세 링크 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html) | [AGENTS.md](AGENTS.md) (원본) · [HTML 생성물](rules/index.html) |
 | 공통 개발 규칙 · 비용 우선순위 · 규칙 줄 DEV-001~026 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.md](rules/development.md) (원본) · [HTML 생성물](rules/development.html) |
-| AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 · 규칙 줄 AI-000~017 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
+| AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 · 규칙 줄 AI-000~018 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable/Nightly·Git·원본 무빌드 배포 · 규칙 줄 PM-001~013 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.md](rules/project-management.md) (원본) · [HTML 생성물](rules/project-management.html) |
 | 공통 UI/UX 레퍼런스 · P1–P10 우선순위·URL·상태·모바일·시각 피드백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
 | 게임 기획 가이드 · 연쇄 반응·해금·규칙 단순화·수치 초안 정규화 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
