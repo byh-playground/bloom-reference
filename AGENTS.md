@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 56개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 57개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 56개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 57개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -19,12 +19,13 @@ footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.m
 
 ## 완료 조건 {#done}
 
-AI가 "완료"라고 보고할 수 있는 조건. 작업 순서보다 먼저 읽는다. 원본: [AI 개발 규칙 · 완료 조건](rules/ai-development.md#verification).
+AI가 "완료"라고 보고할 수 있는 조건. 작업 순서보다 먼저 읽는다. 관찰물은 [표준 관찰 절차](rules/ai-development.md#observation-procedure) A→G 하나로 얻는다. 원본: [AI 개발 규칙 · 완료 조건](rules/ai-development.md#verification).
 
 - [AI-013][-] **Acceptance Test · Moving the Goalposts 금지** — 구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다. [상세](rules/ai-development.md#verification)
 - [AI-014][-] **Definition of Done · Docs as Code** — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다. [상세](rules/ai-development.md#verification)
 - [AI-015][-] **Observable Evidence · Show, Don't Tell** — 완료의 기준은 코드를 쓴 것이 아니라 AI가 실제 실행 결과를 직접 본 것이다. 변경한 장면·파라미터를 실제로 실행해 관찰물(화면·연출은 스크린샷이나 키프레임, 로직·수치는 실행 로그나 출력값)을 얻어 기대 결과와 비교하고, 그 관찰물과 비교 결과를 보고에 첨부한다. 위반 판별: 관찰물 없이 "구현했다"고 보고했거나, 사용자가 직접 실행해야 결과를 알 수 있다. [상세](rules/ai-development.md#verification)
 - [AI-016][-] **Ephemeral Evidence · Keep Only Reusable** — 관찰물(스크린샷·키프레임·로그)과 검증용 임시 코드(스크립트·단위 테스트·디버그 출력)는 그 시점에 사용자와 결과를 공유하기 위한 증거다. 보고에 첨부한 뒤 폐기하고 레포에 남기지 않는다. 레포에 남기는 기준은 재사용 하나다: 다음 작업에서도 같은 검증을 다시 돌리는 것(고정 사용자 시나리오 E2E, 변환기 검사)만 남기고, 요청하지 않은 테스트는 만들지 않는다. 위반 판별: PR에 1회용 스크린샷·임시 스크립트·디버그 테스트가 들어 있거나, 재사용 근거 없이 테스트 파일이 추가되었다. [상세](rules/ai-development.md#verification)
+- [AI-017][-] **Deterministic Capture · Parameterized Scene** — 관찰물은 아래 표준 절차 하나로 얻는다: 결정론적 실행(고정 dt·시드 난수)에 장면 파라미터(seed·설정·tick)를 넣어 같은 장면을 재현하고, 헤드리스 브라우저의 고정 뷰포트에서 캡처해 변경 전후를 같은 파라미터로 비교한다. 사람이 화면을 보며 찍거나 작업마다 다른 방식으로 캡처하지 않는다. 위반 판별: 관찰물에 재현 파라미터(커밋·seed·tick·뷰포트)가 없거나, 전후 비교가 다른 조건에서 이뤄졌다. [상세](rules/ai-development.md#verification)
 
 ## 작업 순서 {#ai}
 
