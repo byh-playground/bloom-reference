@@ -2,6 +2,18 @@
 
 BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기준과 시각 실험을 모아 둔 레퍼런스 저장소입니다. 규칙 문서는 Markdown이 원본이고 위키 HTML은 변환기 생성물입니다(아래 "규칙 문서 원본과 생성물"). 나머지 문서와 실험의 원본은 각 HTML 파일이며, 같은 내용을 Markdown으로 중복 관리하지 않습니다.
 
+## 에이전트 퀵스타트
+
+AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 아래 한 줄을 채팅 첫 메시지나 해당 저장소의 `AGENTS.md`/`CLAUDE.md` 첫 줄에 붙여 넣는다.
+
+```text
+작업 전에 https://raw.githubusercontent.com/byh-playground/bloom-reference/main/AGENTS.md 를 받아 전부 읽고 규칙 줄을 따른다. 상세는 각 줄 끝 [상세] 링크 절만 읽고, 규칙 적용·위반은 ID(예: DEV-001)로 보고한다.
+```
+
+- 진입 문서는 [AGENTS.md](AGENTS.md) 1개(규칙 줄 57개, 약 15,000자)이고 [위키 화면](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html)으로도 볼 수 있다.
+- 상세 링크는 `rules/*.md` 상대 경로다. raw URL로 읽는 AI는 같은 raw 경로(`https://raw.githubusercontent.com/byh-playground/bloom-reference/main/rules/<파일>.md`)로 바꿔 읽는다.
+- 이 저장소 안에서는 `CLAUDE.md`가 `@AGENTS.md`로 자동으로 불러오므로 붙여 넣을 필요가 없다.
+
 ## 규칙 문서 원본과 생성물
 
 - 원본: 저장소 루트 `AGENTS.md`(진입 문서, 규칙 줄 전부 + 상세 링크)와 `rules/*.md` 3개(`ai-development.md`, `development.md`, `project-management.md`). 사람과 AI는 이 파일만 고칩니다. 에이전트는 `AGENTS.md`를 통째로 읽고(Claude Code는 `CLAUDE.md`의 `@AGENTS.md` import로 같은 내용을 읽음) 필요한 절만 상세 문서에서 읽습니다. 규칙 절의 첫 줄 `- [ID][우선순위] 문장`이 규칙 줄이며, 위반 보고는 이 ID로 합니다.
