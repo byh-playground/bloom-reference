@@ -103,10 +103,11 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
     <ul class="toc" id="toc">
       <li><a href="#terminology">1. 대전제</a></li>
       <li><a href="#done">2. 완료 조건</a></li>
-      <li><a href="#ai">3. 작업 순서</a></li>
-      <li><a href="#dev">4. 구조 규칙</a></li>
-      <li><a href="#pm">5. PR·버전·검증·배포</a></li>
-      <li><a href="#refs">6. 상황별 레퍼런스</a></li>
+      <li><a href="#media">3. 소통 포맷</a></li>
+      <li><a href="#ai">4. 작업 순서</a></li>
+      <li><a href="#dev">5. 구조 규칙</a></li>
+      <li><a href="#pm">6. PR·버전·검증·배포</a></li>
+      <li><a href="#refs">7. 상황별 레퍼런스</a></li>
     </ul>
   </aside>
   <main class="main">
@@ -114,8 +115,8 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <header class="doc-header">
         <div class="kicker">Agent Entry Document</div>
         <h1>BLOOM 에이전트 작업 규칙</h1>
-        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 57개와 상세 문서 링크.</p>
-        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 57개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
+        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 58개와 상세 문서 링크.</p>
+        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 58개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
       </header>
 <div class="notice"><strong>이 문서 사용법</strong><br>이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 <code>- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …</code> 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: <code>DEV-001 위반</code>). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 <code>tools/build-rules.py</code>가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 <code>P0/P1/P2</code>는 구조 규칙의 나중 수정 비용 순서이고, <code>-</code>는 우선순위가 없는 규칙이다. 장 순서가 읽는 순서다.</div>
 <section class="section" id="terminology" data-search>
@@ -136,8 +137,15 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li class="rule-line" id="AI-017" data-priority="-"><span class="rule-id">AI-017</span><strong>Deterministic Capture · Parameterized Scene</strong> — 관찰물은 아래 표준 절차 하나로 얻는다: 결정론적 실행(고정 dt·시드 난수)에 장면 파라미터(seed·설정·tick)를 넣어 같은 장면을 재현하고, 헤드리스 브라우저의 고정 뷰포트에서 캡처해 변경 전후를 같은 파라미터로 비교한다. 사람이 화면을 보며 찍거나 작업마다 다른 방식으로 캡처하지 않는다. 위반 판별: 관찰물에 재현 파라미터(커밋·seed·tick·뷰포트)가 없거나, 전후 비교가 다른 조건에서 이뤄졌다. <a class="rule-detail" href="ai-development.html#verification">상세</a></li>
 </ul>
 </section>
+<section class="section" id="media" data-search>
+<h2><span class="anchor-no">3.</span>소통 포맷</h2>
+<p>보고·문서·기획을 쓸 때 내용 유형에 맞는 매체를 고른다. 유형별 표는 원본: <a href="ai-development.html#media">AI 개발 규칙 · 소통 포맷</a>.</p>
+<ul>
+<li class="rule-line" id="AI-018" data-priority="-"><span class="rule-id">AI-018</span><strong>Cognitive Fit · Executable Specification</strong> — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향은 짧은 글과 참고 작품명, 시각 결과는 이미지, 시간에 따른 변화는 키프레임·영상·플로우차트, 구조·관계는 다이어그램(코드로 그림), 규칙·계약·설정·API는 산문 대신 코드·스키마·실행 가능한 예시(목업) 그대로, 비교·수치는 표, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조를 문단으로 설명했다. <a class="rule-detail" href="ai-development.html#media">상세</a></li>
+</ul>
+</section>
 <section class="section" id="ai" data-search>
-<h2><span class="anchor-no">3.</span>작업 순서</h2>
+<h2><span class="anchor-no">4.</span>작업 순서</h2>
 <p>AI 작업의 순서와 판단 기준. 원본: <a href="ai-development.html">AI 개발 규칙</a>.</p>
 <ul>
 <li class="rule-line" id="AI-001" data-priority="-"><span class="rule-id">AI-001</span><strong>XY Problem 회피 · Specification by Example</strong> — 작업 순서는 의도 정리 → 최소 한 번 검색·비교 → 구체 동작 확정 → 구현 → 같은 사례로 검증이며, 용어가 맞았다는 이유로 사용자 의도를 이해했다고 간주하지 않는다. 위반 판별: 검색·비교 기록이나 확정한 동작 사례 없이 구현을 시작했다. <a class="rule-detail" href="ai-development.html#principle">상세</a></li>
@@ -155,7 +163,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="dev" data-search>
-<h2><span class="anchor-no">4.</span>구조 규칙</h2>
+<h2><span class="anchor-no">5.</span>구조 규칙</h2>
 <p>코드 구조·설계 원칙. 나중 수정 비용이 큰 순서(P0 → P1 → P2). 원본: <a href="development.html">공통 개발 규칙</a>.</p>
 <h4 id="p0-초기에-반드시-잡기">P0 — 초기에 반드시 잡기</h4>
 <ul>
@@ -197,7 +205,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="pm" data-search>
-<h2><span class="anchor-no">5.</span>PR·버전·검증·배포</h2>
+<h2><span class="anchor-no">6.</span>PR·버전·검증·배포</h2>
 <p>개발 외 운영 규칙. 원본: <a href="project-management.html">공통 프로젝트 관리 규칙</a>.</p>
 <ul>
 <li class="rule-line" id="PM-001" data-priority="-"><span class="rule-id">PM-001</span><strong>SemVer (제품 세대 기준 MAJOR)</strong> — 버전 판정은 제품 세대 변경 → MAJOR, 비호환 변경 → MINOR, 호환되는 의미 있는 변경 → PATCH, 외부 동작·계약이 같은 내부 정리 → 버전 유지 순서로 한다. 위반 판별: 순수 리팩터링·문서 수정에 PATCH를 올렸거나, 비호환 변경에 PATCH만 올렸다. <a class="rule-detail" href="project-management.html#version-decision">상세</a></li>
@@ -216,7 +224,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="refs" data-search>
-<h2><span class="anchor-no">6.</span>상황별 레퍼런스</h2>
+<h2><span class="anchor-no">7.</span>상황별 레퍼런스</h2>
 <p>아래 문서는 해당 작업을 할 때만 읽는다. 원본은 각 HTML이다.</p>
 <div class="table-wrap"><table>
 <thead>
