@@ -176,7 +176,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>초기 설계를 잘못하면 나중에 단순 리팩터링이 아니라 데이터 구조와 호출 관계를 다시 설계해야 하는 항목들이다.</p>
 <h3 id="ownership"><span class="anchor-no">1.1.</span>하나의 상태에는 하나의 진실과 하나의 소유자</h3>
 <ul>
-<li class="rule-line" id="DEV-001" data-priority="P0"><span class="rule-id">DEV-001</span><span class="rule-priority">P0</span>같은 의미의 상태·공식·판정 로직은 한 곳에서만 정의하고, 그 상태를 생성·수정·삭제하는 주체는 1개만 둔다. 위반 판별: 같은 필드를 2곳 이상에서 대입하거나 같은 공식이 2개 이상 모듈에 있다.</li>
+<li class="rule-line" id="DEV-001" data-priority="P0"><span class="rule-id">DEV-001</span><span class="rule-priority">P0</span><strong>SSOT · Single Ownership</strong> — 같은 의미의 상태·공식·판정 로직은 한 곳에서만 정의하고, 그 상태를 생성·수정·삭제하는 주체는 1개만 둔다. 위반 판별: 같은 필드를 2곳 이상에서 대입하거나 같은 공식이 2개 이상 모듈에 있다.</li>
 </ul>
 <p>태그: #SSOT #SingleOwnership #SingleWriter</p>
 <p class="meta-line">빈도: 매우 높음 · 나중 수정비용: 매우 큼</p>
@@ -195,7 +195,7 @@ hud.hp -= 10;
 </code></pre></div>
 <h3 id="state-machine"><span class="anchor-no">1.2.</span>Checkbox 상태와 Radio 상태를 구조적으로 구분</h3>
 <ul>
-<li class="rule-line" id="DEV-002" data-priority="P0"><span class="rule-id">DEV-002</span><span class="rule-priority">P0</span>동시에 성립할 수 있는 상태는 독립 boolean으로, 상호배타적인 택 1 상태는 enum/state machine으로 정의한다. 위반 판별: 서로 배타적이어야 하는 boolean 필드가 2개 이상 있다.</li>
+<li class="rule-line" id="DEV-002" data-priority="P0"><span class="rule-id">DEV-002</span><span class="rule-priority">P0</span><strong>Make Illegal States Unrepresentable · State Machine</strong> — 동시에 성립할 수 있는 상태는 독립 boolean으로, 상호배타적인 택 1 상태는 enum/state machine으로 정의한다. 위반 판별: 서로 배타적이어야 하는 boolean 필드가 2개 이상 있다.</li>
 </ul>
 <p>태그: #StateMachine #MakeIllegalStatesUnrepresentable</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 매우 큼</p>
@@ -214,7 +214,7 @@ isPoisoned = true;
 <p>Radio 상태는 하나만, Checkbox 상태는 독립 flag로 둔다.</p>
 <h3 id="composition"><span class="anchor-no">1.3.</span>관계의 종류에 따라 구현 방식을 구분한다</h3>
 <ul>
-<li class="rule-line" id="DEV-003" data-priority="P0"><span class="rule-id">DEV-003</span><span class="rule-priority">P0</span>객체 관계를 IS-A(상속)·HAS-A(composition)·CAN-BE(mixin/trait)로 먼저 구분하고 그 관계에 맞는 구현을 쓴다. CAN-BE capability는 자기 상태와 로직을 mixin이 직접 소유하고, Host가 이미 소유한 HAS-A 객체를 다시 만들지 않는다. 위반 판별: 기능 조합을 상속 계층으로 표현했거나, 단순 capability를 component 배열·registry를 거쳐 호출하거나, mixin이 Host 소유 객체를 중복 생성한다.</li>
+<li class="rule-line" id="DEV-003" data-priority="P0"><span class="rule-id">DEV-003</span><span class="rule-priority">P0</span><strong>IS-A / HAS-A / CAN-BE · Composition over Inheritance</strong> — 객체 관계를 IS-A(상속)·HAS-A(composition)·CAN-BE(mixin/trait)로 먼저 구분하고 그 관계에 맞는 구현을 쓴다. CAN-BE capability는 자기 상태와 로직을 mixin이 직접 소유하고, Host가 이미 소유한 HAS-A 객체를 다시 만들지 않는다. 위반 판별: 기능 조합을 상속 계층으로 표현했거나, 단순 capability를 component 배열·registry를 거쳐 호출하거나, mixin이 Host 소유 객체를 중복 생성한다.</li>
 </ul>
 <p>태그: #IS_A_HAS_A_CAN_BE #CompositionOverInheritance #Mixin #CapabilityOwnership</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 매우 큼</p>
@@ -485,7 +485,7 @@ unit.iaiSlash(enemy);
 </code></pre>
 <h3 id="capability"><span class="anchor-no">1.4.</span>이름이 아니라 능력으로 분기</h3>
 <ul>
-<li class="rule-line" id="DEV-004" data-priority="P0"><span class="rule-id">DEV-004</span><span class="rule-priority">P0</span>로직 분기는 유닛명·타입명·ID·맵 이름이 아니라 capability 보유 여부와 데이터로 한다. 위반 판별: <code>type === "..."</code> 또는 맵 이름 비교로 행동이 갈린다.</li>
+<li class="rule-line" id="DEV-004" data-priority="P0"><span class="rule-id">DEV-004</span><span class="rule-priority">P0</span><strong>Capability-based Design</strong> — 로직 분기는 유닛명·타입명·ID·맵 이름이 아니라 capability 보유 여부와 데이터로 한다. 위반 판별: <code>type === "..."</code> 또는 맵 이름 비교로 행동이 갈린다.</li>
 </ul>
 <p>태그: #CapabilityBasedDesign</p>
 <p class="meta-line">빈도: 매우 높음 · 나중 수정비용: 큼</p>
@@ -501,7 +501,7 @@ unit.iaiSlash(enemy);
 </code></pre></div>
 <h3 id="instance"><span class="anchor-no">1.5.</span>같은 기능도 인스턴스마다 다른 값을 가질 수 있게</h3>
 <ul>
-<li class="rule-line" id="DEV-005" data-priority="P0"><span class="rule-id">DEV-005</span><span class="rule-priority">P0</span>같은 behavior를 쓰는 인스턴스마다 독립된 parameter를 가질 수 있어야 한다. 위반 판별: 정적 필드나 공유 객체 하나로 모든 인스턴스의 값이 강제된다.</li>
+<li class="rule-line" id="DEV-005" data-priority="P0"><span class="rule-id">DEV-005</span><span class="rule-priority">P0</span><strong>Instance Configuration</strong> — 같은 behavior를 쓰는 인스턴스마다 독립된 parameter를 가질 수 있어야 한다. 위반 판별: 정적 필드나 공유 객체 하나로 모든 인스턴스의 값이 강제된다.</li>
 </ul>
 <p>태그: #InstanceConfiguration #ConfigOverride</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 큼</p>
@@ -524,7 +524,7 @@ Instance Configuration
 </code></pre>
 <h3 id="dependency"><span class="anchor-no">1.6.</span>Core가 구체 기술을 직접 알지 않게</h3>
 <ul>
-<li class="rule-line" id="DEV-006" data-priority="P0"><span class="rule-id">DEV-006</span><span class="rule-priority">P0</span>도메인/게임 로직은 네트워크·렌더러·저장소·프레임워크 API를 직접 호출하지 않고 교체 가능한 경계(transport 등)를 거친다. 위반 판별: 게임 로직 파일이 peer/renderer/storage API를 직접 import하거나 호출한다.</li>
+<li class="rule-line" id="DEV-006" data-priority="P0"><span class="rule-id">DEV-006</span><span class="rule-priority">P0</span><strong>Dependency Inversion</strong> — 도메인/게임 로직은 네트워크·렌더러·저장소·프레임워크 API를 직접 호출하지 않고 교체 가능한 경계(transport 등)를 거친다. 위반 판별: 게임 로직 파일이 peer/renderer/storage API를 직접 import하거나 호출한다.</li>
 </ul>
 <p>태그: #DependencyInversion #SeparationOfConcerns</p>
 <p class="meta-line">빈도: 중간 · 나중 수정비용: 매우 큼</p>
@@ -539,7 +539,7 @@ transport.send(command);
 <p><code>transport</code> 뒤 구현은 교체 가능하다.</p>
 <h3 id="signal"><span class="anchor-no">1.7.</span>Signal은 사건을 발생시키는 당사자가 소유</h3>
 <ul>
-<li class="rule-line" id="DEV-007" data-priority="P0"><span class="rule-id">DEV-007</span><span class="rule-priority">P0</span>"내게 이런 일이 일어났다"는 통지는 발생 주체가 소유한 public Signal로 노출하고, 발신자는 구독자를 모른다. 위반 판별: 전역 이벤트 버스에 문자열 이벤트명으로 emit하거나, 발생 주체가 점수·VFX·UI 시스템을 직접 호출한다.</li>
+<li class="rule-line" id="DEV-007" data-priority="P0"><span class="rule-id">DEV-007</span><span class="rule-priority">P0</span><strong>Signal Ownership · Observer</strong> — "내게 이런 일이 일어났다"는 통지는 발생 주체가 소유한 public Signal로 노출하고, 발신자는 구독자를 모른다. 위반 판별: 전역 이벤트 버스에 문자열 이벤트명으로 emit하거나, 발생 주체가 점수·VFX·UI 시스템을 직접 호출한다.</li>
 </ul>
 <p>태그: #SignalPattern #SignalOwnership</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 큼</p>
@@ -597,7 +597,7 @@ unit.onDied.on(vfxSystem.handle);
 <p>기능을 추가하거나 버그를 고칠 때 반복적으로 마주치는 규칙들이다. 구조 전체를 뒤엎을 정도는 아니어도, 지키지 않으면 매 수정의 비용이 커진다.</p>
 <h3 id="cqs"><span class="anchor-no">2.1.</span>읽기와 쓰기를 분리</h3>
 <ul>
-<li class="rule-line" id="DEV-008" data-priority="P1"><span class="rule-id">DEV-008</span><span class="rule-priority">P1</span>값을 읽는 함수는 상태를 바꾸지 않는다. 위반 판별: get<em>/is</em> 함수 안에 대입이나 재계산 호출이 있다.</li>
+<li class="rule-line" id="DEV-008" data-priority="P1"><span class="rule-id">DEV-008</span><span class="rule-priority">P1</span><strong>CQS (Command-Query Separation)</strong> — 값을 읽는 함수는 상태를 바꾸지 않는다. 위반 판별: get<em>/is</em> 함수 안에 대입이나 재계산 호출이 있다.</li>
 </ul>
 <p>태그: #CommandQuerySeparation</p>
 <p class="meta-line">빈도: 매우 높음 · 나중 수정비용: 중간</p>
@@ -616,7 +616,7 @@ refreshBuffs() {
 </code></pre></div>
 <h3 id="encapsulation"><span class="anchor-no">2.2.</span>내부 자료구조를 외부에서 직접 만지지 않기</h3>
 <ul>
-<li class="rule-line" id="DEV-009" data-priority="P1"><span class="rule-id">DEV-009</span><span class="rule-priority">P1</span>외부에서 다른 객체의 내부 자료구조를 직접 조작하지 않고 의미 있는 메서드를 거친다. 위반 판별: 다른 객체의 Map/Array 필드를 외부에서 직접 add/delete한다.</li>
+<li class="rule-line" id="DEV-009" data-priority="P1"><span class="rule-id">DEV-009</span><span class="rule-priority">P1</span><strong>Encapsulation</strong> — 외부에서 다른 객체의 내부 자료구조를 직접 조작하지 않고 의미 있는 메서드를 거친다. 위반 판별: 다른 객체의 Map/Array 필드를 외부에서 직접 add/delete한다.</li>
 </ul>
 <p>태그: #Encapsulation</p>
 <p class="meta-line">빈도: 매우 높음 · 나중 수정비용: 중간</p>
@@ -626,7 +626,7 @@ refreshBuffs() {
 </code></pre></div>
 <h3 id="semantic"><span class="anchor-no">2.3.</span>구현 방법이 아니라 의미를 API로 표현</h3>
 <ul>
-<li class="rule-line" id="DEV-010" data-priority="P1"><span class="rule-id">DEV-010</span><span class="rule-priority">P1</span>API 이름은 구현 방법이 아니라 도메인 의미를 나타낸다. 위반 판별: 함수 이름에 자료구조나 알고리즘 단계(updateArrayAndCalculate…)가 들어 있다.</li>
+<li class="rule-line" id="DEV-010" data-priority="P1"><span class="rule-id">DEV-010</span><span class="rule-priority">P1</span><strong>Semantic API · Intention-Revealing Name</strong> — API 이름은 구현 방법이 아니라 도메인 의미를 나타낸다. 위반 판별: 함수 이름에 자료구조나 알고리즘 단계(updateArrayAndCalculate…)가 들어 있다.</li>
 </ul>
 <p>태그: #SemanticAPI</p>
 <p class="meta-line">빈도: 매우 높음 · 나중 수정비용: 중간</p>
@@ -636,7 +636,7 @@ refreshBuffs() {
 </code></pre></div>
 <h3 id="locality"><span class="anchor-no">2.4.</span>기능 하나의 변경은 가능한 적은 위치에서 끝내기</h3>
 <ul>
-<li class="rule-line" id="DEV-011" data-priority="P1"><span class="rule-id">DEV-011</span><span class="rule-priority">P1</span>기능 하나를 추가·변경할 때 수정 위치를 최소로 하고, 새 capability는 구현 + 등록으로 끝낸다. 위반 판별: 기능 하나를 추가하려고 3개 이상 파일의 switch/if 분기를 고친다.</li>
+<li class="rule-line" id="DEV-011" data-priority="P1"><span class="rule-id">DEV-011</span><span class="rule-priority">P1</span><strong>Locality of Change · Open-Closed</strong> — 기능 하나를 추가·변경할 때 수정 위치를 최소로 하고, 새 capability는 구현 + 등록으로 끝낸다. 위반 판별: 기능 하나를 추가하려고 3개 이상 파일의 switch/if 분기를 고친다.</li>
 </ul>
 <p>태그: #LocalityOfChange</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 중간~큼</p>
@@ -658,7 +658,7 @@ abilities.register(
 </code></pre></div>
 <h3 id="srp"><span class="anchor-no">2.5.</span>변경 이유가 다른 코드는 분리</h3>
 <ul>
-<li class="rule-line" id="DEV-012" data-priority="P1"><span class="rule-id">DEV-012</span><span class="rule-priority">P1</span>변경 이유가 다른 코드(판정·VFX·사운드·네트워크)는 한 함수에 섞지 않고 각자 책임에서 반응한다. 위반 판별: 한 함수가 게임 판정과 표현·전송 호출을 함께 가진다.</li>
+<li class="rule-line" id="DEV-012" data-priority="P1"><span class="rule-id">DEV-012</span><span class="rule-priority">P1</span><strong>SRP · High Cohesion / Low Coupling</strong> — 변경 이유가 다른 코드(판정·VFX·사운드·네트워크)는 한 함수에 섞지 않고 각자 책임에서 반응한다. 위반 판별: 한 함수가 게임 판정과 표현·전송 호출을 함께 가진다.</li>
 </ul>
 <p>태그: #SingleResponsibilityPrinciple #HighCohesionLowCoupling</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 중간</p>
@@ -678,7 +678,7 @@ abilities.register(
 </code></pre></div>
 <h3 id="data-driven"><span class="anchor-no">2.6.</span>Behavior는 코드, Parameters는 데이터</h3>
 <ul>
-<li class="rule-line" id="DEV-013" data-priority="P1"><span class="rule-id">DEV-013</span><span class="rule-priority">P1</span>behavior는 코드로, 그 behavior의 수치(시간·거리·개수)는 설정 데이터로 둔다. 설정에 없는 독립 행동을 임의 플래그로 흉내 내지 않는다. 위반 판별: 타입별 if문 안에 수치 상수가 박혀 있다.</li>
+<li class="rule-line" id="DEV-013" data-priority="P1"><span class="rule-id">DEV-013</span><span class="rule-priority">P1</span><strong>Data-Driven Design</strong> — behavior는 코드로, 그 behavior의 수치(시간·거리·개수)는 설정 데이터로 둔다. 설정에 없는 독립 행동을 임의 플래그로 흉내 내지 않는다. 위반 판별: 타입별 if문 안에 수치 상수가 박혀 있다.</li>
 </ul>
 <p>태그: #DataDrivenDesign</p>
 <p>같은 돌진 행동의 경고 시간·거리, 같은 지형 생성기의 주파수·통로 폭처럼 <strong>값이 다른 부분</strong>은 설정으로 둔다. 설정에 없는 독립 행동까지 임의 플래그로 흉내 내지는 않는다.</p>
@@ -709,7 +709,7 @@ if (type === &quot;B&quot;) damage = 25;
 </code></pre></div>
 <h3 id="lifecycle"><span class="anchor-no">2.7.</span>생성·활성·종료·정리를 명확히</h3>
 <ul>
-<li class="rule-line" id="DEV-014" data-priority="P1"><span class="rule-id">DEV-014</span><span class="rule-priority">P1</span>객체·효과는 생성·활성·종료·정리 단계를 명시하고, dispose에서 타이머·구독·registry 참조를 모두 해제한다. 위반 판별: active=false만 바꾸고 구독·타이머가 남아 있다.</li>
+<li class="rule-line" id="DEV-014" data-priority="P1"><span class="rule-id">DEV-014</span><span class="rule-priority">P1</span><strong>Lifecycle · Dispose Pattern</strong> — 객체·효과는 생성·활성·종료·정리 단계를 명시하고, dispose에서 타이머·구독·registry 참조를 모두 해제한다. 위반 판별: active=false만 바꾸고 구독·타이머가 남아 있다.</li>
 </ul>
 <p>태그: #Lifecycle</p>
 <p class="meta-line">빈도: 중간 · 나중 수정비용: 중간</p>
@@ -727,7 +727,7 @@ if (type === &quot;B&quot;) damage = 25;
 <p>당장 기능을 막지는 않지만, 계속 누적되면 코드를 읽고 바꾸는 비용이 빠르게 증가한다. 주기적으로 정리한다.</p>
 <h3 id="dead"><span class="anchor-no">3.1.</span>사용하지 않는 코드·설정·필드 제거</h3>
 <ul>
-<li class="rule-line" id="DEV-015" data-priority="P2"><span class="rule-id">DEV-015</span><span class="rule-priority">P2</span>consumer가 없는 코드·설정·필드는 삭제하고, 다시 필요해지면 현재 구조로 구현한다. 위반 판별: 참조가 0인 필드·옵션·함수가 남아 있다.</li>
+<li class="rule-line" id="DEV-015" data-priority="P2"><span class="rule-id">DEV-015</span><span class="rule-priority">P2</span><strong>No Dead Code</strong> — consumer가 없는 코드·설정·필드는 삭제하고, 다시 필요해지면 현재 구조로 구현한다. 위반 판별: 참조가 0인 필드·옵션·함수가 남아 있다.</li>
 </ul>
 <p>태그: #NoDeadCode</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-js">legacySpeed = 2;
@@ -739,7 +739,7 @@ oldRecoveryMode = true;
 </code></pre></div>
 <h3 id="legacy"><span class="anchor-no">3.2.</span>이관 완료 후 구 구현을 fallback으로 남기지 않기</h3>
 <ul>
-<li class="rule-line" id="DEV-016" data-priority="P2"><span class="rule-id">DEV-016</span><span class="rule-priority">P2</span>이관 검증이 끝나면 구 구현 fallback을 제거한다. 위반 판별: <code>if (!newSystem()) legacySystem()</code> 형태의 분기가 남아 있다.</li>
+<li class="rule-line" id="DEV-016" data-priority="P2"><span class="rule-id">DEV-016</span><span class="rule-priority">P2</span><strong>No Legacy Fallback</strong> — 이관 검증이 끝나면 구 구현 fallback을 제거한다. 위반 판별: <code>if (!newSystem()) legacySystem()</code> 형태의 분기가 남아 있다.</li>
 </ul>
 <p>태그: #NoLegacyFallback</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-js">if (!newSystem()) {
@@ -751,7 +751,7 @@ oldRecoveryMode = true;
 </code></pre></div>
 <h3 id="dry"><span class="anchor-no">3.3.</span>코드 모양보다 지식의 중복 제거</h3>
 <ul>
-<li class="rule-line" id="DEV-017" data-priority="P2"><span class="rule-id">DEV-017</span><span class="rule-priority">P2</span>같은 지식(공식·판정 규칙)은 한 곳에만 둔다. 코드 모양이 같다는 이유만으로 합치지 않는다. 위반 판별: 같은 공식이 2개 이상 모듈에 복사되어 있다.</li>
+<li class="rule-line" id="DEV-017" data-priority="P2"><span class="rule-id">DEV-017</span><span class="rule-priority">P2</span><strong>DRY</strong> — 같은 지식(공식·판정 규칙)은 한 곳에만 둔다. 코드 모양이 같다는 이유만으로 합치지 않는다. 위반 판별: 같은 공식이 2개 이상 모듈에 복사되어 있다.</li>
 </ul>
 <p>태그: #DRY</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-text">// 세 모듈에 동일한
@@ -761,7 +761,7 @@ oldRecoveryMode = true;
 </code></pre></div>
 <h3 id="yagni"><span class="anchor-no">3.4.</span>미래를 예상한 추상화를 먼저 만들지 않기</h3>
 <ul>
-<li class="rule-line" id="DEV-018" data-priority="P2"><span class="rule-id">DEV-018</span><span class="rule-priority">P2</span>사용처가 1개인 동안에는 추상화·factory·registry를 만들지 않고, 실제 반복이 생길 때 공통화한다. 위반 판별: 구현체가 1개뿐인 인터페이스·추상 클래스·전략 어댑터가 있다.</li>
+<li class="rule-line" id="DEV-018" data-priority="P2"><span class="rule-id">DEV-018</span><span class="rule-priority">P2</span><strong>YAGNI · Rule of Three · KISS</strong> — 사용처가 1개인 동안에는 추상화·factory·registry를 만들지 않고, 실제 반복이 생길 때 공통화한다. 위반 판별: 구현체가 1개뿐인 인터페이스·추상 클래스·전략 어댑터가 있다.</li>
 </ul>
 <p>태그: #YAGNI #RuleOfThree #KISS</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-text">// 사용처 1개인데
@@ -777,7 +777,7 @@ EffectStrategyAdapter...
 </code></pre></div>
 <h3 id="language"><span class="anchor-no">3.5.</span>같은 개념에는 같은 이름</h3>
 <ul>
-<li class="rule-line" id="DEV-019" data-priority="P2"><span class="rule-id">DEV-019</span><span class="rule-priority">P2</span>같은 개념에는 코드 전체에서 같은 이름을 쓴다. 위반 판별: 같은 뜻의 필드가 attackDelay/fireDelay/cooldown처럼 서로 다른 이름으로 존재한다.</li>
+<li class="rule-line" id="DEV-019" data-priority="P2"><span class="rule-id">DEV-019</span><span class="rule-priority">P2</span><strong>Ubiquitous Language</strong> — 같은 개념에는 코드 전체에서 같은 이름을 쓴다. 위반 판별: 같은 뜻의 필드가 attackDelay/fireDelay/cooldown처럼 서로 다른 이름으로 존재한다.</li>
 </ul>
 <p>태그: #UbiquitousLanguage</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-text">attackDelay
@@ -790,7 +790,7 @@ cooldown
 </code></pre></div>
 <h3 id="hierarchical-naming"><span class="anchor-no">3.6.</span>긴 접두어 변수보다 의미 단위 계층으로 상태를 묶는다</h3>
 <ul>
-<li class="rule-line" id="DEV-020" data-priority="P2"><span class="rule-id">DEV-020</span><span class="rule-priority">P2</span>같은 기능에 속하는 상태는 접두어 반복 대신 기능 단위 namespace 객체로 묶고, 단위는 leaf 이름(Ms, Rad, Px)에 남긴다. 계층은 기능·소유권·하위 개념을 구분하는 데 필요한 만큼만 만든다. 위반 판별: 같은 접두어 필드가 3개 이상 평평하게 나열되거나, 의미 없는 wrapper 계층이 있다.</li>
+<li class="rule-line" id="DEV-020" data-priority="P2"><span class="rule-id">DEV-020</span><span class="rule-priority">P2</span><strong>Hierarchical Naming · Semantic Namespace</strong> — 같은 기능에 속하는 상태는 접두어 반복 대신 기능 단위 namespace 객체로 묶고, 단위는 leaf 이름(Ms, Rad, Px)에 남긴다. 계층은 기능·소유권·하위 개념을 구분하는 데 필요한 만큼만 만든다. 위반 판별: 같은 접두어 필드가 3개 이상 평평하게 나열되거나, 의미 없는 wrapper 계층이 있다.</li>
 </ul>
 <p>태그: #HierarchicalNaming #SemanticNamespace #ScopeVisibleNaming</p>
 <p class="meta-line">빈도: 매우 높음 · 나중 수정비용: 중간</p>
@@ -874,7 +874,7 @@ Weapon.reload.leftMs
 </blockquote>
 <h3 id="abstraction"><span class="anchor-no">3.7.</span>한 함수에서는 같은 추상화 수준 유지</h3>
 <ul>
-<li class="rule-line" id="DEV-021" data-priority="P2"><span class="rule-id">DEV-021</span><span class="rule-priority">P2</span>한 함수 안에서는 같은 추상화 수준의 호출만 둔다. 위반 판별: 도메인 단계 호출 사이에 저수준 API(gl.bindBuffer 등) 호출이 섞여 있다.</li>
+<li class="rule-line" id="DEV-021" data-priority="P2"><span class="rule-id">DEV-021</span><span class="rule-priority">P2</span><strong>Single Level of Abstraction</strong> — 한 함수 안에서는 같은 추상화 수준의 호출만 둔다. 위반 판별: 도메인 단계 호출 사이에 저수준 API(gl.bindBuffer 등) 호출이 섞여 있다.</li>
 </ul>
 <p>태그: #SingleLevelOfAbstraction #ExplicitOverImplicit</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-js">updateCombat() {
@@ -891,7 +891,7 @@ Weapon.reload.leftMs
 </code></pre></div>
 <h3 id="replace"><span class="anchor-no">3.8.</span>특수 케이스가 반복되면 구조를 교체</h3>
 <ul>
-<li class="rule-line" id="DEV-022" data-priority="P2"><span class="rule-id">DEV-022</span><span class="rule-priority">P2</span>특수 케이스 분기가 반복되면 분기를 덧대지 않고 공통 capability/contract로 구조를 교체한다. 위반 판별: 같은 함수에 특수 케이스 else-if가 4개 이상이다.</li>
+<li class="rule-line" id="DEV-022" data-priority="P2"><span class="rule-id">DEV-022</span><span class="rule-priority">P2</span><strong>Replace, Don't Layer · Refactor for Changeability</strong> — 특수 케이스 분기가 반복되면 분기를 덧대지 않고 공통 capability/contract로 구조를 교체한다. 위반 판별: 같은 함수에 특수 케이스 else-if가 4개 이상이다.</li>
 </ul>
 <p>태그: #ReplaceNotLayer #RefactorForChangeability</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-text">if (specialA) ...
@@ -913,7 +913,7 @@ Mixin끼리도 조합할 수 있고, 조합된 결과 역시 다시 Mixin으로 
 </blockquote>
 <h3 id="mixin-base"><span class="anchor-no">4.1.</span>별도 Mixin 전용 Base를 만들지 않는다</h3>
 <ul>
-<li class="rule-line" id="DEV-023" data-priority="-"><span class="rule-id">DEV-023</span>Mixin은 Base를 받아 <code>class extends Base</code>를 반환하는 Subclass Factory로 만들고, Mixin 전용 공통 Base 클래스를 두지 않는다. 위반 판별: MixinBase 같은 클래스를 상속해야만 mixin을 쓸 수 있다.</li>
+<li class="rule-line" id="DEV-023" data-priority="-"><span class="rule-id">DEV-023</span><strong>Subclass Factory · No Mixin Base</strong> — Mixin은 Base를 받아 <code>class extends Base</code>를 반환하는 Subclass Factory로 만들고, Mixin 전용 공통 Base 클래스를 두지 않는다. 위반 판별: MixinBase 같은 클래스를 상속해야만 mixin을 쓸 수 있다.</li>
 </ul>
 <p>태그: #SubclassFactory #NoMixinBase</p>
 <div class="example bad"><div class="example-title">나쁜 예</div><pre><code class="language-js">class MixinBase {}
@@ -934,7 +934,7 @@ class Unit extends MixinBase {}
 <p>Mixin은 어떤 기존 Base Class에도 적용 가능하다.</p>
 <h3 id="mixin-helper"><span class="anchor-no">4.2.</span>공개 조합 API는 mixin(...) 하나로 통일</h3>
 <ul>
-<li class="rule-line" id="DEV-024" data-priority="-"><span class="rule-id">DEV-024</span>조합 API는 <code>mixin(Base, ...Mixins)</code>와 <code>mixin(...Mixins)</code> 두 형태만 쓰고, 항상 함께 필요한 Mixin은 상위 Mixin 안에서 조합해 사용처가 선행 Mixin을 반복해서 적지 않게 한다. 위반 판별: 사용처가 Position, LinearPhysics처럼 선행 Mixin을 매번 나열한다.</li>
+<li class="rule-line" id="DEV-024" data-priority="-"><span class="rule-id">DEV-024</span><strong>Composable Mixins</strong> — 조합 API는 <code>mixin(Base, ...Mixins)</code>와 <code>mixin(...Mixins)</code> 두 형태만 쓰고, 항상 함께 필요한 Mixin은 상위 Mixin 안에서 조합해 사용처가 선행 Mixin을 반복해서 적지 않게 한다. 위반 판별: 사용처가 Position, LinearPhysics처럼 선행 Mixin을 매번 나열한다.</li>
 </ul>
 <p>태그: #mixin #ComposableMixins</p>
 <p>외부에서 알아야 할 조합 문법은 두 형태뿐이다.</p>
@@ -1006,7 +1006,7 @@ class Crate extends mixin(
 <p><code>LinearPhysics</code>가 이미 <code>Position</code>을 포함하므로 최종 사용자는 prerequisite를 반복해서 적지 않는다.</p>
 <h3 id="mixin-requirements"><span class="anchor-no">4.3.</span>구현 시 지켜야 할 최소 규칙</h3>
 <ul>
-<li class="rule-line" id="DEV-025" data-priority="-"><span class="rule-id">DEV-025</span>Mixin constructor는 <code>super(...args)</code>로 인자를 그대로 전달하고, 같은 Mixin은 함수 identity 기준으로 한 번만 적용하며, 조합으로 해결되지 않는 Host 필드·메서드 요구만 Requires.*로 검증하고, 같은 public method를 우연히 덮어쓰지 않는다. 위반 판별: Base constructor 시그니처를 가정하거나, 같은 Mixin이 두 번 적용되거나, super 체인 없이 메서드를 덮어쓴다.</li>
+<li class="rule-line" id="DEV-025" data-priority="-"><span class="rule-id">DEV-025</span><strong>Mixin Requirements · Dedupe · Super Chain</strong> — Mixin constructor는 <code>super(...args)</code>로 인자를 그대로 전달하고, 같은 Mixin은 함수 identity 기준으로 한 번만 적용하며, 조합으로 해결되지 않는 Host 필드·메서드 요구만 Requires.*로 검증하고, 같은 public method를 우연히 덮어쓰지 않는다. 위반 판별: Base constructor 시그니처를 가정하거나, 같은 Mixin이 두 번 적용되거나, super 체인 없이 메서드를 덮어쓴다.</li>
 </ul>
 <p>태그: #MixinRequirements #DedupingMixin #SuperChain</p>
 <div class="table-wrap"><table>
@@ -1061,7 +1061,7 @@ class Projectile extends mixin(
 </code></pre></div>
 <h3 id="mixin-examples"><span class="anchor-no">4.4.</span>실제 분리 기준</h3>
 <ul>
-<li class="rule-line" id="DEV-026" data-priority="-"><span class="rule-id">DEV-026</span>Mixin은 실제로 따로 쓰이는 최소 capability 단위로만 나눈다. 위반 판별: 단독 사용처가 없는 Mixin이 있다.</li>
+<li class="rule-line" id="DEV-026" data-priority="-"><span class="rule-id">DEV-026</span><strong>Mixin Granularity</strong> — Mixin은 실제로 따로 쓰이는 최소 capability 단위로만 나눈다. 위반 판별: 단독 사용처가 없는 Mixin이 있다.</li>
 </ul>
 <p>태그: #MixinGranularity #IS_A_HAS_A_CAN_BE</p>
 <p>Mixin은 “개념적으로 더 쪼갤 수 있다”는 이유로 나누지 않는다. <strong>실제로 따로 사용하는 경우가 있는 최소 capability</strong>만 분리한다.</p>

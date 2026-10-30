@@ -25,7 +25,7 @@ footer: 공통 개발 규칙 — 비용 우선순위판. 특정 프로젝트에 
 
 ### 하나의 상태에는 하나의 진실과 하나의 소유자 {#ownership}
 
-- [DEV-001][P0] 같은 의미의 상태·공식·판정 로직은 한 곳에서만 정의하고, 그 상태를 생성·수정·삭제하는 주체는 1개만 둔다. 위반 판별: 같은 필드를 2곳 이상에서 대입하거나 같은 공식이 2개 이상 모듈에 있다.
+- [DEV-001][P0] **SSOT · Single Ownership** — 같은 의미의 상태·공식·판정 로직은 한 곳에서만 정의하고, 그 상태를 생성·수정·삭제하는 주체는 1개만 둔다. 위반 판별: 같은 필드를 2곳 이상에서 대입하거나 같은 공식이 2개 이상 모듈에 있다.
 
 태그: #SSOT #SingleOwnership #SingleWriter
 
@@ -55,7 +55,7 @@ unit.applyDamage(damage);
 
 ### Checkbox 상태와 Radio 상태를 구조적으로 구분 {#state-machine}
 
-- [DEV-002][P0] 동시에 성립할 수 있는 상태는 독립 boolean으로, 상호배타적인 택 1 상태는 enum/state machine으로 정의한다. 위반 판별: 서로 배타적이어야 하는 boolean 필드가 2개 이상 있다.
+- [DEV-002][P0] **Make Illegal States Unrepresentable · State Machine** — 동시에 성립할 수 있는 상태는 독립 boolean으로, 상호배타적인 택 1 상태는 enum/state machine으로 정의한다. 위반 판별: 서로 배타적이어야 하는 boolean 필드가 2개 이상 있다.
 
 태그: #StateMachine #MakeIllegalStatesUnrepresentable
 
@@ -85,7 +85,7 @@ Radio 상태는 하나만, Checkbox 상태는 독립 flag로 둔다.
 
 ### 관계의 종류에 따라 구현 방식을 구분한다 {#composition}
 
-- [DEV-003][P0] 객체 관계를 IS-A(상속)·HAS-A(composition)·CAN-BE(mixin/trait)로 먼저 구분하고 그 관계에 맞는 구현을 쓴다. CAN-BE capability는 자기 상태와 로직을 mixin이 직접 소유하고, Host가 이미 소유한 HAS-A 객체를 다시 만들지 않는다. 위반 판별: 기능 조합을 상속 계층으로 표현했거나, 단순 capability를 component 배열·registry를 거쳐 호출하거나, mixin이 Host 소유 객체를 중복 생성한다.
+- [DEV-003][P0] **IS-A / HAS-A / CAN-BE · Composition over Inheritance** — 객체 관계를 IS-A(상속)·HAS-A(composition)·CAN-BE(mixin/trait)로 먼저 구분하고 그 관계에 맞는 구현을 쓴다. CAN-BE capability는 자기 상태와 로직을 mixin이 직접 소유하고, Host가 이미 소유한 HAS-A 객체를 다시 만들지 않는다. 위반 판별: 기능 조합을 상속 계층으로 표현했거나, 단순 capability를 component 배열·registry를 거쳐 호출하거나, mixin이 Host 소유 객체를 중복 생성한다.
 
 태그: #IS_A_HAS_A_CAN_BE #CompositionOverInheritance #Mixin #CapabilityOwnership
 
@@ -399,7 +399,7 @@ unit.iaiSlash(enemy);
 
 ### 이름이 아니라 능력으로 분기 {#capability}
 
-- [DEV-004][P0] 로직 분기는 유닛명·타입명·ID·맵 이름이 아니라 capability 보유 여부와 데이터로 한다. 위반 판별: `type === "..."` 또는 맵 이름 비교로 행동이 갈린다.
+- [DEV-004][P0] **Capability-based Design** — 로직 분기는 유닛명·타입명·ID·맵 이름이 아니라 capability 보유 여부와 데이터로 한다. 위반 판별: `type === "..."` 또는 맵 이름 비교로 행동이 갈린다.
 
 태그: #CapabilityBasedDesign
 
@@ -427,7 +427,7 @@ if (unit.hasCapability("jump")) {
 
 ### 같은 기능도 인스턴스마다 다른 값을 가질 수 있게 {#instance}
 
-- [DEV-005][P0] 같은 behavior를 쓰는 인스턴스마다 독립된 parameter를 가질 수 있어야 한다. 위반 판별: 정적 필드나 공유 객체 하나로 모든 인스턴스의 값이 강제된다.
+- [DEV-005][P0] **Instance Configuration** — 같은 behavior를 쓰는 인스턴스마다 독립된 parameter를 가질 수 있어야 한다. 위반 판별: 정적 필드나 공유 객체 하나로 모든 인스턴스의 값이 강제된다.
 
 태그: #InstanceConfiguration #ConfigOverride
 
@@ -463,7 +463,7 @@ Instance Configuration
 
 ### Core가 구체 기술을 직접 알지 않게 {#dependency}
 
-- [DEV-006][P0] 도메인/게임 로직은 네트워크·렌더러·저장소·프레임워크 API를 직접 호출하지 않고 교체 가능한 경계(transport 등)를 거친다. 위반 판별: 게임 로직 파일이 peer/renderer/storage API를 직접 import하거나 호출한다.
+- [DEV-006][P0] **Dependency Inversion** — 도메인/게임 로직은 네트워크·렌더러·저장소·프레임워크 API를 직접 호출하지 않고 교체 가능한 경계(transport 등)를 거친다. 위반 판별: 게임 로직 파일이 peer/renderer/storage API를 직접 import하거나 호출한다.
 
 태그: #DependencyInversion #SeparationOfConcerns
 
@@ -489,7 +489,7 @@ transport.send(command);
 
 ### Signal은 사건을 발생시키는 당사자가 소유 {#signal}
 
-- [DEV-007][P0] "내게 이런 일이 일어났다"는 통지는 발생 주체가 소유한 public Signal로 노출하고, 발신자는 구독자를 모른다. 위반 판별: 전역 이벤트 버스에 문자열 이벤트명으로 emit하거나, 발생 주체가 점수·VFX·UI 시스템을 직접 호출한다.
+- [DEV-007][P0] **Signal Ownership · Observer** — "내게 이런 일이 일어났다"는 통지는 발생 주체가 소유한 public Signal로 노출하고, 발신자는 구독자를 모른다. 위반 판별: 전역 이벤트 버스에 문자열 이벤트명으로 emit하거나, 발생 주체가 점수·VFX·UI 시스템을 직접 호출한다.
 
 태그: #SignalPattern #SignalOwnership
 
@@ -542,7 +542,7 @@ unit.onDied.on(vfxSystem.handle);
 
 ### 읽기와 쓰기를 분리 {#cqs}
 
-- [DEV-008][P1] 값을 읽는 함수는 상태를 바꾸지 않는다. 위반 판별: get*/is* 함수 안에 대입이나 재계산 호출이 있다.
+- [DEV-008][P1] **CQS (Command-Query Separation)** — 값을 읽는 함수는 상태를 바꾸지 않는다. 위반 판별: get*/is* 함수 안에 대입이나 재계산 호출이 있다.
 
 태그: #CommandQuerySeparation
 
@@ -571,7 +571,7 @@ refreshBuffs() {
 
 ### 내부 자료구조를 외부에서 직접 만지지 않기 {#encapsulation}
 
-- [DEV-009][P1] 외부에서 다른 객체의 내부 자료구조를 직접 조작하지 않고 의미 있는 메서드를 거친다. 위반 판별: 다른 객체의 Map/Array 필드를 외부에서 직접 add/delete한다.
+- [DEV-009][P1] **Encapsulation** — 외부에서 다른 객체의 내부 자료구조를 직접 조작하지 않고 의미 있는 메서드를 거친다. 위반 판별: 다른 객체의 Map/Array 필드를 외부에서 직접 add/delete한다.
 
 태그: #Encapsulation
 
@@ -591,7 +591,7 @@ combat.removeUnit(id);
 
 ### 구현 방법이 아니라 의미를 API로 표현 {#semantic}
 
-- [DEV-010][P1] API 이름은 구현 방법이 아니라 도메인 의미를 나타낸다. 위반 판별: 함수 이름에 자료구조나 알고리즘 단계(updateArrayAndCalculate…)가 들어 있다.
+- [DEV-010][P1] **Semantic API · Intention-Revealing Name** — API 이름은 구현 방법이 아니라 도메인 의미를 나타낸다. 위반 판별: 함수 이름에 자료구조나 알고리즘 단계(updateArrayAndCalculate…)가 들어 있다.
 
 태그: #SemanticAPI
 
@@ -611,7 +611,7 @@ applyDamage(target, payload)
 
 ### 기능 하나의 변경은 가능한 적은 위치에서 끝내기 {#locality}
 
-- [DEV-011][P1] 기능 하나를 추가·변경할 때 수정 위치를 최소로 하고, 새 capability는 구현 + 등록으로 끝낸다. 위반 판별: 기능 하나를 추가하려고 3개 이상 파일의 switch/if 분기를 고친다.
+- [DEV-011][P1] **Locality of Change · Open-Closed** — 기능 하나를 추가·변경할 때 수정 위치를 최소로 하고, 새 capability는 구현 + 등록으로 끝낸다. 위반 판별: 기능 하나를 추가하려고 3개 이상 파일의 switch/if 분기를 고친다.
 
 태그: #LocalityOfChange
 
@@ -643,7 +643,7 @@ abilities.register(
 
 ### 변경 이유가 다른 코드는 분리 {#srp}
 
-- [DEV-012][P1] 변경 이유가 다른 코드(판정·VFX·사운드·네트워크)는 한 함수에 섞지 않고 각자 책임에서 반응한다. 위반 판별: 한 함수가 게임 판정과 표현·전송 호출을 함께 가진다.
+- [DEV-012][P1] **SRP · High Cohesion / Low Coupling** — 변경 이유가 다른 코드(판정·VFX·사운드·네트워크)는 한 함수에 섞지 않고 각자 책임에서 반응한다. 위반 판별: 한 함수가 게임 판정과 표현·전송 호출을 함께 가진다.
 
 태그: #SingleResponsibilityPrinciple #HighCohesionLowCoupling
 
@@ -673,7 +673,7 @@ attack() {
 
 ### Behavior는 코드, Parameters는 데이터 {#data-driven}
 
-- [DEV-013][P1] behavior는 코드로, 그 behavior의 수치(시간·거리·개수)는 설정 데이터로 둔다. 설정에 없는 독립 행동을 임의 플래그로 흉내 내지 않는다. 위반 판별: 타입별 if문 안에 수치 상수가 박혀 있다.
+- [DEV-013][P1] **Data-Driven Design** — behavior는 코드로, 그 behavior의 수치(시간·거리·개수)는 설정 데이터로 둔다. 설정에 없는 독립 행동을 임의 플래그로 흉내 내지 않는다. 위반 판별: 타입별 if문 안에 수치 상수가 박혀 있다.
 
 태그: #DataDrivenDesign
 
@@ -717,7 +717,7 @@ const config = {
 
 ### 생성·활성·종료·정리를 명확히 {#lifecycle}
 
-- [DEV-014][P1] 객체·효과는 생성·활성·종료·정리 단계를 명시하고, dispose에서 타이머·구독·registry 참조를 모두 해제한다. 위반 판별: active=false만 바꾸고 구독·타이머가 남아 있다.
+- [DEV-014][P1] **Lifecycle · Dispose Pattern** — 객체·효과는 생성·활성·종료·정리 단계를 명시하고, dispose에서 타이머·구독·registry 참조를 모두 해제한다. 위반 판별: active=false만 바꾸고 구독·타이머가 남아 있다.
 
 태그: #Lifecycle
 
@@ -745,7 +745,7 @@ effect.dispose();
 
 ### 사용하지 않는 코드·설정·필드 제거 {#dead}
 
-- [DEV-015][P2] consumer가 없는 코드·설정·필드는 삭제하고, 다시 필요해지면 현재 구조로 구현한다. 위반 판별: 참조가 0인 필드·옵션·함수가 남아 있다.
+- [DEV-015][P2] **No Dead Code** — consumer가 없는 코드·설정·필드는 삭제하고, 다시 필요해지면 현재 구조로 구현한다. 위반 판별: 참조가 0인 필드·옵션·함수가 남아 있다.
 
 태그: #NoDeadCode
 
@@ -766,7 +766,7 @@ oldRecoveryMode = true;
 
 ### 이관 완료 후 구 구현을 fallback으로 남기지 않기 {#legacy}
 
-- [DEV-016][P2] 이관 검증이 끝나면 구 구현 fallback을 제거한다. 위반 판별: `if (!newSystem()) legacySystem()` 형태의 분기가 남아 있다.
+- [DEV-016][P2] **No Legacy Fallback** — 이관 검증이 끝나면 구 구현 fallback을 제거한다. 위반 판별: `if (!newSystem()) legacySystem()` 형태의 분기가 남아 있다.
 
 태그: #NoLegacyFallback
 
@@ -787,7 +787,7 @@ newSystem();
 
 ### 코드 모양보다 지식의 중복 제거 {#dry}
 
-- [DEV-017][P2] 같은 지식(공식·판정 규칙)은 한 곳에만 둔다. 코드 모양이 같다는 이유만으로 합치지 않는다. 위반 판별: 같은 공식이 2개 이상 모듈에 복사되어 있다.
+- [DEV-017][P2] **DRY** — 같은 지식(공식·판정 규칙)은 한 곳에만 둔다. 코드 모양이 같다는 이유만으로 합치지 않는다. 위반 판별: 같은 공식이 2개 이상 모듈에 복사되어 있다.
 
 태그: #DRY
 
@@ -806,7 +806,7 @@ damageResolver.applyArmor(...)
 
 ### 미래를 예상한 추상화를 먼저 만들지 않기 {#yagni}
 
-- [DEV-018][P2] 사용처가 1개인 동안에는 추상화·factory·registry를 만들지 않고, 실제 반복이 생길 때 공통화한다. 위반 판별: 구현체가 1개뿐인 인터페이스·추상 클래스·전략 어댑터가 있다.
+- [DEV-018][P2] **YAGNI · Rule of Three · KISS** — 사용처가 1개인 동안에는 추상화·factory·registry를 만들지 않고, 실제 반복이 생길 때 공통화한다. 위반 판별: 구현체가 1개뿐인 인터페이스·추상 클래스·전략 어댑터가 있다.
 
 태그: #YAGNI #RuleOfThree #KISS
 
@@ -831,7 +831,7 @@ class PoisonEffect {
 
 ### 같은 개념에는 같은 이름 {#language}
 
-- [DEV-019][P2] 같은 개념에는 코드 전체에서 같은 이름을 쓴다. 위반 판별: 같은 뜻의 필드가 attackDelay/fireDelay/cooldown처럼 서로 다른 이름으로 존재한다.
+- [DEV-019][P2] **Ubiquitous Language** — 같은 개념에는 코드 전체에서 같은 이름을 쓴다. 위반 판별: 같은 뜻의 필드가 attackDelay/fireDelay/cooldown처럼 서로 다른 이름으로 존재한다.
 
 태그: #UbiquitousLanguage
 
@@ -853,7 +853,7 @@ attackCooldownMs
 
 ### 긴 접두어 변수보다 의미 단위 계층으로 상태를 묶는다 {#hierarchical-naming}
 
-- [DEV-020][P2] 같은 기능에 속하는 상태는 접두어 반복 대신 기능 단위 namespace 객체로 묶고, 단위는 leaf 이름(Ms, Rad, Px)에 남긴다. 계층은 기능·소유권·하위 개념을 구분하는 데 필요한 만큼만 만든다. 위반 판별: 같은 접두어 필드가 3개 이상 평평하게 나열되거나, 의미 없는 wrapper 계층이 있다.
+- [DEV-020][P2] **Hierarchical Naming · Semantic Namespace** — 같은 기능에 속하는 상태는 접두어 반복 대신 기능 단위 namespace 객체로 묶고, 단위는 leaf 이름(Ms, Rad, Px)에 남긴다. 계층은 기능·소유권·하위 개념을 구분하는 데 필요한 만큼만 만든다. 위반 판별: 같은 접두어 필드가 3개 이상 평평하게 나열되거나, 의미 없는 wrapper 계층이 있다.
 
 태그: #HierarchicalNaming #SemanticNamespace #ScopeVisibleNaming
 
@@ -964,7 +964,7 @@ Weapon.reload.leftMs
 
 ### 한 함수에서는 같은 추상화 수준 유지 {#abstraction}
 
-- [DEV-021][P2] 한 함수 안에서는 같은 추상화 수준의 호출만 둔다. 위반 판별: 도메인 단계 호출 사이에 저수준 API(gl.bindBuffer 등) 호출이 섞여 있다.
+- [DEV-021][P2] **Single Level of Abstraction** — 한 함수 안에서는 같은 추상화 수준의 호출만 둔다. 위반 판별: 도메인 단계 호출 사이에 저수준 API(gl.bindBuffer 등) 호출이 섞여 있다.
 
 태그: #SingleLevelOfAbstraction #ExplicitOverImplicit
 
@@ -990,7 +990,7 @@ updateCombat() {
 
 ### 특수 케이스가 반복되면 구조를 교체 {#replace}
 
-- [DEV-022][P2] 특수 케이스 분기가 반복되면 분기를 덧대지 않고 공통 capability/contract로 구조를 교체한다. 위반 판별: 같은 함수에 특수 케이스 else-if가 4개 이상이다.
+- [DEV-022][P2] **Replace, Don't Layer · Refactor for Changeability** — 특수 케이스 분기가 반복되면 분기를 덧대지 않고 공통 capability/contract로 구조를 교체한다. 위반 판별: 같은 함수에 특수 케이스 else-if가 4개 이상이다.
 
 태그: #ReplaceNotLayer #RefactorForChangeability
 
@@ -1020,7 +1020,7 @@ else if (specialD) ...
 
 ### 별도 Mixin 전용 Base를 만들지 않는다 {#mixin-base}
 
-- [DEV-023][-] Mixin은 Base를 받아 `class extends Base`를 반환하는 Subclass Factory로 만들고, Mixin 전용 공통 Base 클래스를 두지 않는다. 위반 판별: MixinBase 같은 클래스를 상속해야만 mixin을 쓸 수 있다.
+- [DEV-023][-] **Subclass Factory · No Mixin Base** — Mixin은 Base를 받아 `class extends Base`를 반환하는 Subclass Factory로 만들고, Mixin 전용 공통 Base 클래스를 두지 않는다. 위반 판별: MixinBase 같은 클래스를 상속해야만 mixin을 쓸 수 있다.
 
 태그: #SubclassFactory #NoMixinBase
 
@@ -1050,7 +1050,7 @@ Mixin은 어떤 기존 Base Class에도 적용 가능하다.
 
 ### 공개 조합 API는 mixin(...) 하나로 통일 {#mixin-helper}
 
-- [DEV-024][-] 조합 API는 `mixin(Base, ...Mixins)`와 `mixin(...Mixins)` 두 형태만 쓰고, 항상 함께 필요한 Mixin은 상위 Mixin 안에서 조합해 사용처가 선행 Mixin을 반복해서 적지 않게 한다. 위반 판별: 사용처가 Position, LinearPhysics처럼 선행 Mixin을 매번 나열한다.
+- [DEV-024][-] **Composable Mixins** — 조합 API는 `mixin(Base, ...Mixins)`와 `mixin(...Mixins)` 두 형태만 쓰고, 항상 함께 필요한 Mixin은 상위 Mixin 안에서 조합해 사용처가 선행 Mixin을 반복해서 적지 않게 한다. 위반 판별: 사용처가 Position, LinearPhysics처럼 선행 Mixin을 매번 나열한다.
 
 태그: #mixin #ComposableMixins
 
@@ -1134,7 +1134,7 @@ class Crate extends mixin(
 
 ### 구현 시 지켜야 할 최소 규칙 {#mixin-requirements}
 
-- [DEV-025][-] Mixin constructor는 `super(...args)`로 인자를 그대로 전달하고, 같은 Mixin은 함수 identity 기준으로 한 번만 적용하며, 조합으로 해결되지 않는 Host 필드·메서드 요구만 Requires.*로 검증하고, 같은 public method를 우연히 덮어쓰지 않는다. 위반 판별: Base constructor 시그니처를 가정하거나, 같은 Mixin이 두 번 적용되거나, super 체인 없이 메서드를 덮어쓴다.
+- [DEV-025][-] **Mixin Requirements · Dedupe · Super Chain** — Mixin constructor는 `super(...args)`로 인자를 그대로 전달하고, 같은 Mixin은 함수 identity 기준으로 한 번만 적용하며, 조합으로 해결되지 않는 Host 필드·메서드 요구만 Requires.*로 검증하고, 같은 public method를 우연히 덮어쓰지 않는다. 위반 판별: Base constructor 시그니처를 가정하거나, 같은 Mixin이 두 번 적용되거나, super 체인 없이 메서드를 덮어쓴다.
 
 태그: #MixinRequirements #DedupingMixin #SuperChain
 
@@ -1173,7 +1173,7 @@ class Projectile extends mixin(
 
 ### 실제 분리 기준 {#mixin-examples}
 
-- [DEV-026][-] Mixin은 실제로 따로 쓰이는 최소 capability 단위로만 나눈다. 위반 판별: 단독 사용처가 없는 Mixin이 있다.
+- [DEV-026][-] **Mixin Granularity** — Mixin은 실제로 따로 쓰이는 최소 capability 단위로만 나눈다. 위반 판별: 단독 사용처가 없는 Mixin이 있다.
 
 태그: #MixinGranularity #IS_A_HAS_A_CAN_BE
 

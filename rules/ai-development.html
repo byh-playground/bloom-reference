@@ -101,17 +101,24 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
     </ul>
     <div class="toc-title">목차</div>
     <ul class="toc" id="toc">
-      <li><a href="#principle">1. 핵심 원칙</a></li>
-      <li><a href="#workflow">2. 구현 전 · 요구와 동작을 확정</a></li>
-      <li class="sub"><a href="#numeric-drafts">2.1 미지정 수치 초안 · 정규화와 기준값 파생</a></li>
-      <li><a href="#shared-modules">3. 구현 중 · 공통 모듈 개선과 소비 게임 적용</a></li>
-      <li class="sub"><a href="#svg-assets">3.1 SVG 자산 · 원본을 보존하고 공통 브라우저 로더에서 한 번 컴파일</a></li>
-      <li class="sub"><a href="#autosave">3.2 자동 저장 · 변경 확인과 저장 비용 측정</a></li>
-      <li class="sub"><a href="#simulation-cadence">3.3 논리 틱과 물리 하위 단계 · 이름이 아니라 호출 범위를 검증</a></li>
-      <li><a href="#verification">4. 구현 후 · 확정한 사례로 검증</a></li>
-      <li><a href="#damage-example">5. 사례 · 공과 고양이로 요구 해석</a></li>
-      <li><a href="#checklist">6. 완료 체크리스트</a></li>
-      <li><a href="#sources">7. 근거와 문서 역할</a></li>
+      <li><a href="#terminology">1. 대전제 · 통용 용어로 의미를 고정한다</a></li>
+      <li><a href="#principle">2. 핵심 원칙</a></li>
+      <li><a href="#workflow">3. 구현 전 · 요구와 동작을 확정</a></li>
+      <li class="sub"><a href="#given-when-then">3.1 기대 결과를 먼저 적는다</a></li>
+      <li class="sub"><a href="#prior-art">3.2 항상 최소 한 번 검색·비교한다</a></li>
+      <li class="sub"><a href="#decision-record">3.3 일치와 차이를 기록한다</a></li>
+      <li class="sub"><a href="#examples">3.4 동작 사례로 방향을 확정한다</a></li>
+      <li class="sub"><a href="#two-way-door">3.5 방향 확정은 매번 승인 대기가 아니다</a></li>
+      <li class="sub"><a href="#known-unknowns">3.6 근거가 없으면 미확인을 먼저 알린다</a></li>
+      <li class="sub"><a href="#numeric-drafts">3.7 미지정 수치 초안 · 정규화와 기준값 파생</a></li>
+      <li><a href="#shared-modules">4. 구현 중 · 공통 모듈 개선과 소비 게임 적용</a></li>
+      <li class="sub"><a href="#svg-assets">4.1 SVG 자산 · 원본을 보존하고 공통 브라우저 로더에서 한 번 컴파일</a></li>
+      <li class="sub"><a href="#autosave">4.2 자동 저장 · 변경 확인과 저장 비용 측정</a></li>
+      <li class="sub"><a href="#simulation-cadence">4.3 논리 틱과 물리 하위 단계 · 이름이 아니라 호출 범위를 검증</a></li>
+      <li><a href="#verification">5. 구현 후 · 확정한 사례로 검증</a></li>
+      <li><a href="#damage-example">6. 사례 · 공과 고양이로 요구 해석</a></li>
+      <li><a href="#checklist">7. 완료 체크리스트</a></li>
+      <li><a href="#sources">8. 근거와 문서 역할</a></li>
     </ul>
   </aside>
   <main class="main">
@@ -120,13 +127,27 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
         <div class="kicker">AI Development Rules</div>
         <h1>AI 개발 규칙</h1>
         <p class="subtitle">요청한 방향을 구체적인 동작과 검증 결과로 맞춘다. AI의 요청 해석·작업 순서·공통 모듈 제약 처리 흐름의 원본.</p>
-        <div class="meta"><span class="badge core">사용자 확정 작업 원칙</span><span class="badge">의도 → 검색·비교 → 동작 확정 → 구현 → 검증</span></div>
+        <div class="meta"><span class="badge core">사용자 확정 작업 원칙</span><span class="badge">통용 용어 병기</span><span class="badge">의도 → 검색·비교 → 동작 확정 → 구현 → 검증</span></div>
       </header>
-<section class="section" id="principle" data-search>
-<h2><span class="anchor-no">1.</span>핵심 원칙</h2>
+<section class="section" id="terminology" data-search>
+<h2><span class="anchor-no">1.</span>대전제 · 통용 용어로 의미를 고정한다</h2>
 <ul>
-<li class="rule-line" id="AI-001" data-priority="-"><span class="rule-id">AI-001</span>작업 순서는 의도 정리 → 최소 한 번 검색·비교 → 구체 동작 확정 → 구현 → 같은 사례로 검증이며, 용어가 맞았다는 이유로 사용자 의도를 이해했다고 간주하지 않는다. 위반 판별: 검색·비교 기록이나 확정한 동작 사례 없이 구현을 시작했다.</li>
+<li class="rule-line" id="AI-000" data-priority="-"><span class="rule-id">AI-000</span><strong>Ubiquitous Language · Shared Vocabulary</strong> — 규칙·문서를 쓸 때 사용자가 설명한 내용과 같은 뜻을 가진 통용 용어나 해시태그(SSOT, KISS, MECE, YAGNI 등)가 있으면 그 용어를 규칙 줄 앞에 함께 적는다. 용어가 뜻을 전부 덮지 못하면 용어 뒤에 차이를 한 절로 적는다. 위반 판별: 같은 뜻의 통용 용어가 있는데 규칙에 용어가 없거나, 뜻이 다른 용어를 붙였다.</li>
 </ul>
+<p>용어: <strong>Ubiquitous Language</strong>(DDD) — 팀 전원이 같은 뜻으로 쓰는 공용 어휘. <strong>Shared Vocabulary</strong> — 설명 없이도 같은 뜻으로 통하는 통용 용어.</p>
+<div class="rule core"><div class="rule-title">왜 용어를 먼저 적는가</div>통용 용어는 원문 의도를 짧게 고정한다. 읽는 사람과 AI가 긴 설명 대신 이미 아는 뜻으로 규칙을 이해하고, 이후 문서를 재구성할 때 용어를 기준으로 묶고 나눌 수 있다. 용어는 설명을 대체하지 않고 설명 앞에 붙는 제목이다.</div>
+<ul>
+<li>적용 형식: <code>- [ID][우선순위] **용어 · 용어** — 규칙 문장. 위반 판별: …</code>. 용어는 2개 이하로 두고, 더 필요하면 본문에 <code>용어:</code> 줄로 정의한다.</li>
+<li>용어 선택 기준: 공식 정의가 있거나(SemVer, Conventional Commits, ADR) 업계에서 한 가지 뜻으로 쓰이는 것(SSOT, KISS, YAGNI, DRY, MECE, Given-When-Then). 이 레포에서만 쓰는 조어는 용어 자리에 두지 않는다.</li>
+<li>뜻이 부분만 겹치면 그대로 쓰되 본문에서 차이를 밝힌다(예: AI-006의 One-way/Two-way Door는 "되돌릴 수 있는가"를 보고, 이 규칙은 "해석에 따라 결과가 갈리는가"도 본다).</li>
+</ul>
+</section>
+<section class="section" id="principle" data-search>
+<h2><span class="anchor-no">2.</span>핵심 원칙</h2>
+<ul>
+<li class="rule-line" id="AI-001" data-priority="-"><span class="rule-id">AI-001</span><strong>XY Problem 회피 · Specification by Example</strong> — 작업 순서는 의도 정리 → 최소 한 번 검색·비교 → 구체 동작 확정 → 구현 → 같은 사례로 검증이며, 용어가 맞았다는 이유로 사용자 의도를 이해했다고 간주하지 않는다. 위반 판별: 검색·비교 기록이나 확정한 동작 사례 없이 구현을 시작했다.</li>
+</ul>
+<p>용어: <strong>XY Problem</strong> — 사용자가 진짜 목표(X) 대신 자기가 떠올린 해법(Y)을 말하고, 답하는 쪽이 Y만 처리해 X를 놓치는 문제. <strong>Specification by Example</strong> — 요구를 추상 문장이 아니라 구체 예시로 확정하는 방법.</p>
 <div class="flow"><span>의도 정리</span><b>→</b><span>최소 한 번 검색·비교</span><b>→</b><span>구체 동작 확정</span><b>→</b><span>구현</span><b>→</b><span>같은 사례로 검증</span></div>
 
 <div class="rule core"><div class="rule-title">핵심</div>AI는 용어를 맞췄다는 이유로 사용자의 의도까지 이해했다고 간주하지 않는다.</div>
@@ -134,25 +155,49 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>관련 원본: <a href="development.html">공통 개발 규칙</a> · <a href="project-management.html">프로젝트 관리 규칙</a>. 이 문서는 AI의 요청 해석·작업 순서·공통 모듈 제약 처리 흐름을 소유하며 구조 원칙과 버전·검증 정책 전문을 복제하지 않는다.</p>
 </section>
 <section class="section" id="workflow" data-search>
-<h2><span class="anchor-no">2.</span>구현 전 · 요구와 동작을 확정</h2>
+<h2><span class="anchor-no">3.</span>구현 전 · 요구와 동작을 확정</h2>
+<p>구현 전에 아래 순서로 요구를 동작으로 바꾼다. 각 절은 규칙 1개다.</p>
+<h3 id="given-when-then"><span class="anchor-no">3.1.</span>기대 결과를 먼저 적는다</h3>
 <ul>
-<li class="rule-line" id="AI-002" data-priority="-"><span class="rule-id">AI-002</span>구현 전에 "누가 어떤 상황에서 무엇을 하면 어떤 결과"를 적고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다. 위반 판별: 기대 결과 문장이 없거나 요청에 없는 기능이 사양에 들어 있다.</li>
-<li class="rule-line" id="AI-003" data-priority="-"><span class="rule-id">AI-003</span>요청 기능의 일반적 처리 방식과 공식 문서·일차 자료를 최소 한 번 검색해 실제 내용을 읽고, 현재 API·구현과 대조한다. 위반 판별: 검색어나 결과 제목만 보고 검토를 끝냈다.</li>
-<li class="rule-line" id="AI-004" data-priority="-"><span class="rule-id">AI-004</span>사용자 요구 / 조사로 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교하고 출처·조회 기준·가정을 남긴다. 위반 판별: 세 항목 중 하나가 기록에 없다.</li>
-<li class="rule-line" id="AI-005" data-priority="-"><span class="rule-id">AI-005</span>정상 사례와 해석이 갈리는 반례의 기대 결과를 구현 전에 확정한다. 위반 판별: 반례 사례가 0개다.</li>
-<li class="rule-line" id="AI-006" data-priority="-"><span class="rule-id">AI-006</span>명확한 요청이나 기존 합의로 정할 수 있으면 근거를 적고 진행하고, 해석에 따라 결과가 달라지는 미결정만 선택지와 차이를 붙여 질문한다. 이미 정한 내용을 반복 승인받지 않는다. 위반 판별: 기존 합의로 정해진 사항을 다시 물었거나, 결과가 갈리는 미결정을 묻지 않고 임의로 정했다.</li>
-<li class="rule-line" id="AI-007" data-priority="-"><span class="rule-id">AI-007</span>검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 않고 미확인 범위와 영향을 먼저 알린다. 위반 판별: 미확인 범위 없이 "확인됨"으로 보고했다.</li>
-<li>
-<p><strong>기대 결과를 먼저 적는다.</strong> 누가 어떤 상황에서 무엇을 하면 어떤 결과가 나와야 하는지 짧게 정리한다. 최신 저장소·기존 합의·제약을 읽고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다.</p>
-</li>
-<li><strong>항상 최소 한 번 검색·비교한다.</strong> 요청한 기능의 일반적인 처리 방식과 관련 공식 문서·일차 자료를 검색하고 실제 내용을 읽는다. 검색어만 입력하거나 결과 제목을 보는 것으로 검토를 끝내지 않는다. 현재 API·구현도 필요한 범위에서 대조한다.</li>
-<li><strong>일치와 차이를 설명한다.</strong> 사용자 요구 / 조사에서 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교한다. 출처 링크·조회 기준과 중요한 가정을 남긴다. 검색 결과를 사용자 의도의 대체물로 쓰지 않는다.</li>
-<li><strong>동작 사례로 방향을 확정한다.</strong> 정상 상황과 해석이 갈리는 반례를 각각 적고 기대 결과를 정한다. 같은 용어라도 결과가 달라지는 해석을 비교한 뒤 구현한다.</li>
+<li class="rule-line" id="AI-002" data-priority="-"><span class="rule-id">AI-002</span><strong>Given-When-Then · YAGNI</strong> — 구현 전에 "누가 어떤 상황에서 무엇을 하면 어떤 결과"를 적고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다. 위반 판별: 기대 결과 문장이 없거나 요청에 없는 기능이 사양에 들어 있다.</li>
 </ul>
-<h3 id="numeric-drafts"><span class="anchor-no">2.1.</span>미지정 수치 초안 · 정규화와 기준값 파생</h3>
+<p>용어: <strong>Given-When-Then</strong> — "상황(Given)–행동(When)–결과(Then)" 형식으로 인수 조건을 적는 BDD 서식. <strong>YAGNI</strong> — 지금 필요하지 않은 것은 만들지 않는다.</p>
+<p>누가 어떤 상황에서 무엇을 하면 어떤 결과가 나와야 하는지 짧게 정리한다. 최신 저장소·기존 합의·제약을 읽고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다.</p>
+<h3 id="prior-art"><span class="anchor-no">3.2.</span>항상 최소 한 번 검색·비교한다</h3>
 <ul>
-<li class="rule-line" id="AI-008" data-priority="-"><span class="rule-id">AI-008</span>미지정 수치 초안은 사용자 지정값·확정 계약을 우선하고, 새 값은 100·50·25·1·0.5·0.25·0.1처럼 비교하기 쉬운 값을 후보로, 연관 수치는 기준값 하나에서 배율로 파생한다. 이미 합의·구현된 수치는 요청 없이 재정규화하지 않는다. 위반 판별: 서로 독립된 임의 상수가 연관 수치로 추가되었거나, 기존 수치가 요청 없이 바뀌었다.</li>
+<li class="rule-line" id="AI-003" data-priority="-"><span class="rule-id">AI-003</span><strong>Prior Art 조사 · Primary Source</strong> — 요청 기능의 일반적 처리 방식과 공식 문서·일차 자료를 최소 한 번 검색해 실제 내용을 읽고, 현재 API·구현과 대조한다. 위반 판별: 검색어나 결과 제목만 보고 검토를 끝냈다.</li>
 </ul>
+<p>용어: <strong>Prior Art</strong> — 같은 문제의 기존 해법·표준·관례. <strong>Primary Source</strong> — 2차 요약이 아닌 공식 문서·명세·원본 코드.</p>
+<p>요청한 기능의 일반적인 처리 방식과 관련 공식 문서·일차 자료를 검색하고 실제 내용을 읽는다. 검색어만 입력하거나 결과 제목을 보는 것으로 검토를 끝내지 않는다. 현재 API·구현도 필요한 범위에서 대조한다.</p>
+<h3 id="decision-record"><span class="anchor-no">3.3.</span>일치와 차이를 기록한다</h3>
+<ul>
+<li class="rule-line" id="AI-004" data-priority="-"><span class="rule-id">AI-004</span><strong>ADR (Decision Record)</strong> — 사용자 요구 / 조사로 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교하고 출처·조회 기준·가정을 남긴다. 위반 판별: 세 항목 중 하나가 기록에 없다.</li>
+</ul>
+<p>용어: <strong>ADR</strong>(Architecture Decision Record) — 결정의 맥락·선택지·결정·결과를 한 기록으로 남기는 형식. 여기서는 "요구 / 관례·제약 / 적용 동작 + 출처·가정"이 그 항목이다.</p>
+<p>사용자 요구 / 조사에서 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교한다. 출처 링크·조회 기준과 중요한 가정을 남긴다. 검색 결과를 사용자 의도의 대체물로 쓰지 않는다. 기술적 관례와 게임 기획 선택을 구분한다. 관례와 요청이 다르면 그 차이·기술적 한계·대안을 설명하고 사용자가 의도한 결과를 보존한다.</p>
+<h3 id="examples"><span class="anchor-no">3.4.</span>동작 사례로 방향을 확정한다</h3>
+<ul>
+<li class="rule-line" id="AI-005" data-priority="-"><span class="rule-id">AI-005</span><strong>Happy Path / Edge Case · Example Mapping</strong> — 정상 사례와 해석이 갈리는 반례의 기대 결과를 구현 전에 확정한다. 위반 판별: 반례 사례가 0개다.</li>
+</ul>
+<p>용어: <strong>Happy Path</strong> — 정상 입력의 기본 흐름. <strong>Edge Case</strong> — 경계·예외 입력. <strong>Example Mapping</strong> — 규칙마다 예시와 반례를 뽑아 요구를 확정하는 BDD 기법.</p>
+<p>정상 상황과 해석이 갈리는 반례를 각각 적고 기대 결과를 정한다. 같은 용어라도 결과가 달라지는 해석을 비교한 뒤 구현한다. 사례 1개는 <a href="#damage-example">공과 고양이</a>에 있다.</p>
+<h3 id="two-way-door"><span class="anchor-no">3.5.</span>방향 확정은 매번 승인 대기가 아니다</h3>
+<ul>
+<li class="rule-line" id="AI-006" data-priority="-"><span class="rule-id">AI-006</span><strong>One-way / Two-way Door</strong> — 명확한 요청이나 기존 합의로 정할 수 있으면 근거를 적고 진행하고, 해석에 따라 결과가 달라지는 미결정만 선택지와 차이를 붙여 질문한다. 이미 정한 내용을 반복 승인받지 않는다. 위반 판별: 기존 합의로 정해진 사항을 다시 물었거나, 결과가 갈리는 미결정을 묻지 않고 임의로 정했다.</li>
+</ul>
+<p>용어: <strong>Two-way Door</strong> — 되돌릴 수 있는 결정은 바로 실행한다. <strong>One-way Door</strong> — 되돌릴 수 없는 결정은 묻는다. 이 규칙은 되돌림 가능성에 더해 "해석에 따라 결과가 달라지는가"도 질문 기준으로 본다. 둘 중 하나라도 해당하면 묻고, 둘 다 아니면 진행한다.</p>
+<p>명확한 요청이나 기존 합의로 정할 수 있으면 그 근거와 동작을 정리하고 진행한다. 해석에 따라 결과가 달라지는 <strong>중요한 미결정 사항만</strong> 선택지와 차이를 붙여 최소한으로 질문한다. 이미 정한 내용을 반복 승인받지 않는다.</p>
+<h3 id="known-unknowns"><span class="anchor-no">3.6.</span>근거가 없으면 미확인을 먼저 알린다</h3>
+<ul>
+<li class="rule-line" id="AI-007" data-priority="-"><span class="rule-id">AI-007</span><strong>Known Unknowns · Fail Loudly</strong> — 검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 않고 미확인 범위와 영향을 먼저 알린다. 위반 판별: 미확인 범위 없이 "확인됨"으로 보고했다.</li>
+</ul>
+<p>용어: <strong>Known Unknowns</strong> — 모른다는 사실을 아는 항목을 목록으로 드러낸다. <strong>Fail Loudly</strong> — 실패·결손을 숨기지 않고 즉시 드러낸다.</p>
+<p>검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 말고 미확인 범위와 영향부터 알린다.</p>
+<h3 id="numeric-drafts"><span class="anchor-no">3.7.</span>미지정 수치 초안 · 정규화와 기준값 파생</h3>
+<ul>
+<li class="rule-line" id="AI-008" data-priority="-"><span class="rule-id">AI-008</span><strong>No Magic Number · SSOT(기준값)</strong> — 미지정 수치 초안은 사용자 지정값·확정 계약을 우선하고, 새 값은 100·50·25·1·0.5·0.25·0.1처럼 비교하기 쉬운 값을 후보로, 연관 수치는 기준값 하나에서 배율로 파생한다. 이미 합의·구현된 수치는 요청 없이 재정규화하지 않는다. 위반 판별: 서로 독립된 임의 상수가 연관 수치로 추가되었거나, 기존 수치가 요청 없이 바뀌었다.</li>
+</ul>
+<p>용어: <strong>Magic Number</strong> — 출처·근거 없이 코드에 박힌 상수. <strong>SSOT</strong> — 값의 원본은 한 곳(기준값)이고 나머지는 거기서 파생한다.</p>
 <div class="rule core"><div class="rule-title">새 초안에는 단순한 척도를, 연관 수치에는 하나의 기준값을 사용한다</div></div>
 <ul>
 <li><strong>사용자가 지정한 값과 이미 확정된 계약을 우선한다.</strong> 이 원칙은 새로 필요한 미지정 수치의 초안을 제안할 때 적용한다. 단위와 적정 범위를 확인한 뒤 100, 50, 25, 1, 0.5, 0.25, 0.1처럼 비교하기 쉬운 값을 후보로 삼는다. 해당 수치의 규모에 맞는 값을 선택하며, 이 목록은 닫힌 선택지나 모든 게임에 강제하는 기본값이 아니다.</li>
@@ -160,15 +205,13 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li><strong>기존 게임 수치를 이 규칙으로 다시 쓰지 않는다.</strong> 현재 프로젝트에 이미 합의되거나 구현된 값, 합성·희귀도·드롭 확률 등은 별도 요청 없이 변경·재정규화하지 않는다. 초안의 단위·기준값·파생식과 가정은 함께 기록하고, 최종값은 프로젝트의 기획과 검증으로 확정한다.</li>
 </ul>
 <p>게임 기획의 적용 위치는 <a href="game-design.html#numeric-drafts">게임 기획 가이드의 수치 초안 절</a>, 스탯의 의미·단위·계약은 <a href="stats.html">공통 STAT 사전</a>을 따른다.</p>
-<h4 id="방향-확정은-매번-승인-대기가-아니다">방향 확정은 매번 승인 대기가 아니다</h4>
-<p>명확한 요청이나 기존 합의로 정할 수 있으면 그 근거와 동작을 정리하고 진행한다. 해석에 따라 결과가 달라지는 <strong>중요한 미결정 사항만</strong> 선택지와 차이를 붙여 최소한으로 질문한다. 이미 정한 내용을 반복 승인받지 않는다.</p>
-<p>기술적 관례와 게임 기획 선택을 구분한다. 관례와 요청이 다르면 그 차이·기술적 한계·대안을 설명하고 사용자가 의도한 결과를 보존한다. 검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 말고 미확인 범위와 영향부터 알린다.</p>
 </section>
 <section class="section" id="shared-modules" data-search>
-<h2><span class="anchor-no">3.</span>구현 중 · 공통 모듈 개선과 소비 게임 적용</h2>
+<h2><span class="anchor-no">4.</span>구현 중 · 공통 모듈 개선과 소비 게임 적용</h2>
 <ul>
-<li class="rule-line" id="AI-009" data-priority="-"><span class="rule-id">AI-009</span>공통 모듈의 한계·버그를 만나면 원인과 최소 재현을 확보하고, 재사용성·API 책임 범위·하위 호환·비용을 기준으로 공통 개선 여부를 스스로 판단해 끝까지 반영한다. 공통이면 모듈 수정 → 회귀 검증 → 버전 판정·배포 → 소비 게임 반영·검증, 게임 고유면 제품 계층에 두고 근거를 기록한다. 위반 판별: 제약만 보고하고 멈췄거나 게임 쪽 임시 우회로 끝냈다.</li>
+<li class="rule-line" id="AI-009" data-priority="-"><span class="rule-id">AI-009</span><strong>Upstream First · Rule of Three</strong> — 공통 모듈의 한계·버그를 만나면 원인과 최소 재현을 확보하고, 재사용성·API 책임 범위·하위 호환·비용을 기준으로 공통 개선 여부를 스스로 판단해 끝까지 반영한다. 공통이면 모듈 수정 → 회귀 검증 → 버전 판정·배포 → 소비 게임 반영·검증, 게임 고유면 제품 계층에 두고 근거를 기록한다. 위반 판별: 제약만 보고하고 멈췄거나 게임 쪽 임시 우회로 끝냈다.</li>
 </ul>
+<p>용어: <strong>Upstream First</strong> — 수정은 사용처(하류)가 아니라 공통 모듈(상류)에 먼저 넣고 사용처로 내린다. <strong>Rule of Three</strong> — 같은 요구가 3번 반복될 때 공통화한다.</p>
 <div class="rule core"><div class="rule-title">공통 모듈 제약은 스스로 판단하고 끝까지 반영</div></div>
 <p>제품 구현·마이그레이션 중 공통 모듈의 한계나 버그를 만나면 원인과 최소 재현을 먼저 확보한다. 재사용성, 공통 API의 책임 범위, 하위 호환성, 수정·검증·배포·Consumer 비용을 기준으로 공통 개선 적합성을 스스로 판단하며, 매번 사용자 지시를 기다리지 않는다. <a href="development.html">공통 개발 규칙</a>의 DRY·YAGNI 원칙도 따른다.</p>
 <ul>
@@ -176,10 +219,11 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li><strong>게임 고유 요구면:</strong> 공통 API를 넓히지 않고 제품 계층에 두며, 공통화하지 않은 근거를 기록한다.</li>
 </ul>
 <p>제약만 보고하고 방치하거나 제품별 중복·임시 우회 구현으로 끝내지 않는다. 기존 승인 범위와 보안 제한을 지키며 넓히거나 우회하지 않는다.</p>
-<h3 id="svg-assets"><span class="anchor-no">3.1.</span>SVG 자산 · 원본을 보존하고 공통 브라우저 로더에서 한 번 컴파일</h3>
+<h3 id="svg-assets"><span class="anchor-no">4.1.</span>SVG 자산 · 원본을 보존하고 공통 브라우저 로더에서 한 번 컴파일</h3>
 <ul>
-<li class="rule-line" id="AI-010" data-priority="-"><span class="rule-id">AI-010</span>SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다.</li>
+<li class="rule-line" id="AI-010" data-priority="-"><span class="rule-id">AI-010</span><strong>SSOT(원본) · Derived Artifact 비커밋 · Memoization</strong> — SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다.</li>
 </ul>
+<p>용어: <strong>Derived Artifact</strong> — 원본에서 재생성할 수 있는 산출물. 저장소·배포물에 넣지 않는다. <strong>Memoization</strong> — 같은 입력의 계산 결과를 한 번만 만들고 캐시한다.</p>
 <div class="rule core"><div class="rule-title">SVG 정적 벡터 아트의 단일 원본은 SVG이며, 생성된 메시를 게임에 포장하지 않는다</div></div>
 <ul>
 <li><strong>원본 SVG를 유지한다.</strong> SVG로 제공된 정적 벡터 아트는 원본 SVG만 게임의 해당 자산으로 포함하고 이를 형상·뷰박스·식별자·메타데이터·작성된 애니메이션의 단일 기준으로 삼는다. 메시에 맞춘 별도 복제본을 만들거나 메타데이터·애니메이션을 지우지 않는다. 동적 효과는 SVG 규칙으로 덮어씌우지 않고 프로젝트에 맞는 셰이더·절차적 방식을 계속 사용한다.</li>
@@ -192,10 +236,11 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p><strong>나쁜 예 · Farm 번들 사례</strong> 원본은 SVG 5개 합계 66,621 B였지만, 최종 게임 번들은 11.22 MB이고 그중 98.37%가 확장된 생성 정점 데이터였다. Node 전용 SDK 소스 도구를 “브라우저에서 쓸 수 없다”로 오해해 미리 만든 대형 메시를 게임 번들에 포함하면, 작은 원본을 유지하는 대신 전송·저장 크기만 크게 늘어난다.</p>
 <p><strong>요구에 맞는 처리</strong> SVG 원본만 자산으로 포함하고 공통 SDK의 브라우저 로더를 바로잡아 시작 시 한 번 컴파일·캐시·재사용한다. 해당 게임에서 원본과 렌더를 비교하고 시작 비용·메모리·패키지 크기를 측정한다.</p>
 <p>이 규칙은 SVG로 제공된 정적 벡터 아트의 입력·렌더·패키징 계약이다. 모든 그래픽을 SVG로 강제하지 않으며 동적 VFX·절차적 표면에는 해당 표현 방식을 쓴다. 검증 기록의 범위·PASS/FAIL/미실행 구분과 배포 확인은 <a href="project-management.html#verification-policy">공통 프로젝트 관리 규칙의 검증 정책</a>을 따른다.</p>
-<h3 id="autosave"><span class="anchor-no">3.2.</span>자동 저장 · 변경 확인과 저장 비용 측정</h3>
+<h3 id="autosave"><span class="anchor-no">4.2.</span>자동 저장 · 변경 확인과 저장 비용 측정</h3>
 <ul>
-<li class="rule-line" id="AI-011" data-priority="-"><span class="rule-id">AI-011</span>자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다.</li>
+<li class="rule-line" id="AI-011" data-priority="-"><span class="rule-id">AI-011</span><strong>Dirty Flag · Debounce(maxWait) · Profile Before Optimizing</strong> — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다.</li>
 </ul>
+<p>용어: <strong>Dirty Flag</strong> — 변경 표시가 있을 때만 처리한다. <strong>Debounce(maxWait)</strong> — 연속 변화를 묶되 상한 시간 안에는 반드시 한 번 처리한다. <strong>Profile Before Optimizing</strong> — 측정 없이 원인과 개선 폭을 단정하지 않는다.</p>
 <div class="rule core"><div class="rule-title">고정 주기보다 dirty 감지, 배치 저장, 복원 경계를 먼저 설계한다</div></div>
 <ul>
 <li><strong>3초 저장을 일률적으로 금지하지 않는다.</strong> 짧은 주기가 복구 목표에 맞을 수 있다. 안티패턴은 변경 확인 없이 전체 상태를 자주 스냅샷·직렬화하고, 즉시 전체 복원·검증과 동기 I/O까지 렌더/프레임 경로에서 반복하는 조합이다. 허용할 데이터 손실 구간과 저장 빈도를 사용 흐름에 맞춰 정한다.</li>
@@ -210,10 +255,11 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p><a href="https://github.com/byh-playground/budmori-io/blob/990349c08a260bc4cf147b7269f4d295b6296e40/src/farm-storage.js#L10-L12"><code>FarmStorage</code></a>는 <code>snapshot()</code> 결과를 직렬화한 뒤 저장 직전에 다시 parse하고 <a href="https://github.com/byh-playground/budmori-io/blob/990349c08a260bc4cf147b7269f4d295b6296e40/src/farm-state.js#L11-L37"><code>restore()</code></a>해 전체 Garden을 정규화·검증·재구축한 다음 <code>localStorage.setItem()</code>을 호출한다. 매번 전체 검증·복원이 필요한지, 저장본이 실제 변경됐는지 분리하지 않은 경로가 반복 비용을 만든다. 코드에서 불필요한 작업 경로는 확인되지만 사용자 기기에서의 지연 기여도나 유일 원인은 측정으로 확인해야 한다.</p>
 <p><strong>더 나은 방향</strong> 영속 상태 변경 revision으로 저장을 걸고, 저장 요청은 묶되 <code>maxWait</code>와 중요한 체크포인트로 복구 창을 보장한다. 직렬화·기본 무결성 확인은 복원·마이그레이션과 분리하고, 저장 경로를 프레임 핫패스 밖으로 옮긴 뒤 실제 기기 프로파일로 비용을 비교한다. 저장 실패·탭 경합·원본 보존 시나리오도 함께 검증한다.</p>
 <p>이 항목은 저장 주기 숫자 하나를 금지하는 규칙이 아니다. 무변경 상태의 반복 전체 직렬화·복원과 동기 I/O를 핫패스에서 피하고, 내구성 목표와 실측 근거에 맞춰 체크포인트를 고른다.</p>
-<h3 id="simulation-cadence"><span class="anchor-no">3.3.</span>논리 틱과 물리 하위 단계 · 이름이 아니라 호출 범위를 검증</h3>
+<h3 id="simulation-cadence"><span class="anchor-no">4.3.</span>논리 틱과 물리 하위 단계 · 이름이 아니라 호출 범위를 검증</h3>
 <ul>
-<li class="rule-line" id="AI-012" data-priority="-"><span class="rule-id">AI-012</span>논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다.</li>
+<li class="rule-line" id="AI-012" data-priority="-"><span class="rule-id">AI-012</span><strong>Fixed Timestep / Sub-stepping · Functional ≠ Non-functional</strong> — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다.</li>
 </ul>
+<p>용어: <strong>Fixed Timestep / Sub-stepping</strong> — 고정 dt로 갱신하고, 물리처럼 필요한 것만 더 작은 단계로 반복한다. <strong>Functional ≠ Non-functional</strong> — 기능(동작) 검증과 비기능(성능) 검증은 별개다.</p>
 <div class="rule core"><div class="rule-title">필요한 물리만 세분화하고 전체 갱신의 중복을 비용으로 계산한다</div></div>
 <ul>
 <li><strong>진입 루프 → 논리 틱 → 하위 단계 → 실제 호출 범위</strong>를 정적으로 추적한다. 함수명·주석의 “물리”를 믿고 기존 월드 갱신을 그대로 감싸지 않는다. 빈도 × 대상 수 × 중첩 반복으로 초당 총량과 catchup 한 번의 최악 작업량을 계산한다.</li>
@@ -226,11 +272,15 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>20Hz나 120Hz 자체를 금지하는 규칙이 아니다. 고정 시간 간격과 물리 세분화는 유효한 도구이며, 금지 대상은 필요 없는 전체 월드 반복을 이름과 기능 통과로 정당화하는 방식이다. <a href="https://box2d.org/documentation/md_simulation.html">Box2D의 Simulation</a>은 물리 solver를 나누는 범위와 정확도/비용을, <a href="https://gafferongames.com/post/fix_your_timestep/">Fix Your Timestep</a>은 dt 보존과 누적 작업량의 한계를 설명하는 일차 참고다. 해당 예시의 횟수를 모든 게임에 그대로 적용하지 않는다.</p>
 </section>
 <section class="section" id="verification" data-search>
-<h2><span class="anchor-no">4.</span>구현 후 · 확정한 사례로 검증</h2>
+<h2><span class="anchor-no">5.</span>구현 후 · 확정한 사례로 검증</h2>
 <ul>
-<li class="rule-line" id="AI-013" data-priority="-"><span class="rule-id">AI-013</span>구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다.</li>
-<li class="rule-line" id="AI-014" data-priority="-"><span class="rule-id">AI-014</span>새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다.</li>
+<li class="rule-line" id="AI-013" data-priority="-"><span class="rule-id">AI-013</span><strong>Acceptance Test · Moving the Goalposts 금지</strong> — 구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다.</li>
 </ul>
+<p>용어: <strong>Acceptance Test</strong> — 사전에 정한 조건으로 합격을 판정한다. <strong>Moving the Goalposts</strong> — 결과에 맞춰 기준을 바꾸는 오류.</p>
+<ul>
+<li class="rule-line" id="AI-014" data-priority="-"><span class="rule-id">AI-014</span><strong>Definition of Done · Docs as Code</strong> — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다.</li>
+</ul>
+<p>용어: <strong>Definition of Done</strong> — 완료 조건에 문서 동기화와 공개 확인을 포함한다. <strong>Docs as Code</strong> — 문서를 코드와 같은 PR·리뷰로 바꾼다.</p>
 <p>구현 전 정한 정상·반례 시나리오를 그대로 실행해 관찰 가능한 결과와 비교한다. 내부 함수명·수식이 의도대로 작성됐다는 확인만으로 사용자 결과 검증을 대신하지 않는다.</p>
 <ul>
 <li><strong>보고할 것:</strong> 확정한 기대 동작, 실제 관찰 결과, 실행 환경·커밋과 근거, 실패·미실행·환경 차단 범위.</li>
@@ -240,7 +290,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>실행 상한·검증 기록·임시 검사 보존 등 운영 정책은 <a href="project-management.html#verification">프로젝트 관리 규칙의 검증 정책</a>을 따른다.</p>
 </section>
 <section class="section" id="damage-example" data-search>
-<h2><span class="anchor-no">5.</span>사례 · 공과 고양이로 요구 해석</h2>
+<h2><span class="anchor-no">6.</span>사례 · 공과 고양이로 요구 해석</h2>
 <p>특정 게임의 요청 해석 사례다. “충격량 기반 피해”라는 표현만으로 양쪽 공통 solver 충격량이나 상대속도를 피해식에 연결하면, <strong>고양이가 정지한 공에 달려들어도 고양이가 피해를 받는</strong> 결과가 생길 수 있다. 이 사례에서 사용자가 원한 결과와 다르다.</p>
 <p><strong>나쁜 처리</strong> “충격량 기반”이라는 단어만 보고 익숙한 공통 충돌 공식을 적용하고, 양쪽의 공통 solver 충돌값이 커졌다는 이유로 고양이 자체 이동도 같은 피해로 처리한다. 자료를 찾았거나 물리 충돌 테스트를 통과했다는 이유로 사용자의 요구가 충족됐다고 단정한다.</p>
 <p><strong>요구에 맞는 처리</strong> 일반 물리의 충돌 처리와 게임에서 피해를 주는 공격원의 의미를 비교하고, 어떤 장면에서 누가 피해를 받아야 하는지 먼저 정한다. 고양이 자체 속도가 아니라 <strong>고양이에게 날아오는 공격원인 공의 동작</strong>이 피해를 결정한다는 계약을 확정하고, solver의 물리 반작용과 공격원별 게임플레이 피해를 구분한다. 기존 합의로 정할 수 없는 부분만 묻는다.</p>
@@ -252,7 +302,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>이 예시는 일반 물리의 절대 법칙이나 모든 게임의 공통 피해식을 정하지 않는다. 다른 공격원·장르·기획에서는 다른 피해 계약이 가능하다. 핵심은 용어가 아니라 <strong>요청한 원인과 결과</strong>를 구현하는 것이다.</p>
 </section>
 <section class="section" id="checklist" data-search>
-<h2><span class="anchor-no">6.</span>완료 체크리스트</h2>
+<h2><span class="anchor-no">7.</span>완료 체크리스트</h2>
 <ul>
 <li>요청 의도·기대 결과와 기존 합의를 정리했는가?</li>
 <li>일반적인 처리 방식·공식/일차 자료를 최소 한 번 검색해 읽고 비교했는가?</li>
@@ -273,7 +323,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </code></pre>
 </section>
 <section class="section" id="sources" data-search>
-<h2><span class="anchor-no">7.</span>근거와 문서 역할</h2>
+<h2><span class="anchor-no">8.</span>근거와 문서 역할</h2>
 <p>AI 개발 규칙 원본 작성 2026-10-15 · 공통 모듈 원칙 갱신 2026-10-16 UTC · 같은 날 Farm 0.6.1 저장 경로 사례를 확인해 추가했다. 코드상 반복 비용은 근거로 설명하되 사용자 기기 지연의 원인 단정은 하지 않는다. “최소 한 번 검색·비교하고 구체 사례로 의도를 확정한다”와 “공통 모듈 제약을 스스로 판단해 적합한 개선을 Consumer까지 반영한다”는 <strong>사용자 확정 작업 원칙</strong>이다. 공과 고양이는 사용자 요구를 해석하는 사례이며 새로운 보편 물리 규칙이 아니다.</p>
 <p><a href="https://www.nasa.gov/reference/appendix-c-how-to-write-a-good-requirement/">NASA · How to Write a Good Requirement</a>는 필요한 결과와 구현 방법을 구분하고 명확성·가정·검증 가능성을 살피는 공식 참고 자료다. <a href="https://www.nasa.gov/reference/4-0-system-design-processes/">NASA · System Design Processes</a>는 사용 시나리오로 기대를 정리하고 설계를 기대 결과와 대조하는 접근을 설명한다. 이 자료가 AI의 검색 횟수나 이번 게임의 피해식을 정한다는 뜻은 아니다.</p>
 <p>자동 저장 사례의 고정 코드는 <a href="https://github.com/byh-playground/budmori-io/blob/990349c08a260bc4cf147b7269f4d295b6296e40/src/farm-app.js#L169-L185">Farm 0.6.1의 프레임·저장 호출</a>, <a href="https://github.com/byh-playground/budmori-io/blob/990349c08a260bc4cf147b7269f4d295b6296e40/src/farm-storage.js#L10-L12">저장 어댑터</a>, <a href="https://github.com/byh-playground/budmori-io/blob/990349c08a260bc4cf147b7269f4d295b6296e40/src/farm-state.js#L11-L37">스냅샷·복원</a>에서 확인할 수 있다. 브라우저 근거: <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API">MDN Web Storage API</a>의 동기 동작, <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API">IndexedDB API</a>의 비동기 트랜잭션, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event">visibilitychange</a>의 hidden 전환, <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event">pagehide</a>의 모바일 신뢰성 한계를 참고한다. 이는 특정 저장소 선택을 강제하지 않으며 복구 목표와 실제 측정이 선택 기준이다.</p>
