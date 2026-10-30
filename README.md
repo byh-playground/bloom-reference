@@ -4,7 +4,7 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 
 ## 규칙 문서 원본과 생성물
 
-- 원본: `rules/*.md` (2026-10-30 기준 `rules/project-management.md`). 사람과 AI는 이 파일만 고칩니다.
+- 원본: `rules/*.md` (2026-10-30 기준 `ai-development.md`, `development.md`, `project-management.md`). 사람과 AI는 이 파일만 고칩니다. 규칙 절의 첫 줄 `- [ID][우선순위] 문장`이 규칙 줄이며, 위반 보고는 이 ID로 합니다.
 - 생성물: 같은 이름의 `rules/*.html`. `tools/build-rules.py`가 `tools/wiki-template.html`(목차·검색·테마)에 본문을 넣어 만듭니다. 직접 수정하지 않습니다.
 - 갱신: 원본이나 변환기가 바뀐 push마다 `.github/workflows/rules-build.yml`이 HTML을 다시 생성해 같은 브랜치에 커밋합니다. 로컬 미리 보기는 `pip install -r tools/requirements.txt && python3 tools/build-rules.py`, 일치 확인은 `--check`입니다.
 - 표기 규약(4개)과 검사 항목은 `tools/build-rules.py` 머리말에 있습니다.
@@ -13,8 +13,8 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 
 | 자료 | 화면 열기 | HTML 원본 |
 | --- | --- | --- |
-| 공통 개발 규칙 · 비용 우선순위 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.html](rules/development.html) |
-| AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.html](rules/ai-development.html) |
+| 공통 개발 규칙 · 비용 우선순위 · 규칙 줄 DEV-001~026 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.md](rules/development.md) (원본) · [HTML 생성물](rules/development.html) |
+| AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 · 규칙 줄 AI-001~014 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable/Nightly·Git·원본 무빌드 배포 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.md](rules/project-management.md) (원본) · [HTML 생성물](rules/project-management.html) |
 | 공통 UI/UX 레퍼런스 · P1–P10 우선순위·URL·상태·모바일·시각 피드백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
 | 게임 기획 가이드 · 연쇄 반응·해금·규칙 단순화·수치 초안 정규화 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
@@ -52,8 +52,8 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 
 | 저장 경로 | 원본 파일 | 수정일 |
 | --- | --- | --- |
-| `rules/development.html` | `common-development-rules-priority-wiki-v14.html` | 2026-10-07 |
-| `rules/ai-development.html` | AI 요청 해석·검색 비교·공통 모듈 개선·소비 게임 적용 규칙 (이 저장소에서 작성) | 2026-10-16 |
+| `rules/development.md` → `rules/development.html` (생성물) | `common-development-rules-priority-wiki-v14.html` (2026-10-30 Markdown 원본으로 전환, 규칙 줄 추가, 리뷰 순서 표 번호 재부여) | 2026-10-30 |
+| `rules/ai-development.md` → `rules/ai-development.html` (생성물) | AI 요청 해석·검색 비교·공통 모듈 개선·소비 게임 적용 규칙 (이 저장소에서 작성, 2026-10-30 Markdown 원본으로 전환, 규칙 줄 추가) | 2026-10-30 |
 | `rules/project-management.md` → `rules/project-management.html` (생성물) | `common_project_management_rules.html` (원본 무빌드 배포·main/Nightly·Stable 기준선 갱신, 2026-10-30 Markdown 원본으로 전환) | 2026-10-30 |
 | `rules/visual-ux.html` | 공통 UI/UX 레퍼런스 (기존 시각·UX 확장) | 2026-10-11 |
 | `rules/game-design.html` | 게임 기획 가이드 (이 저장소에서 작성) | 2026-10-14 |
