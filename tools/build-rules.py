@@ -113,10 +113,11 @@ def convert_meta_lines(body: str) -> str:
 
 
 def convert_rule_lines(body: str, page_rules: dict[str, str]) -> str:
-    pat = re.compile(r"<li>\[([A-Z]{2,3}-\d{3})\]\[(P\d|-)\] (.*?)</li>", re.S)
+    # 느슨한 목록(<li><p>…</p></li>)으로 렌더된 경우도 같은 규칙 줄로 취급한다.
+    pat = re.compile(r"<li>\s*(?:<p>)?\[([A-Z]{2,3}-\d{3})\]\[(P\d|-)\] (.*?)(?:</p>)?\s*</li>", re.S)
 
     def repl(m: re.Match) -> str:
-        rid, pri, text = m.group(1), m.group(2), m.group(3)
+        rid, pri, text = m.group(1), m.group(2), m.group(3).strip()
         plain = re.sub(r"<[^>]+>", "", text).strip()
         if rid in page_rules:
             raise BuildError(f"규칙 ID 중복: {rid}")
@@ -251,7 +252,7 @@ def render(page: dict, pages: list[dict], template: str) -> str:
     for b in [x.strip() for x in meta.get("badges", "").split(",") if x.strip()]:
         core = b.endswith("*")
         badges.append(f'<span class="badge{" core" if core else ""}">{html.escape(b.rstrip("*"))}</span>')
-    body = "\n".join("      " + line if line else line for line in page["body"].splitlines())
+    body = page["body"]  # <pre> 안 공백이 바뀌므로 줄 들여쓰기를 추가하지 않는다
     return (template
             .replace("{{SOURCE}}", page["src"])
             .replace("{{SOURCE_URL}}", REPO_BLOB + page["src"])
