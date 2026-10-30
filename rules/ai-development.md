@@ -110,29 +110,32 @@ AI가 "완료"라고 보고할 수 있는 조건을 정한다. 작업 순서보�
 
 ## 소통 포맷 · 내용 유형에 맞는 매체를 고른다 {#media}
 
-- [AI-018][-] **Cognitive Fit · Executable Specification** — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향은 짧은 글과 참고 작품명, 시각 결과는 이미지, 시간에 따른 변화는 키프레임·영상·플로우차트, 구조·관계는 다이어그램(코드로 그림), 규칙·계약·설정·API는 산문 대신 코드·스키마·실행 가능한 예시(목업) 그대로, 비교·수치는 표, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조를 문단으로 설명했다.
+- [AI-018][-] **Cognitive Fit · Media Richness · Executable Specification** — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다.
 
-용어: **Cognitive Fit** — 표현 형식이 과제·내용 유형과 맞을 때 이해와 판단이 빨라진다는 이론(표 vs 그래프 연구에서 나옴). **Executable Specification / Specification by Example** — 요구·규칙을 산문이 아니라 실행하거나 그대로 가져다 쓸 수 있는 예시·코드로 적는 것. **Diagrams as Code** — 다이어그램을 Mermaid 같은 텍스트 코드로 정의해 diff·재생성이 되게 하는 것.
+용어: **Cognitive Fit** — 표현 형식이 과제·내용 유형과 맞을 때 이해와 판단이 빨라진다는 이론(표 vs 그래프 연구). **Media Richness** — 메시지의 모호성이 높을수록 단서가 많은 풍부한 매체가, 낮을수록 간결한 매체가 맞다는 이론(Daft & Lengel). **Executable Specification / Specification by Example** — 요구·규칙을 산문이 아니라 실행하거나 그대로 가져다 쓸 수 있는 예시·코드로 적는 것. **Diagrams as Code** — 다이어그램을 Mermaid 같은 텍스트 코드로 정의해 diff·재생성이 되게 하는 것. **Mood Board** — 느낌·톤을 이미지·색·질감·참고 작품으로 모아 합의하는 도구. **Storyboard / Animatic** — 장면을 순서대로 그려 흐름을, 임시 사운드에 맞춰 이어 붙여 타이밍을 제작 전에 확인하는 것. **Lo-fi / Hi-fi Prototype** — 구조·흐름 확인용 거친 목업과 최종 외형·상호작용 확인용 정밀 목업. **C4 Model** — 소프트웨어 구조를 Context·Container·Component·Code 4단계 다이어그램으로 청중별로 나눠 보여 주는 방법.
 
-Markdown 산문은 기본값이 아니다. 산문은 아직 정량화되지 않은 느낌·방향을 전할 때만 가장 싼 포맷이고, 그 밖의 유형에서는 더 모호하고 더 비싸다. 코드로 쓸 수 있는 것을 말로 다시 쓰면 해석이 갈리고 원본이 2개가 된다([DEV-001](development.md#ownership)).
+하나의 축으로 정리하면 **모호성**이다. 해석이 갈릴수록 단서가 많은 매체(이미지·참고 작품·영상)로 가고, 확정될수록 단서가 적고 정확한 매체(표·코드)로 간다. Markdown 산문은 그 중간에 있고 기본값이 아니다. 코드로 쓸 수 있는 것을 말로 다시 쓰면 해석이 갈리고 원본이 2개가 된다([DEV-001](development.md#ownership)).
 
-| 내용 유형 | 기본 포맷 | 쓰지 않는 것 | 이유 |
+| 내용 유형 | 기본 포맷 | 쓰지 않는 것 | 근거 |
 | --- | --- | --- | --- |
-| 느낌·분위기·재미 방향·아직 수치 없는 목표 | 짧은 글 + 참고 작품명·장면명 1~3개 | 표, 코드, 긴 서술 | 정량화 전 단계는 언어가 맞고, 참고 작품명이 가장 짧은 공유 어휘다([AI-000](#terminology)) |
-| 시각 결과: 화면·색·레이아웃·캐릭터·이펙트 한 장면 | 이미지(스크린샷·목업·이미지 시트), 전후는 나란히 | 말로 묘사 | 보는 쪽이 한 번에 판단한다 |
-| 시간에 따른 변화: 연출·애니메이션·전투 흐름 | 키프레임 시퀀스(시작·중간·끝) 또는 짧은 영상, 상태 전이는 플로우차트 | 문단 서술 | 순서와 타이밍은 글로 복원하기 어렵다. 캡처는 [표준 관찰 절차](#observation-procedure) |
-| 구조·구성·관계: 모듈 의존, 데이터 흐름, 클래스·Mixin 관계, 화면 구성 | 다이어그램(Mermaid 등 코드로 그림), 화면 구성은 와이어프레임 | 문단 | 관계는 2차원으로 봐야 빠지는 것이 보인다. 코드로 그리면 diff가 된다 |
-| 규칙·계약·설정값·API·데이터 형식 | 코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로 | 산문으로 재서술 | 코드가 SSOT이고 그대로 가져다 쓴다. 산문은 해석이 갈리고 이중 관리가 된다 |
-| 비교·선택지·수치 | 표. 추세는 차트 | 나열 문장 | 열을 맞춰야 빠진 칸이 보인다 |
+| 느낌·분위기·재미 방향·아직 수치 없는 목표 | 무드보드(참고 작품·장면·색·질감 이미지 3~8개) + 방향 1~2문장 | 긴 서술만, 표, 코드 | 조사: 디자인·게임 아트 관행은 무드보드. Media Richness: 모호한 메시지에는 풍부한 매체. 참고 작품명은 가장 짧은 공유 어휘([AI-000](#terminology)) |
+| 시각 결과: 화면·색·레이아웃·캐릭터·이펙트 한 장면 | 이미지. 구조·흐름 확인은 lo-fi 목업(와이어프레임), 최종 외형은 hi-fi 목업·스크린샷, 전후는 나란히 | 말로 묘사 | 조사: 프로토타입 충실도 관행(UX). 보는 쪽이 설계 가설을 직접 확인한다 |
+| 시간에 따른 변화: 연출·애니메이션·전투 흐름 | 스토리보드 또는 키프레임 시퀀스(시작·중간·끝), 타이밍까지 보려면 짧은 영상(애니매틱), 상태 전이는 상태 다이어그램·플로우차트 | 문단 서술 | 조사: 애니메이션 제작은 스토리보드·애니매틱으로 흐름·타이밍을 먼저 확인해 버릴 장면을 만들지 않는다. 캡처는 [표준 관찰 절차](#observation-procedure) |
+| 구조·구성·관계: 모듈 의존, 데이터 흐름, 클래스·Mixin 관계, 화면 구성 | 코드로 그린 다이어그램(Mermaid 등). 시스템 구조는 C4처럼 청중별 단계로 나눈다. 화면 구성은 와이어프레임 | 문단 | 조사: C4 Model, Diagrams as Code. 관계는 2차원으로 봐야 빠진 것이 보이고 코드로 그리면 diff가 된다 |
+| 규칙·계약·설정값·API·데이터 형식 | 코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로 | 산문으로 재서술 | **사용자 확정(2026-10-30)**: 목업·코드가 제일 싸고 소통이 잘 된다. 조사: Executable Specification, Media Richness의 간결 매체. 코드가 SSOT |
+| 개별 값 조회·여러 항목의 정확한 수치 비교 | 표 | 나열 문장, 차트 | 조사: Cognitive Fit(표는 정확한 값 읽기). 열을 맞춰야 빠진 칸이 보인다 |
+| 패턴·추세·시간에 따른 수치 변화 | 차트(연속 변화는 선, 항목 비교는 막대) | 표만 | 조사: Few — 패턴·추세는 그래프, 연속 변화는 선·개별 값 비교는 막대 |
 | 순서가 있는 절차·체크 | 번호 목록 또는 체크리스트 | 문단 | 건너뛴 단계가 보인다 |
 | 판단과 근거 | [ADR](#decision-record) 양식 | 결론만 | 선택지와 기각 이유가 남는다 |
-| 요구·기대 동작 | [Given-When-Then](#given-when-then) 예시 | "잘 되게" 같은 추상 문장 | 예시가 곧 검증 사례가 된다 |
+| 요구·기대 동작 | [Given-When-Then](#given-when-then) 예시 | "잘 되게" 같은 추상 문장 | 예시가 곧 검증 사례가 된다(Specification by Example) |
 
 적용 방법:
 
 - 쓰기 전에 유형을 먼저 고른다. 한 메시지·문서에 유형이 섞이면 유형별로 블록을 나누고 각각 맞는 포맷으로 쓴다.
 - 규칙 문서도 같다. 이 레포의 규칙 줄은 ID·용어·판별이 있는 고정 형식이고, 표기 규약·검사는 산문이 아니라 `tools/build-rules.py` 코드가 원본이다.
 - 포맷을 바꿀 수 없는 채널(이미지 첨부 불가 등)에서는 가장 가까운 포맷으로 대체하고 대체했음을 밝힌다([AI-007](#known-unknowns)).
+
+근거 출처(2026-10-30 조회): [Cognitive fit theory](https://is.theorizeit.org/wiki/Cognitive_fit_theory) · [Media richness theory](https://is.theorizeit.org/wiki/Media_richness_theory) · [Stephen Few, 그래프 선택 강의 노트](https://faculty.cc.gatech.edu/~stasko/7450/13/Notes/few.pdf) · [Specification by Example](https://concepts.dsebastien.net/concept/specification-by-example/) · [Diagrams as code](https://docs.nextgen.unifiedcompliance.com/readme/plantuml/plantuml-diagrams-as-code/why-use-diagramming-as-code-tools) · [C4 model](https://lucid.co/blog/c4-model) · [Animatic](https://en.wikipedia.org/wiki/Animatic) · [Mood board](https://www.figma.com/resource-library/how-to-make-a-mood-board/) · [Lo-fi vs hi-fi prototyping](https://www.uxpin.com/studio/blog/high-fidelity-prototyping-low-fidelity-difference/). 표의 "사용자 확정" 행 외에는 모두 조사 결과이며, 사용자 의견과 달랐던 느낌·분위기 행은 조사 결과를 따랐다.
 
 ## 핵심 원칙 {#principle}
 
