@@ -331,55 +331,61 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <section class="section" id="media" data-search>
 <h2><span class="anchor-no">3.</span>소통 포맷 · 내용 유형에 맞는 매체를 고른다</h2>
 <ul>
-<li class="rule-line" id="AI-018" data-priority="-"><span class="rule-id">AI-018</span><strong>Cognitive Fit · Executable Specification</strong> — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향은 짧은 글과 참고 작품명, 시각 결과는 이미지, 시간에 따른 변화는 키프레임·영상·플로우차트, 구조·관계는 다이어그램(코드로 그림), 규칙·계약·설정·API는 산문 대신 코드·스키마·실행 가능한 예시(목업) 그대로, 비교·수치는 표, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조를 문단으로 설명했다.</li>
+<li class="rule-line" id="AI-018" data-priority="-"><span class="rule-id">AI-018</span><strong>Cognitive Fit · Media Richness · Executable Specification</strong> — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다.</li>
 </ul>
-<p>용어: <strong>Cognitive Fit</strong> — 표현 형식이 과제·내용 유형과 맞을 때 이해와 판단이 빨라진다는 이론(표 vs 그래프 연구에서 나옴). <strong>Executable Specification / Specification by Example</strong> — 요구·규칙을 산문이 아니라 실행하거나 그대로 가져다 쓸 수 있는 예시·코드로 적는 것. <strong>Diagrams as Code</strong> — 다이어그램을 Mermaid 같은 텍스트 코드로 정의해 diff·재생성이 되게 하는 것.</p>
-<p>Markdown 산문은 기본값이 아니다. 산문은 아직 정량화되지 않은 느낌·방향을 전할 때만 가장 싼 포맷이고, 그 밖의 유형에서는 더 모호하고 더 비싸다. 코드로 쓸 수 있는 것을 말로 다시 쓰면 해석이 갈리고 원본이 2개가 된다(<a href="development.html#ownership">DEV-001</a>).</p>
+<p>용어: <strong>Cognitive Fit</strong> — 표현 형식이 과제·내용 유형과 맞을 때 이해와 판단이 빨라진다는 이론(표 vs 그래프 연구). <strong>Media Richness</strong> — 메시지의 모호성이 높을수록 단서가 많은 풍부한 매체가, 낮을수록 간결한 매체가 맞다는 이론(Daft &amp; Lengel). <strong>Executable Specification / Specification by Example</strong> — 요구·규칙을 산문이 아니라 실행하거나 그대로 가져다 쓸 수 있는 예시·코드로 적는 것. <strong>Diagrams as Code</strong> — 다이어그램을 Mermaid 같은 텍스트 코드로 정의해 diff·재생성이 되게 하는 것. <strong>Mood Board</strong> — 느낌·톤을 이미지·색·질감·참고 작품으로 모아 합의하는 도구. <strong>Storyboard / Animatic</strong> — 장면을 순서대로 그려 흐름을, 임시 사운드에 맞춰 이어 붙여 타이밍을 제작 전에 확인하는 것. <strong>Lo-fi / Hi-fi Prototype</strong> — 구조·흐름 확인용 거친 목업과 최종 외형·상호작용 확인용 정밀 목업. <strong>C4 Model</strong> — 소프트웨어 구조를 Context·Container·Component·Code 4단계 다이어그램으로 청중별로 나눠 보여 주는 방법.</p>
+<p>하나의 축으로 정리하면 <strong>모호성</strong>이다. 해석이 갈릴수록 단서가 많은 매체(이미지·참고 작품·영상)로 가고, 확정될수록 단서가 적고 정확한 매체(표·코드)로 간다. Markdown 산문은 그 중간에 있고 기본값이 아니다. 코드로 쓸 수 있는 것을 말로 다시 쓰면 해석이 갈리고 원본이 2개가 된다(<a href="development.html#ownership">DEV-001</a>).</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
 <th>내용 유형</th>
 <th>기본 포맷</th>
 <th>쓰지 않는 것</th>
-<th>이유</th>
+<th>근거</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>느낌·분위기·재미 방향·아직 수치 없는 목표</td>
-<td>짧은 글 + 참고 작품명·장면명 1~3개</td>
-<td>표, 코드, 긴 서술</td>
-<td>정량화 전 단계는 언어가 맞고, 참고 작품명이 가장 짧은 공유 어휘다(<a href="#terminology">AI-000</a>)</td>
+<td>무드보드(참고 작품·장면·색·질감 이미지 3~8개) + 방향 1~2문장</td>
+<td>긴 서술만, 표, 코드</td>
+<td>조사: 디자인·게임 아트 관행은 무드보드. Media Richness: 모호한 메시지에는 풍부한 매체. 참고 작품명은 가장 짧은 공유 어휘(<a href="#terminology">AI-000</a>)</td>
 </tr>
 <tr>
 <td>시각 결과: 화면·색·레이아웃·캐릭터·이펙트 한 장면</td>
-<td>이미지(스크린샷·목업·이미지 시트), 전후는 나란히</td>
+<td>이미지. 구조·흐름 확인은 lo-fi 목업(와이어프레임), 최종 외형은 hi-fi 목업·스크린샷, 전후는 나란히</td>
 <td>말로 묘사</td>
-<td>보는 쪽이 한 번에 판단한다</td>
+<td>조사: 프로토타입 충실도 관행(UX). 보는 쪽이 설계 가설을 직접 확인한다</td>
 </tr>
 <tr>
 <td>시간에 따른 변화: 연출·애니메이션·전투 흐름</td>
-<td>키프레임 시퀀스(시작·중간·끝) 또는 짧은 영상, 상태 전이는 플로우차트</td>
+<td>스토리보드 또는 키프레임 시퀀스(시작·중간·끝), 타이밍까지 보려면 짧은 영상(애니매틱), 상태 전이는 상태 다이어그램·플로우차트</td>
 <td>문단 서술</td>
-<td>순서와 타이밍은 글로 복원하기 어렵다. 캡처는 <a href="#observation-procedure">표준 관찰 절차</a></td>
+<td>조사: 애니메이션 제작은 스토리보드·애니매틱으로 흐름·타이밍을 먼저 확인해 버릴 장면을 만들지 않는다. 캡처는 <a href="#observation-procedure">표준 관찰 절차</a></td>
 </tr>
 <tr>
 <td>구조·구성·관계: 모듈 의존, 데이터 흐름, 클래스·Mixin 관계, 화면 구성</td>
-<td>다이어그램(Mermaid 등 코드로 그림), 화면 구성은 와이어프레임</td>
+<td>코드로 그린 다이어그램(Mermaid 등). 시스템 구조는 C4처럼 청중별 단계로 나눈다. 화면 구성은 와이어프레임</td>
 <td>문단</td>
-<td>관계는 2차원으로 봐야 빠지는 것이 보인다. 코드로 그리면 diff가 된다</td>
+<td>조사: C4 Model, Diagrams as Code. 관계는 2차원으로 봐야 빠진 것이 보이고 코드로 그리면 diff가 된다</td>
 </tr>
 <tr>
 <td>규칙·계약·설정값·API·데이터 형식</td>
 <td>코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로</td>
 <td>산문으로 재서술</td>
-<td>코드가 SSOT이고 그대로 가져다 쓴다. 산문은 해석이 갈리고 이중 관리가 된다</td>
+<td><strong>사용자 확정(2026-10-30)</strong>: 목업·코드가 제일 싸고 소통이 잘 된다. 조사: Executable Specification, Media Richness의 간결 매체. 코드가 SSOT</td>
 </tr>
 <tr>
-<td>비교·선택지·수치</td>
-<td>표. 추세는 차트</td>
-<td>나열 문장</td>
-<td>열을 맞춰야 빠진 칸이 보인다</td>
+<td>개별 값 조회·여러 항목의 정확한 수치 비교</td>
+<td>표</td>
+<td>나열 문장, 차트</td>
+<td>조사: Cognitive Fit(표는 정확한 값 읽기). 열을 맞춰야 빠진 칸이 보인다</td>
+</tr>
+<tr>
+<td>패턴·추세·시간에 따른 수치 변화</td>
+<td>차트(연속 변화는 선, 항목 비교는 막대)</td>
+<td>표만</td>
+<td>조사: Few — 패턴·추세는 그래프, 연속 변화는 선·개별 값 비교는 막대</td>
 </tr>
 <tr>
 <td>순서가 있는 절차·체크</td>
@@ -397,7 +403,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <td>요구·기대 동작</td>
 <td><a href="#given-when-then">Given-When-Then</a> 예시</td>
 <td>"잘 되게" 같은 추상 문장</td>
-<td>예시가 곧 검증 사례가 된다</td>
+<td>예시가 곧 검증 사례가 된다(Specification by Example)</td>
 </tr>
 </tbody>
 </table></div>
@@ -407,6 +413,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li>규칙 문서도 같다. 이 레포의 규칙 줄은 ID·용어·판별이 있는 고정 형식이고, 표기 규약·검사는 산문이 아니라 <code>tools/build-rules.py</code> 코드가 원본이다.</li>
 <li>포맷을 바꿀 수 없는 채널(이미지 첨부 불가 등)에서는 가장 가까운 포맷으로 대체하고 대체했음을 밝힌다(<a href="#known-unknowns">AI-007</a>).</li>
 </ul>
+<p>근거 출처(2026-10-30 조회): <a href="https://is.theorizeit.org/wiki/Cognitive_fit_theory">Cognitive fit theory</a> · <a href="https://is.theorizeit.org/wiki/Media_richness_theory">Media richness theory</a> · <a href="https://faculty.cc.gatech.edu/~stasko/7450/13/Notes/few.pdf">Stephen Few, 그래프 선택 강의 노트</a> · <a href="https://concepts.dsebastien.net/concept/specification-by-example/">Specification by Example</a> · <a href="https://docs.nextgen.unifiedcompliance.com/readme/plantuml/plantuml-diagrams-as-code/why-use-diagramming-as-code-tools">Diagrams as code</a> · <a href="https://lucid.co/blog/c4-model">C4 model</a> · <a href="https://en.wikipedia.org/wiki/Animatic">Animatic</a> · <a href="https://www.figma.com/resource-library/how-to-make-a-mood-board/">Mood board</a> · <a href="https://www.uxpin.com/studio/blog/high-fidelity-prototyping-low-fidelity-difference/">Lo-fi vs hi-fi prototyping</a>. 표의 "사용자 확정" 행 외에는 모두 조사 결과이며, 사용자 의견과 달랐던 느낌·분위기 행은 조사 결과를 따랐다.</p>
 </section>
 <section class="section" id="principle" data-search>
 <h2><span class="anchor-no">4.</span>핵심 원칙</h2>
