@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 54개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 55개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 54개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 55개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -35,6 +35,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [AI-012][-] **Fixed Timestep / Sub-stepping · Functional ≠ Non-functional** — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다. [상세](rules/ai-development.md#simulation-cadence)
 - [AI-013][-] **Acceptance Test · Moving the Goalposts 금지** — 구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다. [상세](rules/ai-development.md#verification)
 - [AI-014][-] **Definition of Done · Docs as Code** — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다. [상세](rules/ai-development.md#verification)
+- [AI-015][-] **Observable Evidence · Show, Don't Tell** — 완료의 기준은 코드를 쓴 것이 아니라 AI가 실제 실행 결과를 직접 본 것이다. 변경한 장면·파라미터를 실제로 실행해 관찰물(화면·연출은 스크린샷이나 키프레임, 로직·수치는 실행 로그나 출력값)을 얻어 기대 결과와 비교하고, 그 관찰물과 비교 결과를 보고에 첨부한다. 위반 판별: 관찰물 없이 "구현했다"고 보고했거나, 사용자가 직접 실행해야 결과를 알 수 있다. [상세](rules/ai-development.md#verification)
 
 ## 구조 규칙 {#dev}
 

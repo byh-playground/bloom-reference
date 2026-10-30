@@ -312,9 +312,46 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li class="rule-line" id="AI-014" data-priority="-"><span class="rule-id">AI-014</span><strong>Definition of Done · Docs as Code</strong> — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다.</li>
 </ul>
 <p>용어: <strong>Definition of Done</strong> — 완료 조건에 문서 동기화와 공개 확인을 포함한다. <strong>Docs as Code</strong> — 문서를 코드와 같은 PR·리뷰로 바꾼다.</p>
+<ul>
+<li class="rule-line" id="AI-015" data-priority="-"><span class="rule-id">AI-015</span><strong>Observable Evidence · Show, Don't Tell</strong> — 완료의 기준은 코드를 쓴 것이 아니라 AI가 실제 실행 결과를 직접 본 것이다. 변경한 장면·파라미터를 실제로 실행해 관찰물(화면·연출은 스크린샷이나 키프레임, 로직·수치는 실행 로그나 출력값)을 얻어 기대 결과와 비교하고, 그 관찰물과 비교 결과를 보고에 첨부한다. 위반 판별: 관찰물 없이 "구현했다"고 보고했거나, 사용자가 직접 실행해야 결과를 알 수 있다.</li>
+</ul>
+<p>용어: <strong>Observable Evidence</strong> — 주장 대신 관찰할 수 있는 증거(화면·출력·로그)로 결과를 보인다. <strong>Show, Don't Tell</strong> — "했다"는 말 대신 결과물 자체를 보여 준다.</p>
+<p>관찰물은 변경 종류에 따라 정한다. 변경한 파라미터를 실제로 넣은 상태의 결과여야 하고, 비슷한 다른 상태로 대신하지 않는다.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>변경 종류</th>
+<th>관찰물</th>
+<th>비교 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>화면·UI·연출·VFX</td>
+<td>해당 상태의 스크린샷, 움직임이면 키프레임 여러 장(시작·중간·끝)</td>
+<td>변경 전후 나란히, 기대한 모양과 대조</td>
+</tr>
+<tr>
+<td>시뮬레이션·물리·수치</td>
+<td>변경 전후의 실행 로그, 출력값, 호출 횟수</td>
+<td>기대값·허용 범위와 대조</td>
+</tr>
+<tr>
+<td>빌드·배포·생성물</td>
+<td>생성 파일 경로·크기, 실행 결과(열림·오류 없음)</td>
+<td>생성물이 실제로 열리는지</td>
+</tr>
+<tr>
+<td>문서·규칙</td>
+<td>렌더된 화면 또는 변환기 검사 결과</td>
+<td>링크·앵커·표가 의도대로 보이는지</td>
+</tr>
+</tbody>
+</table></div>
+<p>이 규칙은 <a href="#verification">AI-013</a>의 "시나리오를 실행해 비교한다"에서 <strong>누가 보는가</strong>를 정한다. 사용자가 실행해 보고 알려 주는 것이 아니라 AI가 먼저 보고 결과를 가져온다. 코드만 쓰고 넘기면 초반에는 문제가 없지만, 사용자가 결과를 확인하고 수정을 지시하는 왕복이 작업마다 쌓여 뒤로 갈수록 수정 요청이 늘어난다. 관찰물을 첨부한 보고는 이 왕복을 없앤다. 관찰이 불가능한 환경(브라우저·기기 없음)이면 <a href="#known-unknowns">AI-007</a>에 따라 미관찰 범위를 먼저 알린다. 기록 항목은 <a href="project-management.html#verification-evidence">관리 규칙의 검증 기록</a>을 따른다.</p>
 <p>구현 전 정한 정상·반례 시나리오를 그대로 실행해 관찰 가능한 결과와 비교한다. 내부 함수명·수식이 의도대로 작성됐다는 확인만으로 사용자 결과 검증을 대신하지 않는다.</p>
 <ul>
-<li><strong>보고할 것:</strong> 확정한 기대 동작, 실제 관찰 결과, 실행 환경·커밋과 근거, 실패·미실행·환경 차단 범위.</li>
+<li><strong>보고할 것:</strong> 확정한 기대 동작, 실제 관찰 결과와 관찰물(스크린샷·키프레임·로그), 실행 환경·커밋과 근거, 실패·미실행·환경 차단 범위.</li>
 <li><strong>다르면:</strong> 요구 해석·규칙·구현 중 어디가 달라졌는지 찾아 수정하고 같은 사례를 다시 확인한다. 기대 결과를 구현에 맞춰 몰래 바꾸지 않는다.</li>
 <li><strong>문서 동기화:</strong> 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남긴다. 검증 완료와 병합·공개 완료는 각각 확인한다.</li>
 </ul>
@@ -343,6 +380,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li>SVG 정적 벡터 아트라면 원본만 배포하고 공통 브라우저 로더에서 한 번 컴파일해 캐시·재사용했는가? 생성 메시·무제한 재시도·래스터 대체가 없고 원본과 렌더를 비교했는가?</li>
 <li>자동 저장은 지속 상태가 바뀔 때만 묶어서 처리하고 최대 대기시간·체크포인트를 두었는가? 직렬화와 전체 복원, 동기 I/O를 렌더 경로에서 분리하고 오류·다중 탭·원본 보존을 실측·검증했는가?</li>
 <li>구현 뒤 같은 사례로 확인하고 실제 결과·미검증 범위를 보고했는가?</li>
+<li>변경한 장면·파라미터를 실제로 실행해 관찰물(스크린샷·키프레임·로그)을 직접 보고, 그 관찰물을 보고에 첨부했는가?</li>
 </ul>
 <p>완료 보고 양식:</p>
 <pre><code class="language-text">의도 / 기대 결과 / 기존 합의:
@@ -351,6 +389,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 정상 사례 / 반례 / 기대 결과:
 공통 모듈 / 원인·최소 재현 / 적합성 근거 / 모듈·Consumer 검증 또는 제품 계층 판단:
 실제 관찰 / 환경·커밋 / 실패·미검증:
+관찰물 (스크린샷·키프레임·로그 경로) / 기대와 비교:
 </code></pre>
 </section>
 <section class="section" id="sources" data-search>
