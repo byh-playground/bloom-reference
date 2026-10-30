@@ -13,9 +13,9 @@ BLOOM 개발·프로젝트 관리 규칙, 알고리즘 설명, 공통 UI/UX 기�
 
 | 자료 | 화면 열기 | HTML 원본 |
 | --- | --- | --- |
-| **에이전트 진입 문서** · 규칙 줄 56개(AI·DEV·PM) + 상세 링크 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html) | [AGENTS.md](AGENTS.md) (원본) · [HTML 생성물](rules/index.html) |
+| **에이전트 진입 문서** · 규칙 줄 57개(AI·DEV·PM) + 상세 링크 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html) | [AGENTS.md](AGENTS.md) (원본) · [HTML 생성물](rules/index.html) |
 | 공통 개발 규칙 · 비용 우선순위 · 규칙 줄 DEV-001~026 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.md](rules/development.md) (원본) · [HTML 생성물](rules/development.html) |
-| AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 · 규칙 줄 AI-000~016 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
+| AI 개발 규칙 · 요구 해석·공통 모듈 개선·SVG 자산·자동 저장 비용·검증 · 규칙 줄 AI-000~017 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable/Nightly·Git·원본 무빌드 배포 · 규칙 줄 PM-001~013 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.md](rules/project-management.md) (원본) · [HTML 생성물](rules/project-management.html) |
 | 공통 UI/UX 레퍼런스 · P1–P10 우선순위·URL·상태·모바일·시각 피드백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
 | 게임 기획 가이드 · 연쇄 반응·해금·규칙 단순화·수치 초안 정규화 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
