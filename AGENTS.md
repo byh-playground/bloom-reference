@@ -1,21 +1,30 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 55개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 56개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 55개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 56개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
 
 > [!NOTE] **이 문서 사용법**
-> 이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 `- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …` 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: `DEV-001 위반`). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 `tools/build-rules.py`가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 `P0/P1/P2`는 구조 규칙의 나중 수정 비용 순서이고, `-`는 우선순위가 없는 규칙이다.
+> 이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 `- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …` 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: `DEV-001 위반`). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 `tools/build-rules.py`가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 `P0/P1/P2`는 구조 규칙의 나중 수정 비용 순서이고, `-`는 우선순위가 없는 규칙이다. 장 순서가 읽는 순서다.
 
 ## 대전제 {#terminology}
 
 모든 규칙·문서 작성에 먼저 적용한다. 원본: [AI 개발 규칙 · 대전제](rules/ai-development.md#terminology).
 
 - [AI-000][-] **Ubiquitous Language · Shared Vocabulary** — 규칙·문서를 쓸 때 사용자가 설명한 내용과 같은 뜻을 가진 통용 용어나 해시태그(SSOT, KISS, MECE, YAGNI 등)가 있으면 그 용어를 규칙 줄 앞에 함께 적는다. 용어가 뜻을 전부 덮지 못하면 용어 뒤에 차이를 한 절로 적는다. 위반 판별: 같은 뜻의 통용 용어가 있는데 규칙에 용어가 없거나, 뜻이 다른 용어를 붙였다. [상세](rules/ai-development.md#terminology)
+
+## 완료 조건 {#done}
+
+AI가 "완료"라고 보고할 수 있는 조건. 작업 순서보다 먼저 읽는다. 원본: [AI 개발 규칙 · 완료 조건](rules/ai-development.md#verification).
+
+- [AI-013][-] **Acceptance Test · Moving the Goalposts 금지** — 구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다. [상세](rules/ai-development.md#verification)
+- [AI-014][-] **Definition of Done · Docs as Code** — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다. [상세](rules/ai-development.md#verification)
+- [AI-015][-] **Observable Evidence · Show, Don't Tell** — 완료의 기준은 코드를 쓴 것이 아니라 AI가 실제 실행 결과를 직접 본 것이다. 변경한 장면·파라미터를 실제로 실행해 관찰물(화면·연출은 스크린샷이나 키프레임, 로직·수치는 실행 로그나 출력값)을 얻어 기대 결과와 비교하고, 그 관찰물과 비교 결과를 보고에 첨부한다. 위반 판별: 관찰물 없이 "구현했다"고 보고했거나, 사용자가 직접 실행해야 결과를 알 수 있다. [상세](rules/ai-development.md#verification)
+- [AI-016][-] **Ephemeral Evidence · Keep Only Reusable** — 관찰물(스크린샷·키프레임·로그)과 검증용 임시 코드(스크립트·단위 테스트·디버그 출력)는 그 시점에 사용자와 결과를 공유하기 위한 증거다. 보고에 첨부한 뒤 폐기하고 레포에 남기지 않는다. 레포에 남기는 기준은 재사용 하나다: 다음 작업에서도 같은 검증을 다시 돌리는 것(고정 사용자 시나리오 E2E, 변환기 검사)만 남기고, 요청하지 않은 테스트는 만들지 않는다. 위반 판별: PR에 1회용 스크린샷·임시 스크립트·디버그 테스트가 들어 있거나, 재사용 근거 없이 테스트 파일이 추가되었다. [상세](rules/ai-development.md#verification)
 
 ## 작업 순서 {#ai}
 
@@ -33,9 +42,6 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [AI-010][-] **SSOT(원본) · Derived Artifact 비커밋 · Memoization** — SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다. [상세](rules/ai-development.md#svg-assets)
 - [AI-011][-] **Dirty Flag · Debounce(maxWait) · Profile Before Optimizing** — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다. [상세](rules/ai-development.md#autosave)
 - [AI-012][-] **Fixed Timestep / Sub-stepping · Functional ≠ Non-functional** — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다. [상세](rules/ai-development.md#simulation-cadence)
-- [AI-013][-] **Acceptance Test · Moving the Goalposts 금지** — 구현 전 확정한 정상·반례 시나리오를 그대로 실행해 관찰 결과를 비교하고, 기대 동작·실제 결과·환경·커밋·실패·미실행 범위를 보고하며, 기대 결과를 구현에 맞춰 바꾸지 않는다. 위반 판별: 함수명·수식 확인만으로 검증 완료라고 보고했거나 미실행 범위 기록이 없다. [상세](rules/ai-development.md#verification)
-- [AI-014][-] **Definition of Done · Docs as Code** — 새로 확정된 계약은 해당 기능의 원본 문서와 PR에 남기고, 검증 완료와 병합·공개 완료를 각각 확인한다. 위반 판별: 계약 변경이 PR 본문과 원본 문서에 없다. [상세](rules/ai-development.md#verification)
-- [AI-015][-] **Observable Evidence · Show, Don't Tell** — 완료의 기준은 코드를 쓴 것이 아니라 AI가 실제 실행 결과를 직접 본 것이다. 변경한 장면·파라미터를 실제로 실행해 관찰물(화면·연출은 스크린샷이나 키프레임, 로직·수치는 실행 로그나 출력값)을 얻어 기대 결과와 비교하고, 그 관찰물과 비교 결과를 보고에 첨부한다. 위반 판별: 관찰물 없이 "구현했다"고 보고했거나, 사용자가 직접 실행해야 결과를 알 수 있다. [상세](rules/ai-development.md#verification)
 
 ## 구조 규칙 {#dev}
 
