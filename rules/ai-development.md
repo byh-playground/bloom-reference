@@ -110,7 +110,7 @@ AI가 "완료"라고 보고할 수 있는 조건을 정한다. 작업 순서보�
 
 ## 소통 포맷 · 내용 유형에 맞는 매체를 고른다 {#media}
 
-- [AI-018][-] **Cognitive Fit · Media Richness · Executable Specification** — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다.
+- [AI-018][-] **Cognitive Fit · Media Richness · Executable Specification** — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로 + 의도·제약 1~2줄)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다.
 
 용어: **Cognitive Fit** — 표현 형식이 과제·내용 유형과 맞을 때 이해와 판단이 빨라진다는 이론(표 vs 그래프 연구). **Media Richness** — 메시지의 모호성이 높을수록 단서가 많은 풍부한 매체가, 낮을수록 간결한 매체가 맞다는 이론(Daft & Lengel). **Executable Specification / Specification by Example** — 요구·규칙을 산문이 아니라 실행하거나 그대로 가져다 쓸 수 있는 예시·코드로 적는 것. **Diagrams as Code** — 다이어그램을 Mermaid 같은 텍스트 코드로 정의해 diff·재생성이 되게 하는 것. **Mood Board** — 느낌·톤을 이미지·색·질감·참고 작품으로 모아 합의하는 도구. **Storyboard / Animatic** — 장면을 순서대로 그려 흐름을, 임시 사운드에 맞춰 이어 붙여 타이밍을 제작 전에 확인하는 것. **Lo-fi / Hi-fi Prototype** — 구조·흐름 확인용 거친 목업과 최종 외형·상호작용 확인용 정밀 목업. **C4 Model** — 소프트웨어 구조를 Context·Container·Component·Code 4단계 다이어그램으로 청중별로 나눠 보여 주는 방법.
 
@@ -119,10 +119,10 @@ AI가 "완료"라고 보고할 수 있는 조건을 정한다. 작업 순서보�
 | 내용 유형 | 기본 포맷 | 쓰지 않는 것 | 근거 |
 | --- | --- | --- | --- |
 | 느낌·분위기·재미 방향·아직 수치 없는 목표 | 무드보드(참고 작품·장면·색·질감 이미지 3~8개) + 방향 1~2문장 | 긴 서술만, 표, 코드 | 조사: 디자인·게임 아트 관행은 무드보드. Media Richness: 모호한 메시지에는 풍부한 매체. 참고 작품명은 가장 짧은 공유 어휘([AI-000](#terminology)) |
-| 시각 결과: 화면·색·레이아웃·캐릭터·이펙트 한 장면 | 이미지. 구조·흐름 확인은 lo-fi 목업(와이어프레임), 최종 외형은 hi-fi 목업·스크린샷, 전후는 나란히 | 말로 묘사 | 조사: 프로토타입 충실도 관행(UX). 보는 쪽이 설계 가설을 직접 확인한다 |
+| 시각 결과: 화면·색·레이아웃·캐릭터·이펙트 한 장면 | 이미지. 목업의 충실도는 결정의 진척도에 맞춘다: 구조·흐름이 열려 있으면 lo-fi(와이어프레임), 확정됐으면 hi-fi·스크린샷. 전후는 나란히 | 말로 묘사. 결정 전 단계의 hi-fi 목업 | 조사: 프로토타입 충실도 관행(UX). 고충실도를 일찍 보이면 보는 쪽이 완성으로 오해해 검토가 생략된다 |
 | 시간에 따른 변화: 연출·애니메이션·전투 흐름 | 스토리보드 또는 키프레임 시퀀스(시작·중간·끝), 타이밍까지 보려면 짧은 영상(애니매틱), 상태 전이는 상태 다이어그램·플로우차트 | 문단 서술 | 조사: 애니메이션 제작은 스토리보드·애니매틱으로 흐름·타이밍을 먼저 확인해 버릴 장면을 만들지 않는다. 캡처는 [표준 관찰 절차](#observation-procedure) |
 | 구조·구성·관계: 모듈 의존, 데이터 흐름, 클래스·Mixin 관계, 화면 구성 | 코드로 그린 다이어그램(Mermaid 등). 시스템 구조는 C4처럼 청중별 단계로 나눈다. 화면 구성은 와이어프레임 | 문단 | 조사: C4 Model, Diagrams as Code. 관계는 2차원으로 봐야 빠진 것이 보이고 코드로 그리면 diff가 된다 |
-| 규칙·계약·설정값·API·데이터 형식 | 코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로 | 산문으로 재서술 | **사용자 확정(2026-10-30)**: 목업·코드가 제일 싸고 소통이 잘 된다. 조사: Executable Specification, Media Richness의 간결 매체. 코드가 SSOT |
+| 규칙·계약·설정값·API·데이터 형식 | 코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로. 그 옆에 의도·제약 1~2줄(왜 이렇게 했는지). 코드로 쓴 규칙은 실제로 실행·검사되는 것이어야 한다 | 산문으로 재서술, 의도 없는 코드만, 검사되지 않는 예시 코드 | **사용자 확정(2026-10-30)**: 목업·코드가 제일 싸고 소통이 잘 된다. 조사: Executable Specification, Media Richness의 간결 매체. 코드가 SSOT. 보완(조사): 코드는 "무엇"만 담고 "왜"는 담지 못해 이유 없이 바뀌기 쉬우므로(Chesterton's Fence) 의도를 1~2줄 곁들인다. 실행·검사되지 않는 명세 코드는 원본과 어긋나도 아무도 모르므로(spec drift) 검사 대상이어야 한다 |
 | 개별 값 조회·여러 항목의 정확한 수치 비교 | 표 | 나열 문장, 차트 | 조사: Cognitive Fit(표는 정확한 값 읽기). 열을 맞춰야 빠진 칸이 보인다 |
 | 패턴·추세·시간에 따른 수치 변화 | 차트(연속 변화는 선, 항목 비교는 막대) | 표만 | 조사: Few — 패턴·추세는 그래프, 연속 변화는 선·개별 값 비교는 막대 |
 | 순서가 있는 절차·체크 | 번호 목록 또는 체크리스트 | 문단 | 건너뛴 단계가 보인다 |
@@ -134,8 +134,9 @@ AI가 "완료"라고 보고할 수 있는 조건을 정한다. 작업 순서보�
 - 쓰기 전에 유형을 먼저 고른다. 한 메시지·문서에 유형이 섞이면 유형별로 블록을 나누고 각각 맞는 포맷으로 쓴다.
 - 규칙 문서도 같다. 이 레포의 규칙 줄은 ID·용어·판별이 있는 고정 형식이고, 표기 규약·검사는 산문이 아니라 `tools/build-rules.py` 코드가 원본이다.
 - 포맷을 바꿀 수 없는 채널(이미지 첨부 불가 등)에서는 가장 가까운 포맷으로 대체하고 대체했음을 밝힌다([AI-007](#known-unknowns)).
+- 코드·목업으로 쓴 규칙은 "작업 과정에서 자연히 남는 것"을 우선한다: 설정 파일, 스키마, 변환기 검사, 시나리오 E2E처럼 실제로 실행되는 것. 실행되지 않는 설명용 코드 조각은 산문과 같은 정도로 어긋난다. 이 레포에서는 `tools/build-rules.py --check`가 규칙 줄의 검사다.
 
-근거 출처(2026-10-30 조회): [Cognitive fit theory](https://is.theorizeit.org/wiki/Cognitive_fit_theory) · [Media richness theory](https://is.theorizeit.org/wiki/Media_richness_theory) · [Stephen Few, 그래프 선택 강의 노트](https://faculty.cc.gatech.edu/~stasko/7450/13/Notes/few.pdf) · [Specification by Example](https://concepts.dsebastien.net/concept/specification-by-example/) · [Diagrams as code](https://docs.nextgen.unifiedcompliance.com/readme/plantuml/plantuml-diagrams-as-code/why-use-diagramming-as-code-tools) · [C4 model](https://lucid.co/blog/c4-model) · [Animatic](https://en.wikipedia.org/wiki/Animatic) · [Mood board](https://www.figma.com/resource-library/how-to-make-a-mood-board/) · [Lo-fi vs hi-fi prototyping](https://www.uxpin.com/studio/blog/high-fidelity-prototyping-low-fidelity-difference/). 표의 "사용자 확정" 행 외에는 모두 조사 결과이며, 사용자 의견과 달랐던 느낌·분위기 행은 조사 결과를 따랐다.
+근거 출처(2026-10-30 조회): [Cognitive fit theory](https://is.theorizeit.org/wiki/Cognitive_fit_theory) · [Media richness theory](https://is.theorizeit.org/wiki/Media_richness_theory) · [Stephen Few, 그래프 선택 강의 노트](https://faculty.cc.gatech.edu/~stasko/7450/13/Notes/few.pdf) · [Specification by Example](https://concepts.dsebastien.net/concept/specification-by-example/) · [Diagrams as code](https://docs.nextgen.unifiedcompliance.com/readme/plantuml/plantuml-diagrams-as-code/why-use-diagramming-as-code-tools) · [C4 model](https://lucid.co/blog/c4-model) · [Animatic](https://en.wikipedia.org/wiki/Animatic) · [Mood board](https://www.figma.com/resource-library/how-to-make-a-mood-board/) · [Lo-fi vs hi-fi prototyping](https://www.uxpin.com/studio/blog/high-fidelity-prototyping-low-fidelity-difference/). · [Chesterton's Fence와 기술 문서](https://hamatti.org/posts/chestertons-fence-and-tech-documentation/) · [시각 충실도를 진척도에 맞추기](https://thedesignersfieldguide.substack.com/p/match-the-visual-fidelity-of-your) · [애자일 선언 저자의 문서관](https://lucid.co/blog/agile-manifesto-author-james-grenning-importance-of-documentation). 표의 "사용자 확정" 행 외에는 모두 조사 결과이며, 사용자 의견과 달랐던 느낌·분위기 행은 조사 결과를 따랐다. 사용자 확정 행도 조사로 보완했다: 코드에 의도 1~2줄, 목업 충실도는 진척도에 맞춤, 코드로 쓴 규칙은 검사 대상이어야 함.
 
 ## 핵심 원칙 {#principle}
 

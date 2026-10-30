@@ -331,7 +331,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <section class="section" id="media" data-search>
 <h2><span class="anchor-no">3.</span>소통 포맷 · 내용 유형에 맞는 매체를 고른다</h2>
 <ul>
-<li class="rule-line" id="AI-018" data-priority="-"><span class="rule-id">AI-018</span><strong>Cognitive Fit · Media Richness · Executable Specification</strong> — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다.</li>
+<li class="rule-line" id="AI-018" data-priority="-"><span class="rule-id">AI-018</span><strong>Cognitive Fit · Media Richness · Executable Specification</strong> — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로 + 의도·제약 1~2줄)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다.</li>
 </ul>
 <p>용어: <strong>Cognitive Fit</strong> — 표현 형식이 과제·내용 유형과 맞을 때 이해와 판단이 빨라진다는 이론(표 vs 그래프 연구). <strong>Media Richness</strong> — 메시지의 모호성이 높을수록 단서가 많은 풍부한 매체가, 낮을수록 간결한 매체가 맞다는 이론(Daft &amp; Lengel). <strong>Executable Specification / Specification by Example</strong> — 요구·규칙을 산문이 아니라 실행하거나 그대로 가져다 쓸 수 있는 예시·코드로 적는 것. <strong>Diagrams as Code</strong> — 다이어그램을 Mermaid 같은 텍스트 코드로 정의해 diff·재생성이 되게 하는 것. <strong>Mood Board</strong> — 느낌·톤을 이미지·색·질감·참고 작품으로 모아 합의하는 도구. <strong>Storyboard / Animatic</strong> — 장면을 순서대로 그려 흐름을, 임시 사운드에 맞춰 이어 붙여 타이밍을 제작 전에 확인하는 것. <strong>Lo-fi / Hi-fi Prototype</strong> — 구조·흐름 확인용 거친 목업과 최종 외형·상호작용 확인용 정밀 목업. <strong>C4 Model</strong> — 소프트웨어 구조를 Context·Container·Component·Code 4단계 다이어그램으로 청중별로 나눠 보여 주는 방법.</p>
 <p>하나의 축으로 정리하면 <strong>모호성</strong>이다. 해석이 갈릴수록 단서가 많은 매체(이미지·참고 작품·영상)로 가고, 확정될수록 단서가 적고 정확한 매체(표·코드)로 간다. Markdown 산문은 그 중간에 있고 기본값이 아니다. 코드로 쓸 수 있는 것을 말로 다시 쓰면 해석이 갈리고 원본이 2개가 된다(<a href="development.html#ownership">DEV-001</a>).</p>
@@ -353,9 +353,9 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </tr>
 <tr>
 <td>시각 결과: 화면·색·레이아웃·캐릭터·이펙트 한 장면</td>
-<td>이미지. 구조·흐름 확인은 lo-fi 목업(와이어프레임), 최종 외형은 hi-fi 목업·스크린샷, 전후는 나란히</td>
-<td>말로 묘사</td>
-<td>조사: 프로토타입 충실도 관행(UX). 보는 쪽이 설계 가설을 직접 확인한다</td>
+<td>이미지. 목업의 충실도는 결정의 진척도에 맞춘다: 구조·흐름이 열려 있으면 lo-fi(와이어프레임), 확정됐으면 hi-fi·스크린샷. 전후는 나란히</td>
+<td>말로 묘사. 결정 전 단계의 hi-fi 목업</td>
+<td>조사: 프로토타입 충실도 관행(UX). 고충실도를 일찍 보이면 보는 쪽이 완성으로 오해해 검토가 생략된다</td>
 </tr>
 <tr>
 <td>시간에 따른 변화: 연출·애니메이션·전투 흐름</td>
@@ -371,9 +371,9 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </tr>
 <tr>
 <td>규칙·계약·설정값·API·데이터 형식</td>
-<td>코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로</td>
-<td>산문으로 재서술</td>
-<td><strong>사용자 확정(2026-10-30)</strong>: 목업·코드가 제일 싸고 소통이 잘 된다. 조사: Executable Specification, Media Richness의 간결 매체. 코드가 SSOT</td>
+<td>코드·스키마·설정 파일·실행 가능한 예시(목업)를 그대로. 그 옆에 의도·제약 1~2줄(왜 이렇게 했는지). 코드로 쓴 규칙은 실제로 실행·검사되는 것이어야 한다</td>
+<td>산문으로 재서술, 의도 없는 코드만, 검사되지 않는 예시 코드</td>
+<td><strong>사용자 확정(2026-10-30)</strong>: 목업·코드가 제일 싸고 소통이 잘 된다. 조사: Executable Specification, Media Richness의 간결 매체. 코드가 SSOT. 보완(조사): 코드는 "무엇"만 담고 "왜"는 담지 못해 이유 없이 바뀌기 쉬우므로(Chesterton's Fence) 의도를 1~2줄 곁들인다. 실행·검사되지 않는 명세 코드는 원본과 어긋나도 아무도 모르므로(spec drift) 검사 대상이어야 한다</td>
 </tr>
 <tr>
 <td>개별 값 조회·여러 항목의 정확한 수치 비교</td>
@@ -412,8 +412,9 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li>쓰기 전에 유형을 먼저 고른다. 한 메시지·문서에 유형이 섞이면 유형별로 블록을 나누고 각각 맞는 포맷으로 쓴다.</li>
 <li>규칙 문서도 같다. 이 레포의 규칙 줄은 ID·용어·판별이 있는 고정 형식이고, 표기 규약·검사는 산문이 아니라 <code>tools/build-rules.py</code> 코드가 원본이다.</li>
 <li>포맷을 바꿀 수 없는 채널(이미지 첨부 불가 등)에서는 가장 가까운 포맷으로 대체하고 대체했음을 밝힌다(<a href="#known-unknowns">AI-007</a>).</li>
+<li>코드·목업으로 쓴 규칙은 "작업 과정에서 자연히 남는 것"을 우선한다: 설정 파일, 스키마, 변환기 검사, 시나리오 E2E처럼 실제로 실행되는 것. 실행되지 않는 설명용 코드 조각은 산문과 같은 정도로 어긋난다. 이 레포에서는 <code>tools/build-rules.py --check</code>가 규칙 줄의 검사다.</li>
 </ul>
-<p>근거 출처(2026-10-30 조회): <a href="https://is.theorizeit.org/wiki/Cognitive_fit_theory">Cognitive fit theory</a> · <a href="https://is.theorizeit.org/wiki/Media_richness_theory">Media richness theory</a> · <a href="https://faculty.cc.gatech.edu/~stasko/7450/13/Notes/few.pdf">Stephen Few, 그래프 선택 강의 노트</a> · <a href="https://concepts.dsebastien.net/concept/specification-by-example/">Specification by Example</a> · <a href="https://docs.nextgen.unifiedcompliance.com/readme/plantuml/plantuml-diagrams-as-code/why-use-diagramming-as-code-tools">Diagrams as code</a> · <a href="https://lucid.co/blog/c4-model">C4 model</a> · <a href="https://en.wikipedia.org/wiki/Animatic">Animatic</a> · <a href="https://www.figma.com/resource-library/how-to-make-a-mood-board/">Mood board</a> · <a href="https://www.uxpin.com/studio/blog/high-fidelity-prototyping-low-fidelity-difference/">Lo-fi vs hi-fi prototyping</a>. 표의 "사용자 확정" 행 외에는 모두 조사 결과이며, 사용자 의견과 달랐던 느낌·분위기 행은 조사 결과를 따랐다.</p>
+<p>근거 출처(2026-10-30 조회): <a href="https://is.theorizeit.org/wiki/Cognitive_fit_theory">Cognitive fit theory</a> · <a href="https://is.theorizeit.org/wiki/Media_richness_theory">Media richness theory</a> · <a href="https://faculty.cc.gatech.edu/~stasko/7450/13/Notes/few.pdf">Stephen Few, 그래프 선택 강의 노트</a> · <a href="https://concepts.dsebastien.net/concept/specification-by-example/">Specification by Example</a> · <a href="https://docs.nextgen.unifiedcompliance.com/readme/plantuml/plantuml-diagrams-as-code/why-use-diagramming-as-code-tools">Diagrams as code</a> · <a href="https://lucid.co/blog/c4-model">C4 model</a> · <a href="https://en.wikipedia.org/wiki/Animatic">Animatic</a> · <a href="https://www.figma.com/resource-library/how-to-make-a-mood-board/">Mood board</a> · <a href="https://www.uxpin.com/studio/blog/high-fidelity-prototyping-low-fidelity-difference/">Lo-fi vs hi-fi prototyping</a>. · <a href="https://hamatti.org/posts/chestertons-fence-and-tech-documentation/">Chesterton's Fence와 기술 문서</a> · <a href="https://thedesignersfieldguide.substack.com/p/match-the-visual-fidelity-of-your">시각 충실도를 진척도에 맞추기</a> · <a href="https://lucid.co/blog/agile-manifesto-author-james-grenning-importance-of-documentation">애자일 선언 저자의 문서관</a>. 표의 "사용자 확정" 행 외에는 모두 조사 결과이며, 사용자 의견과 달랐던 느낌·분위기 행은 조사 결과를 따랐다. 사용자 확정 행도 조사로 보완했다: 코드에 의도 1~2줄, 목업 충실도는 진척도에 맞춤, 코드로 쓴 규칙은 검사 대상이어야 함.</p>
 </section>
 <section class="section" id="principle" data-search>
 <h2><span class="anchor-no">4.</span>핵심 원칙</h2>
