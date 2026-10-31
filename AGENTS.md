@@ -122,3 +122,4 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 | 스탯 이름·단위·계산식을 정할 때 | [공통 STAT 사전](rules/stats.html) |
 | 예약 버그 탐지·자동 수정 운영을 다룰 때 | [예약 버그 탐지](rules/scheduled-bug-qa.html) |
 | 알고리즘 선택·비용·대안을 볼 때 | [알고리즘 레퍼런스](algorithms/index.html), [절차적 지형 생성](algorithms/terrain-generation.html) |
+| 픽셀아트 이펙트(불·폭발·마법·날씨·UI·픽업)가 필요할 때 | 외부: [pixelfx](https://github.com/patch-gg/pixelfx) ([갤러리](https://patch-gg.github.io/pixelfx/)) — JS ES 모듈, Canvas 2D `ImageData` 프레임에 그리는 이펙트 232종, 브라우저 의존성 0, MIT(갤러리 폰트 제외, `NOTICE.md`). API: `createFx(effect, {x, y})` → `update(dt)` → `draw(frame, layer)`. 적용 조건: 픽셀아트 해상도·Canvas 2D 합성이 맞는 게임. WebGL 게임은 프레임을 텍스처로 올리거나 `tools/render.mjs --sheet`로 스프라이트 시트를 뽑아 쓴다. 비용: 초기 레포(2026-10-31 기준 스타 3·커밋 7)라 API가 바뀔 수 있으므로 불변 커밋으로 고정해 참조한다([PM-005](rules/project-management.md#tag-preview)). 대안: 이 레포의 [파티클 연구소](labs/particles.html) 74종(WebGL) |

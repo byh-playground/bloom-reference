@@ -258,6 +258,10 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <td>알고리즘 선택·비용·대안을 볼 때</td>
 <td><a href="algorithms/index.html">알고리즘 레퍼런스</a>, <a href="algorithms/terrain-generation.html">절차적 지형 생성</a></td>
 </tr>
+<tr>
+<td>픽셀아트 이펙트(불·폭발·마법·날씨·UI·픽업)가 필요할 때</td>
+<td>외부: <a href="https://github.com/patch-gg/pixelfx">pixelfx</a> (<a href="https://patch-gg.github.io/pixelfx/">갤러리</a>) — JS ES 모듈, Canvas 2D <code>ImageData</code> 프레임에 그리는 이펙트 232종, 브라우저 의존성 0, MIT(갤러리 폰트 제외, <code>NOTICE.md</code>). API: <code>createFx(effect, {x, y})</code> → <code>update(dt)</code> → <code>draw(frame, layer)</code>. 적용 조건: 픽셀아트 해상도·Canvas 2D 합성이 맞는 게임. WebGL 게임은 프레임을 텍스처로 올리거나 <code>tools/render.mjs --sheet</code>로 스프라이트 시트를 뽑아 쓴다. 비용: 초기 레포(2026-10-31 기준 스타 3·커밋 7)라 API가 바뀔 수 있으므로 불변 커밋으로 고정해 참조한다(<a href="project-management.html#tag-preview">PM-005</a>). 대안: 이 레포의 <a href="labs/particles.html">파티클 연구소</a> 74종(WebGL)</td>
+</tr>
 </tbody>
 </table></div></section>
 
