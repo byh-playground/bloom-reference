@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 58개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 59개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 58개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 59개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -105,6 +105,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [PM-007][-] **Conventional Commits (한국어·대괄호 prefix)** — 커밋 메시지는 한국어로 쓰고, 첫 줄에 `[bug-fix]`·`[feature]`·`[refactor]`·`[performance]`·`[docs]`·`[test]`·`[build]` prefix와 변경 목적을 적는다. 위반 판별: prefix가 없거나 첫 줄에 목적이 없다. [상세](rules/project-management.md#commit)
 - [PM-008][-] **Verified Deliverable** — 최종본으로 전달하는 파일은 검증이 끝난 것이어야 하고, Nightly·중간본은 미검증 상태를 명시할 때만 공개한다. 위반 판별: 검증 기록 없는 파일을 최종본으로 전달했다. [상세](rules/project-management.md#delivery)
 - [PM-009][-] **Scenario E2E Only · Time Box 180s** — 단위 테스트는 개발 중 임시 검증에만 쓰고 완료 시 실행 목록에서 제거하며, 영구 테스트는 고정 사용자 시나리오 E2E만 유지한다. 한 번의 버그 검증 실행 전체는 180초를 넘기지 않고, 벤치마크는 별도 명령으로 분리한다. 위반 판별: 버그마다 회귀 테스트가 누적되거나, 검증 실행이 180초를 넘는다. [상세](rules/project-management.md#verification-policy)
+- [PM-014][-] **Correctness Gate · Fast Feedback** — 머지 전 검사(PR 체크·CI·로컬 사전 검증)는 로직 정합성(기대 동작과 실제 동작의 일치)만 확인하는 과정이다. 부하·성능·할당·프레임 시간을 측정하는 로직은 머지 전 검사에 절대 넣지 않고, 별도 명령·별도 실행으로 분리한다. 위반 판별: PR 체크나 사전 검증 실행 목록에 반복 부하·타이밍 측정·벤치마크가 들어 있거나, 성능 수치로 머지를 막는다. [상세](rules/project-management.md#verification-policy)
 - [PM-010][-] **Evidence-based Verification · Done ≠ Released** — 검증 기록에는 환경(커밋·브라우저/기기·로드한 라이브러리·mock/fallback 여부), 실패 단계, PASS·FAIL·미실행·환경 차단 범위를 적고, mock·소프트웨어 renderer 통과를 실제 경로의 성공으로 보고하지 않는다. 구현 완료·검증 완료·Stable 승격·배포 완료를 같은 것으로 취급하지 않는다. 위반 판별: 미실행 범위 없이 전체 PASS로 보고했다. [상세](rules/project-management.md#verification-evidence)
 - [PM-011][-] **Handoff Document** — 작업 공간을 옮길 때는 기준본·메인 버전·커밋·완료/진행/남은 작업·중요 결정·폐기 방향·검증 결과·다음 작업 순서를 담은 핸드오프를 쓴다. 위반 판별: 요약만 있고 다음 작업 순서나 기준 커밋이 없다. [상세](rules/project-management.md#handoff)
 - [PM-012][-] **Definition of Done · Docs as Code** — 작업 완료에는 변경된 API·사용법·실행 명령·운영 정책의 원본 문서 동기화가 포함되며, 정책 원문을 여러 문서에 복제하지 않는다. 위반 판별: 코드 변경 PR에 해당 원본 문서 갱신이 없다. [상세](rules/project-management.md#docs)
