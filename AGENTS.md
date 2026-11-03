@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 59개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 60개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 59개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 60개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -49,6 +49,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [AI-010][-] **SSOT(원본) · Derived Artifact 비커밋 · Memoization** — SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다. [상세](rules/ai-development.md#svg-assets)
 - [AI-011][-] **Dirty Flag · Debounce(maxWait) · Profile Before Optimizing** — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다. [상세](rules/ai-development.md#autosave)
 - [AI-012][-] **Fixed Timestep / Sub-stepping · Functional ≠ Non-functional** — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다. [상세](rules/ai-development.md#simulation-cadence)
+- [AI-019][-] **Prior Art(내부) · Algorithm Reference First · Write Back** — 성능·최적화 작업(공간 인덱스·충돌·렌더 제출·캐시·스냅샷·스케줄링)을 시작하기 전에 알고리즘 레퍼런스(`algorithms/index.html`)에서 같은 문제의 항목·적용 상태·비교 기록과 그 저장소의 성능 기록 문서를 먼저 읽고 PR에 항목 ID로 인용한다. 기록된 결론과 반대 방향으로 구조를 바꿀 때는 같은 조건에서 후보 수·틱 시간·결과 동등성을 전후 비교해 이기는 근거를 남기고, 채택·기각과 수치를 레퍼런스 항목에 되돌려 적는다. 위반 판별: 최적화 PR에 레퍼런스 항목 인용이 없거나, 레퍼런스 결론과 반대로 구조를 바꾸면서 같은 조건 비교가 없거나, 결과가 레퍼런스에 반영되지 않았다. [상세](rules/ai-development.md#algorithm-reference)
 
 ## 구조 규칙 {#dev}
 
