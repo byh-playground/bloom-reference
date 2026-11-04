@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 60개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 61개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 60개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 61개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -74,6 +74,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [DEV-012][P1] **SRP · High Cohesion / Low Coupling** — 변경 이유가 다른 코드(판정·VFX·사운드·네트워크)는 한 함수에 섞지 않고 각자 책임에서 반응한다. 위반 판별: 한 함수가 게임 판정과 표현·전송 호출을 함께 가진다. [상세](rules/development.md#srp)
 - [DEV-013][P1] **Data-Driven Design** — behavior는 코드로, 그 behavior의 수치(시간·거리·개수)는 설정 데이터로 둔다. 설정에 없는 독립 행동을 임의 플래그로 흉내 내지 않는다. 위반 판별: 타입별 if문 안에 수치 상수가 박혀 있다. [상세](rules/development.md#data-driven)
 - [DEV-014][P1] **Lifecycle · Dispose Pattern** — 객체·효과는 생성·활성·종료·정리 단계를 명시하고, dispose에서 타이머·구독·registry 참조를 모두 해제한다. 위반 판별: active=false만 바꾸고 구독·타이머가 남아 있다. [상세](rules/development.md#lifecycle)
+- [DEV-027][P1] **Fail Fast · Preserve the Original Exception** — 발생한 예외는 원본 그대로 호출 스택 위로 올리고, 새 Error로 감싸 던지거나 이벤트·콜백에 문자열로 바꿔 알리거나 삼키지 않는다. 새 예외는 내 로직이 직접 오류 조건을 판정한 경우에만 던지고, catch는 그 자리에서 실제로 복구할 수 있을 때만 쓴다. 위반 판별: catch나 이벤트 처리에서 원본 예외 대신 `new Error(...)`를 만들어 올렸거나, 원본의 이름·메시지·스택이 최상위 로그에 남지 않는다. [상세](rules/development.md#exception)
 
 #### P2 — 방치하면 쌓이는 구조 부채
 
