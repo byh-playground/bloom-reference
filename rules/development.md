@@ -739,6 +739,48 @@ effect.dispose();
 // registry 제거
 ```
 
+### 예외는 원본 그대로 올린다 {#exception}
+
+- [DEV-027][P1] **Fail Fast · Preserve the Original Exception** — 발생한 예외는 원본 그대로 호출 스택 위로 올리고, 새 Error로 감싸 던지거나 이벤트·콜백에 문자열로 바꿔 알리거나 삼키지 않는다. 새 예외는 내 로직이 직접 오류 조건을 판정한 경우에만 던지고, catch는 그 자리에서 실제로 복구할 수 있을 때만 쓴다. 위반 판별: catch나 이벤트 처리에서 원본 예외 대신 `new Error(...)`를 만들어 올렸거나, 원본의 이름·메시지·스택이 최상위 로그에 남지 않는다.
+
+태그: #FailFast #ExceptionTransparency #PreserveStackTrace
+
+빈도: 높음 · 나중 수정비용: 중간
+
+예외의 이름·메시지·스택은 원인을 찾는 유일한 단서다. 호출 스택 중간에서 새 `Error`로 감싸면 스택이 감싼 지점의 것으로 바뀌어 "어디서 잡았는지"만 남고 "무엇이 던졌는지"는 사라진다. 로그에는 감싼 메시지(`fatal` 같은 이름)만 보이고, 그 뒤에 원본이 다시 올라와도 이미 실패 처리가 끝나 있으면 조용히 버려진다.
+
+| 상황 | 하는 일 |
+| --- | --- |
+| 호출한 코드가 예외를 던졌고 그 자리에서 복구할 수 없다 | 잡지 않는다. 그대로 올라가게 둔다(정리는 `finally`) |
+| 그 자리에서 실제로 복구할 수 있다 | 잡아서 복구한다. 복구했으면 예외는 끝난 것이다 |
+| 내 로직이 오류 조건을 직접 판정했다(잘못된 입력·깨진 불변식) | 새 오류를 던진다. 이때만 새 `Error`를 만든다 |
+| 이벤트·콜백으로 실패를 알려야 한다 | 원본 예외 객체를 그대로 넘기고, 받는 쪽이 문자열로 바꿔 새 오류를 만들지 않는다 |
+
+**나쁜 예**
+
+```js
+// 단계가 던진 예외를 다시 던지기 전에 이벤트로 알린다
+catch (error) {
+  this.onEvent({ type: 'fatal', error });
+  throw error;
+}
+// 받는 쪽: 이벤트를 받자마자 문자열로 바꿔 먼저 실패 처리한다 → 뒤따라 올라온 원본은 `if (failed) return`에서 버려진다
+onEvent(event) {
+  if (event.type === 'fatal') fail(new Error(event.reason || event.type)); // 로그에는 "Error: fatal"만 남는다
+}
+```
+
+**좋은 예**
+
+```js
+// 받는 쪽은 감싸지 않는다. 원본이 던져지는 경로가 있으면 그 예외가 최상위 로그에 이름·메시지·스택 그대로 남는다.
+onEvent(event) {
+  if (event.type === 'desync-unrecoverable') fail(new Error(event.reason)); // 던져진 예외가 없어 내 로직이 직접 만든 오류
+}
+```
+
+`cause`로 원본을 붙여 감싸는 것도 같은 규칙으로 막는다. 감싼 스택이 로그의 맨 앞에 오기 때문이다. 사례: 도장깨기 경기 중 단계 예외가 `Error: fatal`로 감싸져 원인을 알 수 없었다(bloom-takraw v0.15.9에서 감싸기를 제거).
+
 ## P2 — 방치하면 쌓이는 구조 부채 {#p2}
 
 당장 기능을 막지는 않지만, 계속 누적되면 코드를 읽고 바꾸는 비용이 빠르게 증가한다. 주기적으로 정리한다.
@@ -1254,6 +1296,7 @@ class Crate extends mixin(
 | 11 | 읽기/쓰기와 내부/외부 API가 섞여 있나? | #CQS #Encapsulation #SemanticAPI |
 | 12 | 같은 접두어의 상태가 평평하게 늘어나고 있나? 기능/소유권 단위 namespace로 묶을 수 있나? | #HierarchicalNaming #SemanticNamespace |
 | 13 | 죽은 코드·레거시·중복·과추상화가 쌓이고 있나? | #NoDeadCode #YAGNI #DRY |
+| 14 | 예외를 감싸 새로 던지거나 삼켜서 원본의 이름·스택이 로그에서 사라지나? | #FailFast #PreserveStackTrace |
 
 > **판단 공식:**
 > 우선순위 ≈ **나중에 구조를 뜯어고쳐야 하는 비용 × 발생 빈도**.
