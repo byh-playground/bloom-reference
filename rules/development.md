@@ -1275,6 +1275,23 @@ class Crate extends mixin(
 
 프로젝트의 `mixin(Base, ...Mixins)` 문법은 위 Subclass Factory 패턴을 더 읽기 쉽게 사용하기 위한 얇은 조합 helper이며, JavaScript 자체의 별도 언어 기능은 아니다.
 
+## 코드 포맷팅과 정적 검사 {#code-formatting}
+
+이 규약은 모든 BLOOM 게임 저장소에 공통 적용한다. **원본 무빌드 배포 정책은 유지한다.** 실제 설정의 복사 가능한 기준본은 [code-quality 템플릿](../examples/code-quality/README.md)에 둔다.
+
+- [DEV-028][-] **Prettier · Single Formatting Authority** — 관리 대상 JS·HTML(인라인 script/style 포함)·CSS·JSON·Markdown은 공통 Prettier 설정(100자·공백 4칸·세미콜론·작은따옴표·trailing comma all·중괄호 공백·화살표 인수 괄호·LF)으로 포맷팅하고, 스타일 검사 규칙을 ESLint에 중복 정의하지 않는다. 위반 판별: 대상 파일에 다른 포맷이 적용됐거나 서로 다른 포맷터가 충돌한다.
+
+- [DEV-029][-] **ESLint Recommended · Inline Script Coverage** — 브라우저 ESM에 ESLint recommended를 적용하고 HTML 안의 일반 JavaScript script도 실제로 검사하며, Node 도구 스코프와 브라우저 전역을 구별한다. 저장 시 가능한 ESLint fix를 적용한다. 위반 판별: HTML 내부 JS의 미정의 변수가 검출되지 않거나 브라우저·Node 전역이 무분별하게 섞인다.
+
+- [DEV-030][-] **Incremental Formatting · Changed Files** — 기존 저장소는 수정한 파일부터 해당 파일 전체를 포맷팅하고, PR CI는 변경된 관리 대상 파일의 Prettier 위반과 ESLint error에서 실패한다. warning은 보고만 하고 CI는 소스를 자동 수정하지 않는다. 위반 판별: 변경하지 않은 기존 파일 때문에 PR을 차단하거나 CI가 임의 커밋을 만든다.
+
+- [DEV-031][-] **Generated Artifact Exclusion · Tooling Isolation** — GLSL·WGSL·자동 생성 파일·외부 소스는 포맷터·린터에서 제외하고, HTML/JS 안의 셰이더 영역은 국소 ignore로 보존한다. 검사 도구는 프로젝트별 devDependencies와 lockfile로 고정하고 게임 실행·배포에 빌드를 추가하지 않는다. 위반 판별: 생성 자산이 재포맷되거나 검사 도구가 게임 런타임에 포함된다.
+
+- 대상: JS·MJS·CJS·HTML·HTM·CSS·JSON·MD·Markdown. ESLint는 JS·MJS·CJS와 HTML 내부 일반 JavaScript를 검사한다.
+- 별도 GLSL·WGSL, minified 파일, 자동 생성 자산과 외부 소스는 제외한다. 셰이더가 HTML/JS 안에 있으면 가능한 최소 영역만 ignore한다.
+- 변경 파일의 **파일 전체**를 포맷팅한다. 전체 레거시 저장소의 일괄 포맷팅은 별도 작업이다.
+- CI는 PR 변경 파일만 검사하며 ESLint warning은 통과한다. 검사 도구는 개발 전용으로만 설치하고 게임 빌드·런타임에 추가하지 않는다.
+
 ## 빠른 리뷰 순서 {#review}
 
 코드 리뷰나 새 기능 설계 때 아래 순서로 본다. 위일수록 늦게 발견했을 때 더 비싸다.
