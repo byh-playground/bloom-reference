@@ -107,7 +107,8 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <li><a href="#ai">4. 작업 순서</a></li>
       <li><a href="#dev">5. 구조 규칙</a></li>
       <li><a href="#pm">6. PR·버전·검증·배포</a></li>
-      <li><a href="#refs">7. 상황별 레퍼런스</a></li>
+      <li><a href="#formatting">7. 코드 포맷팅과 정적 검사</a></li>
+      <li><a href="#refs">8. 상황별 레퍼런스</a></li>
     </ul>
   </aside>
   <main class="main">
@@ -115,8 +116,8 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <header class="doc-header">
         <div class="kicker">Agent Entry Document</div>
         <h1>BLOOM 에이전트 작업 규칙</h1>
-        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 61개와 상세 문서 링크.</p>
-        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 61개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
+        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 65개와 상세 문서 링크.</p>
+        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 65개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
       </header>
 <div class="notice"><strong>이 문서 사용법</strong><br>이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 <code>- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …</code> 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: <code>DEV-001 위반</code>). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 <code>tools/build-rules.py</code>가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 <code>P0/P1/P2</code>는 구조 규칙의 나중 수정 비용 순서이고, <code>-</code>는 우선순위가 없는 규칙이다. 장 순서가 읽는 순서다.</div>
 <section class="section" id="terminology" data-search>
@@ -226,8 +227,18 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li class="rule-line" id="PM-013" data-priority="-"><span class="rule-id">PM-013</span><strong>KISS · Minimal Complexity</strong> — 관리 계층(버전·호환 계층·문서·분기)은 실제 문제를 해결하는 경우에만 추가한다. 위반 판별: 사용처 없는 관리 요소가 추가되었다. <a class="rule-detail" href="project-management.html#complexity">상세</a></li>
 </ul>
 </section>
+<section class="section" id="formatting" data-search>
+<h2><span class="anchor-no">7.</span>코드 포맷팅과 정적 검사</h2>
+<p>원본: <a href="development.html#code-formatting">공통 개발 규칙</a>. <a href="examples/code-quality/README.md">설정 템플릿</a>.</p>
+<ul>
+<li class="rule-line" id="DEV-028" data-priority="-"><span class="rule-id">DEV-028</span><strong>Prettier · Single Formatting Authority</strong> — 관리 대상 JS·HTML(인라인 script/style 포함)·CSS·JSON·Markdown은 공통 Prettier 설정(100자·공백 4칸·세미콜론·작은따옴표·trailing comma all·중괄호 공백·화살표 인수 괄호·LF)으로 포맷팅하고, 스타일 검사 규칙을 ESLint에 중복 정의하지 않는다. 위반 판별: 대상 파일에 다른 포맷이 적용됐거나 서로 다른 포맷터가 충돌한다. <a class="rule-detail" href="development.html#code-formatting">상세</a></li>
+<li class="rule-line" id="DEV-029" data-priority="-"><span class="rule-id">DEV-029</span><strong>ESLint Recommended · Inline Script Coverage</strong> — 브라우저 ESM에 ESLint recommended를 적용하고 HTML 안의 일반 JavaScript script도 실제로 검사하며, Node 도구 스코프와 브라우저 전역을 구별한다. 저장 시 가능한 ESLint fix를 적용한다. 위반 판별: HTML 내부 JS의 미정의 변수가 검출되지 않거나 브라우저·Node 전역이 무분별하게 섞인다. <a class="rule-detail" href="development.html#code-formatting">상세</a></li>
+<li class="rule-line" id="DEV-030" data-priority="-"><span class="rule-id">DEV-030</span><strong>Incremental Formatting · Changed Files</strong> — 기존 저장소는 수정한 파일부터 해당 파일 전체를 포맷팅하고, PR CI는 변경된 관리 대상 파일의 Prettier 위반과 ESLint error에서 실패한다. warning은 보고만 하고 CI는 소스를 자동 수정하지 않는다. 위반 판별: 변경하지 않은 기존 파일 때문에 PR을 차단하거나 CI가 임의 커밋을 만든다. <a class="rule-detail" href="development.html#code-formatting">상세</a></li>
+<li class="rule-line" id="DEV-031" data-priority="-"><span class="rule-id">DEV-031</span><strong>Generated Artifact Exclusion · Tooling Isolation</strong> — GLSL·WGSL·자동 생성 파일·외부 소스는 포맷터·린터에서 제외하고, HTML/JS 안의 셰이더 영역은 국소 ignore로 보존한다. 검사 도구는 프로젝트별 devDependencies와 lockfile로 고정하고 게임 실행·배포에 빌드를 추가하지 않는다. 위반 판별: 생성 자산이 재포맷되거나 검사 도구가 게임 런타임에 포함된다. <a class="rule-detail" href="development.html#code-formatting">상세</a></li>
+</ul>
+</section>
 <section class="section" id="refs" data-search>
-<h2><span class="anchor-no">7.</span>상황별 레퍼런스</h2>
+<h2><span class="anchor-no">8.</span>상황별 레퍼런스</h2>
 <p>아래 문서는 해당 작업을 할 때만 읽는다. 원본은 각 HTML이다.</p>
 <div class="table-wrap"><table>
 <thead>
