@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 61개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 65개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 61개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 65개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -112,6 +112,15 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [PM-011][-] **Handoff Document** — 작업 공간을 옮길 때는 기준본·메인 버전·커밋·완료/진행/남은 작업·중요 결정·폐기 방향·검증 결과·다음 작업 순서를 담은 핸드오프를 쓴다. 위반 판별: 요약만 있고 다음 작업 순서나 기준 커밋이 없다. [상세](rules/project-management.md#handoff)
 - [PM-012][-] **Definition of Done · Docs as Code** — 작업 완료에는 변경된 API·사용법·실행 명령·운영 정책의 원본 문서 동기화가 포함되며, 정책 원문을 여러 문서에 복제하지 않는다. 위반 판별: 코드 변경 PR에 해당 원본 문서 갱신이 없다. [상세](rules/project-management.md#docs)
 - [PM-013][-] **KISS · Minimal Complexity** — 관리 계층(버전·호환 계층·문서·분기)은 실제 문제를 해결하는 경우에만 추가한다. 위반 판별: 사용처 없는 관리 요소가 추가되었다. [상세](rules/project-management.md#complexity)
+
+## 코드 포맷팅과 정적 검사 {#formatting}
+
+원본: [공통 개발 규칙](rules/development.md#code-formatting). [설정 템플릿](examples/code-quality/README.md).
+
+- [DEV-028][-] **Prettier · Single Formatting Authority** — 관리 대상 JS·HTML(인라인 script/style 포함)·CSS·JSON·Markdown은 공통 Prettier 설정(100자·공백 4칸·세미콜론·작은따옴표·trailing comma all·중괄호 공백·화살표 인수 괄호·LF)으로 포맷팅하고, 스타일 검사 규칙을 ESLint에 중복 정의하지 않는다. 위반 판별: 대상 파일에 다른 포맷이 적용됐거나 서로 다른 포맷터가 충돌한다. [상세](rules/development.md#code-formatting)
+- [DEV-029][-] **ESLint Recommended · Inline Script Coverage** — 브라우저 ESM에 ESLint recommended를 적용하고 HTML 안의 일반 JavaScript script도 실제로 검사하며, Node 도구 스코프와 브라우저 전역을 구별한다. 저장 시 가능한 ESLint fix를 적용한다. 위반 판별: HTML 내부 JS의 미정의 변수가 검출되지 않거나 브라우저·Node 전역이 무분별하게 섞인다. [상세](rules/development.md#code-formatting)
+- [DEV-030][-] **Incremental Formatting · Changed Files** — 기존 저장소는 수정한 파일부터 해당 파일 전체를 포맷팅하고, PR CI는 변경된 관리 대상 파일의 Prettier 위반과 ESLint error에서 실패한다. warning은 보고만 하고 CI는 소스를 자동 수정하지 않는다. 위반 판별: 변경하지 않은 기존 파일 때문에 PR을 차단하거나 CI가 임의 커밋을 만든다. [상세](rules/development.md#code-formatting)
+- [DEV-031][-] **Generated Artifact Exclusion · Tooling Isolation** — GLSL·WGSL·자동 생성 파일·외부 소스는 포맷터·린터에서 제외하고, HTML/JS 안의 셰이더 영역은 국소 ignore로 보존한다. 검사 도구는 프로젝트별 devDependencies와 lockfile로 고정하고 게임 실행·배포에 빌드를 추가하지 않는다. 위반 판별: 생성 자산이 재포맷되거나 검사 도구가 게임 런타임에 포함된다. [상세](rules/development.md#code-formatting)
 
 ## 상황별 레퍼런스 {#refs}
 
