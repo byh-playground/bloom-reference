@@ -545,10 +545,10 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>이 규칙은 SVG를 기하로 렌더하는 자산의 입력·렌더·패키징 계약이다. SVG 파츠 시트를 픽셀로 준비하는 스프라이트 경로는 <a href="#sprite-production">그래픽 제작 규칙</a>을 따른다. 동적 VFX·절차적 표면에는 해당 표현 방식을 쓴다. 검증 기록의 범위·PASS/FAIL/미실행 구분과 배포 확인은 <a href="project-management.html#verification-policy">공통 프로젝트 관리 규칙의 검증 정책</a>을 따른다.</p>
 <h3 id="sprite-production"><span class="anchor-no">6.2.</span>게임 그래픽 제작 · 파츠 원본과 목업 검수</h3>
 <ul>
-<li class="rule-line" id="AI-020" data-priority="-"><span class="rule-id">AI-020</span><strong>Sprite Sheet · SVG 우선 · Visual Review</strong> — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 분리 파츠·조립 모습·실제 표시 크기를 목업에서 보여주고 사용자 시각 검수 후 게임에 적용한다. 위반 판별: PNG를 선택한 이유가 없거나, 파츠 시안이나 사용자 검수 기록 없이 적용했다.</li>
+<li class="rule-line" id="AI-020" data-priority="-"><span class="rule-id">AI-020</span><strong>Sprite Sheet · SVG 우선 · Visual Review</strong> — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 분리 파츠·조립 모습·실제 표시 크기를 원격에서 열 수 있는 HTML 목업으로 공유하고 사용자 시각 검수 후 게임에 적용한다. 위반 판별: PNG를 선택한 이유가 없거나, 파츠 시안이나 사용자 검수 기록 없이 적용했다.</li>
 </ul>
 <p><strong>파츠 시트</strong>는 몸통·팔다리·표정·장비 등 따로 움직이거나 교체할 그림을 독립 영역에 배치한 원본이다. 캐릭터와 장비를 만들 때는 편집 가능한 도형·경로가 있는 SVG를 우선한다. 붓 질감이나 복잡한 음영 등 승인받으려는 표현을 SVG로 다루기 어려우면 투명 PNG 파츠 시트를 선택하고 이유를 작업 기록에 남긴다.</p>
-<p>신규 외형은 파츠 시트와 조립 모습을 먼저 공유하고 사용자 확인 후 동작 제작과 게임 연동으로 넘어간다. 이미 적용된 그래픽을 수정할 때는 같은 표시 크기의 전후를 보여주고 변경된 부분을 짚는다. 기존 목업 페이지가 있으면 같은 페이지에 시안을 누적한다. 자료 구성, 회전 기준점, SVG를 스프라이트로 쓰는 실제 사례는 <a href="graphics-production.html">그래픽 제작 가이드</a>를 참고한다.</p>
+<p>신규 외형은 파츠 시트와 조립 모습을 먼저 공유하고 사용자 확인 후 동작 제작과 게임 연동으로 넘어간다. 이미 적용된 그래픽을 수정할 때는 같은 표시 크기의 전후를 보여주고 변경된 부분을 짚는다. 기존 목업 페이지가 있으면 같은 페이지에 시안을 누적한다. 인터뷰·그래픽·기능 구현 담당의 인계와 공개 검수 링크 운영은 <a href="https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/graphics-production.html">그래픽 제작 가이드</a>를 따른다.</p>
 <h3 id="autosave"><span class="anchor-no">6.3.</span>자동 저장 · 변경 확인과 저장 비용 측정</h3>
 <ul>
 <li class="rule-line" id="AI-011" data-priority="-"><span class="rule-id">AI-011</span><strong>Dirty Flag · Debounce(maxWait) · Profile Before Optimizing</strong> — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다.</li>
