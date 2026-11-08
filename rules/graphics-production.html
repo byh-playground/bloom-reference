@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>그래픽 제작 가이드 · BLOOM Reference</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #f5f6f7;
+            --panel: #fff;
+            --text: #202122;
+            --muted: #50565b;
+            --line: #d9dde1;
+            --accent: #007c70;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #181a1b;
+                --panel: #222426;
+                --text: #e8eaed;
+                --muted: #a9b0b6;
+                --line: #3b4045;
+                --accent: #50ddce;
+            }
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--text); background: var(--bg); font: 16px/1.65 system-ui, sans-serif; }
+        main { max-width: 880px; margin: auto; padding: 36px 20px; }
+        header, section { padding: 22px; margin-bottom: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+        h1 { margin: 3px 0; font-size: clamp(28px, 5vw, 38px); }
+        h2 { margin: 0 0 8px; font-size: 21px; }
+        p { margin: 8px 0; }
+        a { color: var(--accent); }
+        nav { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 13px; }
+        .eyebrow, figcaption { color: var(--muted); font-size: 0.9em; }
+        ol { padding-inline-start: 1.5em; margin: 8px 0; }
+        li + li { margin-top: 8px; }
+        figure { margin: 16px 0 6px; }
+        figure img { display: block; width: min(100%, 450px); height: auto; background: #edf0e3; border-radius: 8px; }
+        figcaption { margin-top: 6px; }
+        @media (max-width: 480px) {
+            main { padding: 14px 10px; }
+            header, section { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <span class="eyebrow">BLOOM Reference · 게임 그래픽</span>
+            <h1>그래픽 제작 가이드</h1>
+            <p>캐릭터와 장비를 파츠 단위로 만들고, 조립 결과와 움직임을 검수해 게임에 적용한다.</p>
+            <nav aria-label="목차">
+                <a href="#source">원본 형식</a>
+                <a href="#parts">파츠 시트</a>
+                <a href="#review">목업 검수</a>
+                <a href="#runtime">게임 적용</a>
+            </nav>
+        </header>
+
+        <section id="source">
+            <h2>1. 원본 형식 선택</h2>
+            <p><strong>SVG 파츠 시트가 기본이다.</strong> 색·윤곽·표정·장비를 도형과 경로로 수정할 수 있게 만든다. 붓 자국, 회화적 질감이나 복잡한 음영처럼 SVG로 원하는 표현을 만들기 어려우면 투명 PNG 파츠 시트를 사용한다. 이 경우 보존해야 할 표현과 선택 이유를 작업 기록에 남긴다.</p>
+            <p>기존 승인 자산을 수정할 때는 해당 자산의 원본과 파츠 구성을 기준으로 삼는다. 공통 정책은 <a href="ai-development.html#sprite-production">AI-020</a>에서 관리한다.</p>
+        </section>
+
+        <section id="parts">
+            <h2>2. 파츠를 나누고 조립한다</h2>
+            <p>몸통·팔다리·표정·장비 가운데 따로 움직이거나 교체할 요소를 독립 영역에 둔다. 파츠 이름, 조립 위치, 회전 중심과 앞뒤 순서를 기록한다. 같은 손이나 발을 좌우에서 공유하면 파츠 하나와 두 배치로 표현한다.</p>
+            <figure>
+                <img src="https://raw.githubusercontent.com/byh-playground/rally-frontier/a633f4e0596a6cb105608827887aa71de9867c24/assets/sprites/watermelon/parts.svg" width="368" height="220" alt="왼쪽에 수박 몸통, 오른쪽에 손과 발, 그 아래 기본·공격·피격 표정 세 개가 분리된 시트">
+                <figcaption>쌀콩팡! 수박의 실제 SVG 시트. 손과 발은 각각 한 번 그려 좌우에서 재사용한다. <a href="https://github.com/byh-playground/rally-frontier/blob/a633f4e0596a6cb105608827887aa71de9867c24/assets/sprites/watermelon/parts.svg">시트 원본</a> · <a href="https://github.com/byh-playground/rally-frontier/blob/a633f4e0596a6cb105608827887aa71de9867c24/src/render/watermelon-sprite.js#L1-L23">조립 좌표</a></figcaption>
+            </figure>
+        </section>
+
+        <section id="review">
+            <h2>3. 목업에서 순서대로 검수한다</h2>
+            <ol>
+                <li><strong>외형.</strong> 목업 페이지에서 분리 파츠, 조립 모습, 실제 카드나 전장 크기를 나란히 보여준다. 기존 목업 페이지가 있으면 같은 곳에 추가한다. 수정 작업은 바뀐 부분의 전후를 같은 크기로 비교한다.</li>
+                <li><strong>동작.</strong> 외형 승인 후 필요한 대기·이동·공격·피격 동작을 보여준다. 파츠가 회전하는 경우 회전 중심과 몸체 앞뒤로 지나는 순간을 확인한다.</li>
+                <li><strong>적용.</strong> 시각 검수 결과를 반영하고, 실제 게임 렌더러에서 파츠 위치·겹침·표정과 표시 크기가 승인한 목업과 맞는지 확인한다.</li>
+            </ol>
+        </section>
+
+        <section id="runtime">
+            <h2>4. 원본과 전투 렌더링을 구분한다</h2>
+            <p>텍스처 기반 병종은 SVG와 PNG 모두 시작할 때 정해진 픽셀 크기로 준비해 공용 GPU 아틀라스에 올리고, 기존 포즈 애니메이션으로 파츠를 움직인다. 이 경우 원본 형식에 따른 비용 차이는 주로 다운로드와 시작 시 디코딩·래스터화에서 생긴다. 전투 중에는 아틀라스 크기, 파츠 수, 그리는 횟수와 같은 조건을 비교한다.</p>
+            <p>수박은 SVG를 시작할 때 한 번 캔버스에 그린 뒤 텍스처에 올린 실제 사례다. SVG를 삼각형 기하로 컴파일해 그리는 자산의 계약은 별도로 <a href="ai-development.html#svg-assets">AI-010</a>에 있다. <a href="https://github.com/byh-playground/rally-frontier/blob/a633f4e0596a6cb105608827887aa71de9867c24/src/render/watermelon-sprite.js#L64-L105">수박 로더와 아틀라스 업로드</a></p>
+        </section>
+    </main>
+</body>
+</html>
