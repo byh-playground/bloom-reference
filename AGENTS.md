@@ -47,7 +47,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [AI-008][-] **No Magic Number · SSOT(기준값)** — 미지정 수치 초안은 사용자 지정값·확정 계약을 우선하고, 새 값은 100·50·25·1·0.5·0.25·0.1처럼 비교하기 쉬운 값을 후보로, 연관 수치는 기준값 하나에서 배율로 파생한다. 이미 합의·구현된 수치는 요청 없이 재정규화하지 않는다. 위반 판별: 서로 독립된 임의 상수가 연관 수치로 추가되었거나, 기존 수치가 요청 없이 바뀌었다. [상세](rules/ai-development.md#numeric-drafts)
 - [AI-009][-] **Upstream First · Rule of Three** — 공통 모듈의 한계·버그를 만나면 원인과 최소 재현을 확보하고, 재사용성·API 책임 범위·하위 호환·비용을 기준으로 공통 개선 여부를 스스로 판단해 끝까지 반영한다. 공통이면 모듈 수정 → 회귀 검증 → 버전 판정·배포 → 소비 게임 반영·검증, 게임 고유면 제품 계층에 두고 근거를 기록한다. 위반 판별: 제약만 보고하고 멈췄거나 게임 쪽 임시 우회로 끝냈다. [상세](rules/ai-development.md#shared-modules)
 - [AI-010][-] **SSOT(원본) · Derived Artifact 비커밋 · Memoization** — 기하로 렌더하는 SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다. [상세](rules/ai-development.md#svg-assets)
-- [AI-020][-] **Sprite Sheet · SVG 우선 · Visual Review** — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 분리 파츠·조립 모습·실제 표시 크기를 목업에서 보여주고 사용자 시각 검수 후 게임에 적용한다. 위반 판별: PNG를 선택한 이유가 없거나, 파츠 시안이나 사용자 검수 기록 없이 적용했다. [상세](rules/ai-development.md#sprite-production)
+- [AI-020][-] **Sprite Sheet · SVG 우선 · Visual Review** — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 분리 파츠·조립 모습·실제 표시 크기를 원격에서 열 수 있는 HTML 목업으로 공유하고 사용자 시각 검수 후 게임에 적용한다. 위반 판별: PNG를 선택한 이유가 없거나, 파츠 시안이나 사용자 검수 기록 없이 적용했다. [상세](rules/ai-development.md#sprite-production)
 - [AI-011][-] **Dirty Flag · Debounce(maxWait) · Profile Before Optimizing** — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다. [상세](rules/ai-development.md#autosave)
 - [AI-012][-] **Fixed Timestep / Sub-stepping · Functional ≠ Non-functional** — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다. [상세](rules/ai-development.md#simulation-cadence)
 - [AI-019][-] **Prior Art(내부) · Algorithm Reference First · Write Back** — 성능·최적화 작업(공간 인덱스·충돌·렌더 제출·캐시·스냅샷·스케줄링)을 시작하기 전에 알고리즘 레퍼런스(`algorithms/index.html`)에서 같은 문제의 항목·적용 상태·비교 기록과 그 저장소의 성능 기록 문서를 먼저 읽고 PR에 항목 ID로 인용한다. 기록된 결론과 반대 방향으로 구조를 바꿀 때는 같은 조건에서 후보 수·틱 시간·결과 동등성을 전후 비교해 이기는 근거를 남기고, 채택·기각과 수치를 레퍼런스 항목에 되돌려 적는다. 위반 판별: 최적화 PR에 레퍼런스 항목 인용이 없거나, 레퍼런스 결론과 반대로 구조를 바꾸면서 같은 조건 비교가 없거나, 결과가 레퍼런스에 반영되지 않았다. [상세](rules/ai-development.md#algorithm-reference)
@@ -130,7 +130,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 | 언제 | 문서 |
 | --- | --- |
 | UI·화면·모바일 레이아웃을 만들거나 고칠 때 | [공통 UI/UX 레퍼런스](rules/visual-ux.html) — P1–P10 우선순위, URL·상태·생명주기, 시각 피드백 |
-| 캐릭터·장비처럼 파츠를 조립하는 그래픽을 만들거나 수정할 때 | [그래픽 제작 가이드](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/graphics-production.html) — 원본 포맷 선택, 분리 파츠 시트, 목업 검수 |
+| 캐릭터·장비처럼 파츠를 조립하는 그래픽을 만들거나 수정할 때 | [그래픽 제작 가이드](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/graphics-production.html) — 담당 분담, 파츠 시트, 원격 HTML 목업 검수 |
 | 게임 규칙·재미·해금·수치 초안을 기획할 때 | [게임 기획 가이드](rules/game-design.html) — 연쇄 반응, 해금, 규칙 단순화, 수치 초안 정규화 |
 | 타격감·접촉·반동·피격 연출을 만들 때 | [타격감 종합 가이드](rules/impact-feel.html) |
 | 스탯 이름·단위·계산식을 정할 때 | [공통 STAT 사전](rules/stats.html) |
