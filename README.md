@@ -32,7 +32,7 @@ AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 
 
 | 코드 포맷팅·정적 검사 템플릿 · Prettier / ESLint / CI / VS Code | [복사 및 적용 안내](examples/code-quality/README.md) | [DEV-028~031](rules/development.md#code-formatting) |
 | 공통 UI/UX 레퍼런스 · P1–P10 우선순위·URL·상태·모바일·시각 피드백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/visual-ux.html) | [rules/visual-ux.html](rules/visual-ux.html) |
-| 그래픽 제작 가이드 · SVG·PNG 파츠 시트·조립과 동작·목업 검수 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/graphics-production.html) | [rules/graphics-production.html](rules/graphics-production.html) |
+| 그래픽 제작 가이드 · 인터뷰·그래픽·구현 분담, SVG·PNG 파츠 시트, 원격 HTML 목업 검수 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/graphics-production.html) | [rules/graphics-production.html](rules/graphics-production.html) |
 | 게임 기획 가이드 · 연쇄 반응·해금·규칙 단순화·수치 초안 정규화 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/game-design.html) | [rules/game-design.html](rules/game-design.html) |
 | 타격감 종합 가이드 · 바운코·영상·접촉/반동/피격·멀티/롤백 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/impact-feel.html) | [rules/impact-feel.html](rules/impact-feel.html) |
 | 공통 STAT 사전 · 의미·단위·계산 계약·게임 프로필 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/stats.html) | [rules/stats.html](rules/stats.html) |
