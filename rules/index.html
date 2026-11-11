@@ -116,8 +116,8 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <header class="doc-header">
         <div class="kicker">Agent Entry Document</div>
         <h1>BLOOM 에이전트 작업 규칙</h1>
-        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 66개와 상세 문서 링크.</p>
-        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 66개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
+        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 67개와 상세 문서 링크.</p>
+        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 67개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
       </header>
 <div class="notice"><strong>이 문서 사용법</strong><br>이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 <code>- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …</code> 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: <code>DEV-001 위반</code>). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 <code>tools/build-rules.py</code>가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 <code>P0/P1/P2</code>는 구조 규칙의 나중 수정 비용 순서이고, <code>-</code>는 우선순위가 없는 규칙이다. 장 순서가 읽는 순서다.</div>
 <section class="section" id="terminology" data-search>
@@ -158,6 +158,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li class="rule-line" id="AI-007" data-priority="-"><span class="rule-id">AI-007</span><strong>Known Unknowns · Fail Loudly</strong> — 검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 않고 미확인 범위와 영향을 먼저 알린다. 위반 판별: 미확인 범위 없이 "확인됨"으로 보고했다. <a class="rule-detail" href="ai-development.html#known-unknowns">상세</a></li>
 <li class="rule-line" id="AI-008" data-priority="-"><span class="rule-id">AI-008</span><strong>No Magic Number · SSOT(기준값)</strong> — 미지정 수치 초안은 사용자 지정값·확정 계약을 우선하고, 새 값은 100·50·25·1·0.5·0.25·0.1처럼 비교하기 쉬운 값을 후보로, 연관 수치는 기준값 하나에서 배율로 파생한다. 이미 합의·구현된 수치는 요청 없이 재정규화하지 않는다. 위반 판별: 서로 독립된 임의 상수가 연관 수치로 추가되었거나, 기존 수치가 요청 없이 바뀌었다. <a class="rule-detail" href="ai-development.html#numeric-drafts">상세</a></li>
 <li class="rule-line" id="AI-009" data-priority="-"><span class="rule-id">AI-009</span><strong>Upstream First · Rule of Three</strong> — 공통 모듈의 한계·버그를 만나면 원인과 최소 재현을 확보하고, 재사용성·API 책임 범위·하위 호환·비용을 기준으로 공통 개선 여부를 스스로 판단해 끝까지 반영한다. 공통이면 모듈 수정 → 회귀 검증 → 버전 판정·배포 → 소비 게임 반영·검증, 게임 고유면 제품 계층에 두고 근거를 기록한다. 위반 판별: 제약만 보고하고 멈췄거나 게임 쪽 임시 우회로 끝냈다. <a class="rule-detail" href="ai-development.html#shared-modules">상세</a></li>
+<li class="rule-line" id="AI-021" data-priority="-"><span class="rule-id">AI-021</span><strong>Reuse Before Build · Don't Reinvent the Wheel</strong> — 기능이나 검증·측정 수단(장면 재현·캡처·리플레이·계측)을 새로 만들기 전에 공통 모듈(bloom-gamekit)의 "하려는 일 → 모듈" 색인에서 같은 일을 하는 모듈을 먼저 찾아 쓰고, 작업 보고에 확인한 모듈을 적는다. 모듈이 모자라면 게임에서 우회하거나 새로 짜지 않고 AI-009로 모듈을 고친다. 같은 일을 하는 모듈이 없을 때만 새로 만들고, 다른 게임에도 쓰일 일이면 AI-009의 Rule of Three로 모듈화를 판단한다. 위반 판별: 공통 모듈에 같은 기능이 있는데 게임 코드나 임시 스크립트에 같은 일을 하는 구현이 새로 생겼거나, 작업 보고에 확인한 모듈이 없다. <a class="rule-detail" href="ai-development.html#module-first">상세</a></li>
 <li class="rule-line" id="AI-010" data-priority="-"><span class="rule-id">AI-010</span><strong>SSOT(원본) · Derived Artifact 비커밋 · Memoization</strong> — 기하로 렌더하는 SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다. <a class="rule-detail" href="ai-development.html#svg-assets">상세</a></li>
 <li class="rule-line" id="AI-020" data-priority="-"><span class="rule-id">AI-020</span><strong>Sprite Sheet · SVG 우선 · Visual Review</strong> — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 작업 중에 분리 파츠·조립 모습·실제 표시 크기를 담은 원격 HTML 목업 링크를 사용자에게 보내고, 받은 피드백을 반영하며 허용된 범위에서 검증과 통합까지 진행한다. 사용자가 승인을 선행 조건으로 명시한 단계에서는 그 승인을 기다린다. 위반 판별: PNG를 선택한 이유가 없거나, 작업 중 목업 링크를 전달하지 않았거나, 명시된 승인 조건을 어겼다. <a class="rule-detail" href="ai-development.html#sprite-production">상세</a></li>
 <li class="rule-line" id="AI-011" data-priority="-"><span class="rule-id">AI-011</span><strong>Dirty Flag · Debounce(maxWait) · Profile Before Optimizing</strong> — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다. <a class="rule-detail" href="ai-development.html#autosave">상세</a></li>
@@ -272,6 +273,10 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <tr>
 <td>예약 버그 탐지·자동 수정 운영을 다룰 때</td>
 <td><a href="rules/scheduled-bug-qa.html">예약 버그 탐지</a></td>
+</tr>
+<tr>
+<td>기능이나 검증·측정 수단(장면 재현·캡처·리플레이·계측)을 새로 만들기 전</td>
+<td>외부: <a href="https://github.com/byh-playground/bloom-gamekit#readme">bloom-gamekit 루트 README</a>의 "하려는 일 → 모듈" 표 — 규칙은 <a href="ai-development.html#module-first">AI-021</a></td>
 </tr>
 <tr>
 <td>알고리즘 선택·비용·대안을 볼 때</td>

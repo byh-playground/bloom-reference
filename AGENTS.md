@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 66개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 67개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 66개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 67개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -46,6 +46,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [AI-007][-] **Known Unknowns · Fail Loudly** — 검색이 막히거나 근거를 확보하지 못하면 검토 완료로 꾸미지 않고 미확인 범위와 영향을 먼저 알린다. 위반 판별: 미확인 범위 없이 "확인됨"으로 보고했다. [상세](rules/ai-development.md#known-unknowns)
 - [AI-008][-] **No Magic Number · SSOT(기준값)** — 미지정 수치 초안은 사용자 지정값·확정 계약을 우선하고, 새 값은 100·50·25·1·0.5·0.25·0.1처럼 비교하기 쉬운 값을 후보로, 연관 수치는 기준값 하나에서 배율로 파생한다. 이미 합의·구현된 수치는 요청 없이 재정규화하지 않는다. 위반 판별: 서로 독립된 임의 상수가 연관 수치로 추가되었거나, 기존 수치가 요청 없이 바뀌었다. [상세](rules/ai-development.md#numeric-drafts)
 - [AI-009][-] **Upstream First · Rule of Three** — 공통 모듈의 한계·버그를 만나면 원인과 최소 재현을 확보하고, 재사용성·API 책임 범위·하위 호환·비용을 기준으로 공통 개선 여부를 스스로 판단해 끝까지 반영한다. 공통이면 모듈 수정 → 회귀 검증 → 버전 판정·배포 → 소비 게임 반영·검증, 게임 고유면 제품 계층에 두고 근거를 기록한다. 위반 판별: 제약만 보고하고 멈췄거나 게임 쪽 임시 우회로 끝냈다. [상세](rules/ai-development.md#shared-modules)
+- [AI-021][-] **Reuse Before Build · Don't Reinvent the Wheel** — 기능이나 검증·측정 수단(장면 재현·캡처·리플레이·계측)을 새로 만들기 전에 공통 모듈(bloom-gamekit)의 "하려는 일 → 모듈" 색인에서 같은 일을 하는 모듈을 먼저 찾아 쓰고, 작업 보고에 확인한 모듈을 적는다. 모듈이 모자라면 게임에서 우회하거나 새로 짜지 않고 AI-009로 모듈을 고친다. 같은 일을 하는 모듈이 없을 때만 새로 만들고, 다른 게임에도 쓰일 일이면 AI-009의 Rule of Three로 모듈화를 판단한다. 위반 판별: 공통 모듈에 같은 기능이 있는데 게임 코드나 임시 스크립트에 같은 일을 하는 구현이 새로 생겼거나, 작업 보고에 확인한 모듈이 없다. [상세](rules/ai-development.md#module-first)
 - [AI-010][-] **SSOT(원본) · Derived Artifact 비커밋 · Memoization** — 기하로 렌더하는 SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다. [상세](rules/ai-development.md#svg-assets)
 - [AI-020][-] **Sprite Sheet · SVG 우선 · Visual Review** — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 작업 중에 분리 파츠·조립 모습·실제 표시 크기를 담은 원격 HTML 목업 링크를 사용자에게 보내고, 받은 피드백을 반영하며 허용된 범위에서 검증과 통합까지 진행한다. 사용자가 승인을 선행 조건으로 명시한 단계에서는 그 승인을 기다린다. 위반 판별: PNG를 선택한 이유가 없거나, 작업 중 목업 링크를 전달하지 않았거나, 명시된 승인 조건을 어겼다. [상세](rules/ai-development.md#sprite-production)
 - [AI-011][-] **Dirty Flag · Debounce(maxWait) · Profile Before Optimizing** — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다. [상세](rules/ai-development.md#autosave)
@@ -135,5 +136,6 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 | 타격감·접촉·반동·피격 연출을 만들 때 | [타격감 종합 가이드](rules/impact-feel.html) |
 | 스탯 이름·단위·계산식을 정할 때 | [공통 STAT 사전](rules/stats.html) |
 | 예약 버그 탐지·자동 수정 운영을 다룰 때 | [예약 버그 탐지](rules/scheduled-bug-qa.html) |
+| 기능이나 검증·측정 수단(장면 재현·캡처·리플레이·계측)을 새로 만들기 전 | 외부: [bloom-gamekit 루트 README](https://github.com/byh-playground/bloom-gamekit#readme)의 "하려는 일 → 모듈" 표 — 규칙은 [AI-021](rules/ai-development.md#module-first) |
 | 알고리즘 선택·비용·대안을 볼 때 | [알고리즘 레퍼런스](algorithms/index.html), [절차적 지형 생성](algorithms/terrain-generation.html) |
 | 픽셀아트 이펙트(불·폭발·마법·날씨·UI·픽업)가 필요할 때 | 외부: [pixelfx](https://github.com/patch-gg/pixelfx) ([갤러리](https://patch-gg.github.io/pixelfx/)) — JS ES 모듈, Canvas 2D `ImageData` 프레임에 그리는 이펙트 232종, 브라우저 의존성 0, MIT(갤러리 폰트 제외, `NOTICE.md`). API: `createFx(effect, {x, y})` → `update(dt)` → `draw(frame, layer)`. 적용 조건: 픽셀아트 해상도·Canvas 2D 합성이 맞는 게임. WebGL 게임은 프레임을 텍스처로 올리거나 `tools/render.mjs --sheet`로 스프라이트 시트를 뽑아 쓴다. 비용: 초기 레포(2026-10-31 기준 스타 3·커밋 7)라 API가 바뀔 수 있으므로 불변 커밋으로 고정해 참조한다([PM-005](rules/project-management.md#tag-preview)). 대안: 이 레포의 [파티클 연구소](labs/particles.html) 74종(WebGL) |

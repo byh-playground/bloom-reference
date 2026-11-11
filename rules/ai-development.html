@@ -119,6 +119,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <li class="sub"><a href="#autosave">6.3 자동 저장 · 변경 확인과 저장 비용 측정</a></li>
       <li class="sub"><a href="#simulation-cadence">6.4 논리 틱과 물리 하위 단계 · 이름이 아니라 호출 범위를 검증</a></li>
       <li class="sub"><a href="#algorithm-reference">6.5 최적화 전 알고리즘 레퍼런스 · 이미 낸 결론을 다시 뒤집지 않는다</a></li>
+      <li class="sub"><a href="#module-first">6.6 만들기 전에 공통 모듈부터 확인 · 이미 있는 것을 다시 짜지 않는다</a></li>
       <li><a href="#damage-example">7. 사례 · 공과 고양이로 요구 해석</a></li>
       <li><a href="#checklist">8. 완료 체크리스트</a></li>
       <li><a href="#sources">9. 근거와 문서 역할</a></li>
@@ -597,6 +598,19 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 <p><strong>나쁜 예 · Budmori 0.67.11 충돌 보정 SAP 전환</strong> 레퍼런스에는 "Budmori의 SAP 비교에서는 현재 Grid를 대체할 확실한 이득이 입증되지 않았다"는 기록이 있었다. 0.67.11은 이를 인용하지 않고 위치 보정 후보를 x축 sweep으로 바꿨다. 농장은 세로가 넓어 x 범위 안 세로 전체 띠가 후보가 되었고, 1,000마리 한 pass에서 후보 33,852쌍 중 실제 반경 안은 2,067쌍(6%)이었다. 0.67.31에서 pass마다 다시 만드는 숫자 배열 격자로 되돌려 이웃 준비가 2.7~3.5 → 1.1~1.3ms/pass가 되었다(같은 위치 이웃 목록 1,200 pass 불일치 0).</p>
 <p><strong>요구에 맞는 처리</strong> 먼저 레퍼런스 결론(Grid)을 인용하고, SAP를 시도한다면 같은 조건에서 후보 수와 틱 전체 시간을 비교해 이길 때만 바꾼다. 결과는 A001·A004 항목과 성능 기록에 남긴다.</p>
+<h3 id="module-first"><span class="anchor-no">6.6.</span>만들기 전에 공통 모듈부터 확인 · 이미 있는 것을 다시 짜지 않는다</h3>
+<ul>
+<li class="rule-line" id="AI-021" data-priority="-"><span class="rule-id">AI-021</span><strong>Reuse Before Build · Don't Reinvent the Wheel</strong> — 기능이나 검증·측정 수단(장면 재현·캡처·리플레이·계측)을 새로 만들기 전에 공통 모듈(bloom-gamekit)의 "하려는 일 → 모듈" 색인에서 같은 일을 하는 모듈을 먼저 찾아 쓰고, 작업 보고에 확인한 모듈을 적는다. 모듈이 모자라면 게임에서 우회하거나 새로 짜지 않고 AI-009로 모듈을 고친다. 같은 일을 하는 모듈이 없을 때만 새로 만들고, 다른 게임에도 쓰일 일이면 AI-009의 Rule of Three로 모듈화를 판단한다. 위반 판별: 공통 모듈에 같은 기능이 있는데 게임 코드나 임시 스크립트에 같은 일을 하는 구현이 새로 생겼거나, 작업 보고에 확인한 모듈이 없다.</li>
+</ul>
+<p>용어: <strong>Reuse Before Build</strong> — 새로 만들기 전에 이미 있는 것을 찾아 쓴다. <strong>Don't Reinvent the Wheel</strong> — 이미 있는 해법을 처음부터 다시 만들지 않는다.</p>
+<div class="rule core"><div class="rule-title">작업 시작 때 "이미 있는 모듈인가"를 먼저 확인한다</div></div>
+<ul>
+<li><strong>어디서 찾나.</strong> <a href="https://github.com/byh-playground/bloom-gamekit#readme">bloom-gamekit 루트 README</a>의 "하려는 일 → 모듈" 표가 색인이다. 사용법의 원본은 각 모듈 README이고, 이 규칙에는 모듈 목록이나 사용법을 적지 않는다(두 곳이 어긋나는 것을 막는다, DEV-001).</li>
+<li><strong>있으면.</strong> 그 모듈을 쓴다. 장면 재현·캡처·리플레이처럼 검증 수단도 포함한다.</li>
+<li><strong>모자라면.</strong> 게임 쪽 우회나 새 구현으로 끝내지 않고 <a href="#shared-modules">AI-009</a>로 모듈을 고친다.</li>
+<li><strong>없으면.</strong> 새로 만들되, 다른 게임에도 쓰일 일이면 Rule of Three로 모듈화를 판단한다.</li>
+<li><strong>보고.</strong> 작업 보고에 확인한 모듈(쓴 모듈, 쓰지 않았다면 이유)을 한 줄 적는다.</li>
+</ul>
 </section>
 <section class="section" id="damage-example" data-search>
 <h2><span class="anchor-no">7.</span>사례 · 공과 고양이로 요구 해석</h2>
@@ -618,6 +632,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li>관례·기술 제약과 사용자 기획 선택의 차이를 근거와 함께 구분했는가?</li>
 <li>정상 사례와 반례의 기대 동작을 확정하고, 중요한 미결정만 최소 질문했는가?</li>
 <li>공통 모듈 제약의 원인·최소 재현과 개선 적합성을 판단했는가? 공통에 맞으면 소비 게임까지 검증하고, 게임 고유면 제품 계층에 둔 근거를 기록했는가?</li>
+<li>기능이나 검증 수단을 새로 만들기 전에 공통 모듈 색인에서 같은 일을 하는 모듈을 찾아보고, 확인한 모듈을 보고에 적었는가?</li>
 <li>SVG 정적 벡터 아트라면 원본만 배포하고 공통 브라우저 로더에서 한 번 컴파일해 캐시·재사용했는가? 생성 메시·무제한 재시도·래스터 대체가 없고 원본과 렌더를 비교했는가?</li>
 <li>자동 저장은 지속 상태가 바뀔 때만 묶어서 처리하고 최대 대기시간·체크포인트를 두었는가? 직렬화와 전체 복원, 동기 I/O를 렌더 경로에서 분리하고 오류·다중 탭·원본 보존을 실측·검증했는가?</li>
 <li>구현 뒤 같은 사례로 확인하고 실제 결과·미검증 범위를 보고했는가?</li>
@@ -631,6 +646,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 검색한 일반 방식·공식 자료 / 출처·조회 기준:
 선택한 동작 / 관례와 차이 / 중요한 미결정:
 정상 사례 / 반례 / 기대 결과:
+확인한 공통 모듈 / 쓴 모듈 또는 쓰지 않은 이유
 공통 모듈 / 원인·최소 재현 / 적합성 근거 / 모듈·Consumer 검증 또는 제품 계층 판단:
 실제 관찰 / 환경·커밋 / 실패·미검증:
 관찰물 (스크린샷·키프레임·로그 경로) / 기대와 비교:
