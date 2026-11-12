@@ -781,6 +781,60 @@ onEvent(event) {
 
 `cause`로 원본을 붙여 감싸는 것도 같은 규칙으로 막는다. 감싼 스택이 로그의 맨 앞에 오기 때문이다. 사례: 도장깨기 경기 중 단계 예외가 `Error: fatal`로 감싸져 원인을 알 수 없었다(bloom-takraw v0.15.9에서 감싸기를 제거).
 
+### 플레이 중 처음 쓰는 순간에 로드하지 않는다 {#preload}
+
+- [DEV-032][P1] **Preload Before Play · No In-game First-use Load** — 플레이 중 처음 쓰이는 순간에 셰이더 프로그램 컴파일·링크, 텍스처 GPU 업로드, 오디오 디코딩, GPU 자원(렌더 타깃·복사 텍스처) 할당이 일어나지 않게 한다. 플레이에 쓰이는 것은 로딩 단계에서 실제 사용 상태(조명·그림자·안개·톤 매핑 등 변종 키가 같은 조건)로 미리 컴파일·업로드·할당하고, 플레이 중 재질의 define을 바꿔 재컴파일이 일어나게 하지 않고 uniform으로 바꾼다. 화면 크기 변경 같은 플레이 밖 동작의 재할당은 예외다. 위반 판별: 로딩 완료 이후 플레이 중에 새 셰이더 프로그램이 컴파일되거나(렌더러의 프로그램 목록이 늘거나 `linkProgram` 호출이 생긴다), 새 이펙트의 첫 사용 프레임이 이후 프레임보다 눈에 띄게 길다.
+
+태그: #PreloadBeforePlay #NoInGameLoad #ShaderWarmup #FirstUseHitch
+
+빈도: 높음 · 나중 수정비용: 중간
+
+셰이더 컴파일·링크, 텍스처 GPU 업로드, 오디오 디코딩, 렌더 타깃 할당은 한 번 일어나는 큰 동기 작업이다. 플레이 중 처음 쓰이는 순간에 일어나면 그 프레임 하나가 길어지고, 이후 프레임은 정상이라 평균 프레임 시간에는 거의 드러나지 않는다. 성능을 평균으로만 재면 통과하고, 기기에서 첫 사용 때만 끊기는 문제는 놓친다.
+
+| 자원 | 로딩 단계에서 하는 일 |
+| --- | --- |
+| 셰이더 프로그램 | 실제 사용 상태(조명 수·그림자·안개·톤 매핑·클리핑 등 프로그램 변종 키가 같은 조건)의 장면·카메라로 컴파일한다. 변종 키가 다르면 같은 재질이어도 다시 컴파일된다 |
+| 후처리 패스 | 패스의 재질과 렌더 타깃을 로딩 때 만들고, 처음 켜지는 때에 새로 만들지 않는다 |
+| 텍스처·오디오 | GPU 업로드와 디코딩을 로딩 때 끝낸다 |
+| 복사 텍스처·렌더 타깃 | 로딩 때 생성하고 플레이 중에는 재사용한다 |
+| 재질 define | 플레이 중 바꾸면 재컴파일된다. 켜고 끄는 값은 uniform으로 둔다 |
+
+예외는 화면 크기 변경처럼 플레이 밖에서 사용자가 일으키는 동작의 재할당이다.
+
+**나쁜 예**
+
+```js
+// 쇼크웨이브 패스의 셰이더가 경기 중 첫 접촉 때 renderer.render 안에서 처음 컴파일된다
+onFirstContact() {
+  this.shockwavePass.enabled = true; // 다음 render에서 컴파일·링크 + 복사 텍스처 할당
+}
+```
+
+**좋은 예**
+
+```js
+// 로딩 단계: 패스를 켠 상태로 미리 컴파일하고 복사 텍스처도 미리 만든다
+async load() {
+  this.shockwavePass.enabled = true;
+  await renderer.compileAsync(scene, camera); // 실제 조명·그림자·안개 조건 그대로
+  this.shockwavePass.enabled = false;
+  this.copyTexture = new THREE.WebGLRenderTarget(width, height); // 플레이 중에는 재사용
+}
+onFirstContact() {
+  this.shockwavePass.enabled = true; // 켜는 값만 바꾼다. 새 컴파일 없음
+  this.shockwavePass.uniforms.strength.value = 1; // define이 아니라 uniform
+}
+```
+
+확인 방법은 새 재질·후처리·입자를 넣는 PR마다 아래 두 가지를 관찰해 PR 본문에 적는 것이다.
+
+- **로딩 완료 이후 플레이 중 새 프로그램 컴파일 0회.** 렌더러의 프로그램 목록(three.js의 `renderer.info.programs.length`)이 로딩 완료 시점과 플레이 중 이펙트를 모두 한 번씩 쓴 뒤에 같은지, 또는 `linkProgram` 호출 횟수가 늘지 않는지 본다.
+- **첫 사용 프레임 시간.** 이펙트를 처음 쓰는 프레임과 이후 프레임의 시간을 비교한다. 평균 프레임 시간만으로 통과시키지 않는다. 평균은 첫 사용 프레임 하나를 가린다.
+
+이 확인은 PR마다 한 번 하는 관찰이며 영구 성능 시험으로 넣지 않는다. 영구 시험은 고정 시나리오 E2E만 두고([PM-009](project-management.md#verification-policy)), 성능·프레임 시간을 재는 로직은 머지 전 검사에 넣지 않는다([PM-014](project-management.md#verification-policy)). 기능 검증과 성능 검증을 구분하는 이유는 [AI-012](ai-development.md#simulation-cadence)와 같다.
+
+사례: bloom-takraw 0.17.4에서 화면 왜곡 쇼크웨이브 후처리 패스를 넣으면서 그 셰이더가 경기 중 첫 접촉 때 처음 컴파일되게 두었고, 성능은 평균 프레임 시간만 재서 첫 사용 프레임은 보지 않은 채 통과시켰다. 이후 휴대폰에서 렉이 제보됐다. 원인은 조사 중이며 이 컴파일이 주원인인지는 아직 확정되지 않았다.
+
 ## P2 — 방치하면 쌓이는 구조 부채 {#p2}
 
 당장 기능을 막지는 않지만, 계속 누적되면 코드를 읽고 바꾸는 비용이 빠르게 증가한다. 주기적으로 정리한다.
@@ -1314,6 +1368,7 @@ class Crate extends mixin(
 | 12 | 같은 접두어의 상태가 평평하게 늘어나고 있나? 기능/소유권 단위 namespace로 묶을 수 있나? | #HierarchicalNaming #SemanticNamespace |
 | 13 | 죽은 코드·레거시·중복·과추상화가 쌓이고 있나? | #NoDeadCode #YAGNI #DRY |
 | 14 | 예외를 감싸 새로 던지거나 삼켜서 원본의 이름·스택이 로그에서 사라지나? | #FailFast #PreserveStackTrace |
+| 15 | 플레이 중 처음 쓰이는 순간에 셰이더 컴파일·텍스처 업로드·오디오 디코딩·GPU 자원 할당이 일어나나? 첫 사용 프레임 시간을 봤나? | #PreloadBeforePlay #NoInGameLoad |
 
 > **판단 공식:**
 > 우선순위 ≈ **나중에 구조를 뜯어고쳐야 하는 비용 × 발생 빈도**.
