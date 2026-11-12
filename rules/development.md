@@ -835,6 +835,49 @@ onFirstContact() {
 
 사례: bloom-takraw 0.17.4에서 화면 왜곡 쇼크웨이브 후처리 패스를 넣으면서 그 셰이더가 경기 중 첫 접촉 때 처음 컴파일되게 두었고, 성능은 평균 프레임 시간만 재서 첫 사용 프레임은 보지 않은 채 통과시켰다. 이후 휴대폰에서 렉이 제보됐다. 원인은 조사 중이며 이 컴파일이 주원인인지는 아직 확정되지 않았다.
 
+### 렌더 제출량(드로우콜)을 언제든 읽을 수 있게 한다 {#draw-call-visibility}
+
+- [DEV-033][P1] **Draw Call Visibility · Submission Count First** — 실행 중인 게임에서 프레임당 렌더 제출량(드로우콜 수, 가능하면 셰이더 프로그램 수·텍스처 수·삼각형 수)을 디버그 수단으로 언제든 읽을 수 있게 유지한다. 새 재질·메시·입자·후처리·UI 레이어나 배칭 조건처럼 렌더 경로에 영향을 주는 변경은 대표 장면에서 드로우콜 수의 전후를 확인해 PR 본문에 적는다. 성능 문제를 조사할 때는 원인을 추측하기 전에 제출량을 먼저 읽고 개편 전 값과 비교한다. 드로우콜을 줄이는 구현은 공통 모듈(bloom-gamekit)의 수단을 쓰고 게임마다 새로 만들지 않는다. 위반 판별: 실행 중인 게임에서 드로우콜 수를 읽을 방법이 없거나, 렌더 변경 PR에 드로우콜 전후 값이 없거나, 성능 문제 보고에 제출량 수치 없이 원인이 단정돼 있다.
+
+태그: #DrawCallVisibility #SubmissionCountFirst #RenderStats #PerfTriage
+
+빈도: 높음 · 나중 수정비용: 중간
+
+드로우콜을 줄이는 기법(배칭·인스턴싱·텍스처 아틀라스)은 공통 모듈에 이미 있다. 이 규칙은 그 기법을 다시 쓰라는 것이 아니라, **렌더가 느려졌을 때 제출량부터 읽어 원인 범위를 좁힐 수 있게** 하는 규칙이다. 제출량을 읽을 수 없으면 "후처리 때문일 것이다", "그림자 때문일 것이다" 같은 추측으로 조사가 시작되고, 틀린 쪽을 먼저 고친다. 렌더 제출량은 프레임 시간과 달리 같은 장면이면 기기와 무관하게 거의 같게 재현되는 숫자라서 개발 PC에서 읽은 값을 제보 기기의 증상과 맞대 볼 수 있다.
+
+| 읽을 값 | three.js | bloom-gamekit |
+| --- | --- | --- |
+| 드로우콜 수 | `renderer.info.render.calls` | `WebGLDevice.stats.drawCalls`(프레임 값, `beginFrame()`에서 초기화), 메시 경로는 `context.stats().mesh.draws` |
+| 삼각형 수 | `renderer.info.render.triangles` | `WebGLDevice.stats.vertices`(인스턴스를 포함한 제출 정점 수) |
+| 셰이더 프로그램 수 | `renderer.info.programs.length` | `WebGLDevice.stats.pipelineCount` |
+| 텍스처 수 | `renderer.info.memory.textures` | `WebGLDevice.stats.textureCount` |
+| 배칭이 끊긴 이유 | 없음. 재질·텍스처·블렌딩 상태가 다른 경계를 직접 센다 | `context.stats().mesh.flushReasons`, `drawDispatchReasons` |
+
+- three.js의 `renderer.info.render`는 `render()` 호출마다 초기화된다. 후처리처럼 한 프레임에 `render()`를 여러 번 부르면 마지막 패스만 남으므로, `renderer.info.autoReset = false`로 두고 프레임 시작에서 `renderer.info.reset()`을 직접 부른다.
+- 자체 2D 렌더러라면 `draw` 호출 한 곳에 제출 횟수 카운터를 두고 프레임 시작에 0으로 만든다. 게임마다 새 렌더러를 만들기 전에 공통 모듈의 장치·컨텍스트 통계를 쓴다([AI-021](ai-development.md#module-first)).
+- 같은 프레임의 CPU 단계 시간과 함께 보관하려면 debug-tools의 `FrameMetrics` 카운터에 등록한다. 오류 진단 복사(`DiagnosticRing`·`copyDiagnostic`)에 이 숫자를 한 줄 넣어 두면 제보 기기에서도 읽을 수 있다.
+- 이 숫자는 제출 횟수이지 GPU 시간이 아니다. 드로우콜 수만으로 GPU 비용을 판정하지 않는다([A064](../algorithms/index.html) Render Batching의 주의).
+
+**대표 장면.** 아래 세 가지를 고정된 장면(`?debug=1&scene=…` 같은 주소 장면이 있으면 그것)으로 읽는다.
+
+1. 가장 무거운 장면(유닛·이펙트·UI가 최대로 겹치는 때).
+2. 가장 흔한 장면(평소 플레이 화면).
+3. 이번에 바꾼 요소가 화면에 처음 나오는 장면.
+
+**수치가 늘었을 때 보는 순서.**
+
+1. 배치가 깨졌는가. 재질·텍스처·셰이더·블렌딩 상태가 객체마다 달라졌는지, 같은 재질을 인스턴스 하나로 묶지 못했는지 본다(gamekit이면 `flushReasons`).
+2. 투명·정렬 때문에 끊겼는가. 반투명 객체의 그리기 순서가 서로 다른 재질을 번갈아 오가는지 본다.
+3. 패스가 늘었는가. 후처리 패스, 그림자 맵, 렌더 타깃 전환, 화면 복사가 프레임마다 몇 번인지 센다. 패스 하나는 화면 크기만큼의 픽셀 비용을 더하므로 드로우콜이 거의 그대로여도 느려질 수 있다.
+
+제출량이 그대로인데 느리면 정점·픽셀(fill) 비용이나 처음 쓰는 순간의 로드([DEV-032](#preload))를 의심한다. 제출량이 같다는 것은 제출 횟수가 원인이 아니라는 뜻이지, 렌더가 원인이 아니라는 뜻이 아니다.
+
+**PR에 적는 모양.** 장면, 읽은 값(드로우콜·프로그램·삼각형), 전후 비교를 한 줄로 적는다. 예: `대표 장면 3곳 드로우콜 41→42, 프로그램 12→13, 삼각형 변화 없음`.
+
+이 확인은 PR마다 한 번 하는 관찰이며, 드로우콜 수 상한을 영구 시험이나 합격 기준으로 넣지 않는다. 영구 시험은 고정 시나리오 E2E만 두고([PM-009](project-management.md#verification-policy)), 성능 수치를 재는 로직은 머지 전 검사에 넣지 않는다([PM-014](project-management.md#verification-policy)). 기능 검증과 성능 검증을 구분하는 이유는 [AI-012](ai-development.md#simulation-cadence)와 같다.
+
+사례: bloom-takraw 0.17.4에서 화면 왜곡 후처리 패스(풀스크린 패스 1회)를 포함한 이펙트 개편을 넣은 뒤 휴대폰에서 렉이 제보됐고, 원인은 조사 중이다. 드로우콜이 원인이라는 근거는 없다. 다만 조사 시점의 main에서 게임 안에서 `renderer.info`를 읽는 화면이 없어, 개편 전후의 제출량을 같은 장면에서 맞대 볼 수 없었다. 제출량을 읽을 수 없으면 이런 제보에서 첫 단계인 범위 좁히기부터 추측에 의존하게 된다.
+
 ## P2 — 방치하면 쌓이는 구조 부채 {#p2}
 
 당장 기능을 막지는 않지만, 계속 누적되면 코드를 읽고 바꾸는 비용이 빠르게 증가한다. 주기적으로 정리한다.
@@ -1369,6 +1412,7 @@ class Crate extends mixin(
 | 13 | 죽은 코드·레거시·중복·과추상화가 쌓이고 있나? | #NoDeadCode #YAGNI #DRY |
 | 14 | 예외를 감싸 새로 던지거나 삼켜서 원본의 이름·스택이 로그에서 사라지나? | #FailFast #PreserveStackTrace |
 | 15 | 플레이 중 처음 쓰이는 순간에 셰이더 컴파일·텍스처 업로드·오디오 디코딩·GPU 자원 할당이 일어나나? 첫 사용 프레임 시간을 봤나? | #PreloadBeforePlay #NoInGameLoad |
+| 16 | 렌더 제출량(드로우콜·프로그램·삼각형)을 실행 중 읽을 수 있나? 렌더 변경 PR에 드로우콜 전후 값이 있나? | #DrawCallVisibility #SubmissionCountFirst |
 
 > **판단 공식:**
 > 우선순위 ≈ **나중에 구조를 뜯어고쳐야 하는 비용 × 발생 빈도**.
