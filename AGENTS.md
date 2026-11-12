@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 71개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 72개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 71개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 72개, 상세 문서 3개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -39,6 +39,7 @@ AI가 "완료"라고 보고할 수 있는 조건. 작업 순서보다 먼저 읽
 AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-development.md).
 
 - [AI-001][-] **XY Problem 회피 · Specification by Example** — 작업 순서는 의도 정리 → 최소 한 번 검색·비교 → 구체 동작 확정 → 구현 → 같은 사례로 검증이며, 용어가 맞았다는 이유로 사용자 의도를 이해했다고 간주하지 않는다. 위반 판별: 검색·비교 기록이나 확정한 동작 사례 없이 구현을 시작했다. [상세](rules/ai-development.md#principle)
+- [AI-023][-] **Orchestrator Interviews · Delegates by Model Tier** — 인터뷰와 개발을 동시에 진행하고 그래픽 작업처럼 병렬로 할 수 있는 작업의 효율을 높이기 위해, 사용자와 대화하는 상위 모델(오케스트레이터)은 인터뷰(해석·범위 확인, 선택지 제시, 결정 받기), 작업 분해, 지시문 작성, 결과 검증, 머지·보고를 맡고, 구현·조사·캡처·그래픽 제작 같은 실행은 작업 성격에 맞는 등급(경량·중간·상위)의 하위 에이전트에 위임한다. 하위 작업이 도는 동안 상위 모델은 사용자와의 인터뷰를 계속하고, 서로 독립인 작업은 동시에 돌린다. 위반 판별: 상위 모델이 긴 구현을 직접 하느라 사용자 질문에 답하지 못하거나 다음 결정을 받지 못한다, 서로 독립인 작업(그래픽 시안 여러 개, 서로 다른 파일 묶음의 변경, 조사)을 차례로 돌린다, 하위 에이전트의 보고를 직접 확인 없이 사용자에게 전달하거나 머지한다, 모든 작업을 같은 등급 모델에 맡긴다. [상세](rules/ai-development.md#orchestration)
 - [AI-002][-] **Given-When-Then · YAGNI** — 구현 전에 "누가 어떤 상황에서 무엇을 하면 어떤 결과"를 적고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다. 위반 판별: 기대 결과 문장이 없거나 요청에 없는 기능이 사양에 들어 있다. [상세](rules/ai-development.md#given-when-then)
 - [AI-003][-] **Prior Art 조사 · Primary Source** — 요청 기능의 일반적 처리 방식과 공식 문서·일차 자료를 최소 한 번 검색해 실제 내용을 읽고, 현재 API·구현과 대조한다. 위반 판별: 검색어나 결과 제목만 보고 검토를 끝냈다. [상세](rules/ai-development.md#prior-art)
 - [AI-004][-] **ADR (Decision Record)** — 사용자 요구 / 조사로 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교하고 출처·조회 기준·가정을 남긴다. 위반 판별: 세 항목 중 하나가 기록에 없다. [상세](rules/ai-development.md#decision-record)

@@ -116,8 +116,8 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <header class="doc-header">
         <div class="kicker">Agent Entry Document</div>
         <h1>BLOOM 에이전트 작업 규칙</h1>
-        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 71개와 상세 문서 링크.</p>
-        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 71개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
+        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 72개와 상세 문서 링크.</p>
+        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 72개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
       </header>
 <div class="notice"><strong>이 문서 사용법</strong><br>이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 <code>- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …</code> 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: <code>DEV-001 위반</code>). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 <code>tools/build-rules.py</code>가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 <code>P0/P1/P2</code>는 구조 규칙의 나중 수정 비용 순서이고, <code>-</code>는 우선순위가 없는 규칙이다. 장 순서가 읽는 순서다.</div>
 <section class="section" id="terminology" data-search>
@@ -151,6 +151,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <p>AI 작업의 순서와 판단 기준. 원본: <a href="ai-development.html">AI 개발 규칙</a>.</p>
 <ul>
 <li class="rule-line" id="AI-001" data-priority="-"><span class="rule-id">AI-001</span><strong>XY Problem 회피 · Specification by Example</strong> — 작업 순서는 의도 정리 → 최소 한 번 검색·비교 → 구체 동작 확정 → 구현 → 같은 사례로 검증이며, 용어가 맞았다는 이유로 사용자 의도를 이해했다고 간주하지 않는다. 위반 판별: 검색·비교 기록이나 확정한 동작 사례 없이 구현을 시작했다. <a class="rule-detail" href="ai-development.html#principle">상세</a></li>
+<li class="rule-line" id="AI-023" data-priority="-"><span class="rule-id">AI-023</span><strong>Orchestrator Interviews · Delegates by Model Tier</strong> — 인터뷰와 개발을 동시에 진행하고 그래픽 작업처럼 병렬로 할 수 있는 작업의 효율을 높이기 위해, 사용자와 대화하는 상위 모델(오케스트레이터)은 인터뷰(해석·범위 확인, 선택지 제시, 결정 받기), 작업 분해, 지시문 작성, 결과 검증, 머지·보고를 맡고, 구현·조사·캡처·그래픽 제작 같은 실행은 작업 성격에 맞는 등급(경량·중간·상위)의 하위 에이전트에 위임한다. 하위 작업이 도는 동안 상위 모델은 사용자와의 인터뷰를 계속하고, 서로 독립인 작업은 동시에 돌린다. 위반 판별: 상위 모델이 긴 구현을 직접 하느라 사용자 질문에 답하지 못하거나 다음 결정을 받지 못한다, 서로 독립인 작업(그래픽 시안 여러 개, 서로 다른 파일 묶음의 변경, 조사)을 차례로 돌린다, 하위 에이전트의 보고를 직접 확인 없이 사용자에게 전달하거나 머지한다, 모든 작업을 같은 등급 모델에 맡긴다. <a class="rule-detail" href="ai-development.html#orchestration">상세</a></li>
 <li class="rule-line" id="AI-002" data-priority="-"><span class="rule-id">AI-002</span><strong>Given-When-Then · YAGNI</strong> — 구현 전에 "누가 어떤 상황에서 무엇을 하면 어떤 결과"를 적고, 요청에 없는 동작을 확정 사양으로 추가하지 않는다. 위반 판별: 기대 결과 문장이 없거나 요청에 없는 기능이 사양에 들어 있다. <a class="rule-detail" href="ai-development.html#given-when-then">상세</a></li>
 <li class="rule-line" id="AI-003" data-priority="-"><span class="rule-id">AI-003</span><strong>Prior Art 조사 · Primary Source</strong> — 요청 기능의 일반적 처리 방식과 공식 문서·일차 자료를 최소 한 번 검색해 실제 내용을 읽고, 현재 API·구현과 대조한다. 위반 판별: 검색어나 결과 제목만 보고 검토를 끝냈다. <a class="rule-detail" href="ai-development.html#prior-art">상세</a></li>
 <li class="rule-line" id="AI-004" data-priority="-"><span class="rule-id">AI-004</span><strong>ADR (Decision Record)</strong> — 사용자 요구 / 조사로 확인한 관례·기술 제약 / 이번에 적용할 동작을 나눠 비교하고 출처·조회 기준·가정을 남긴다. 위반 판별: 세 항목 중 하나가 기록에 없다. <a class="rule-detail" href="ai-development.html#decision-record">상세</a></li>
