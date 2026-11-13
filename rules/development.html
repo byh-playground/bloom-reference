@@ -777,7 +777,7 @@ onEvent(event) {
 <p><code>cause</code>로 원본을 붙여 감싸는 것도 같은 규칙으로 막는다. 감싼 스택이 로그의 맨 앞에 오기 때문이다. 사례: 도장깨기 경기 중 단계 예외가 <code>Error: fatal</code>로 감싸져 원인을 알 수 없었다(bloom-takraw v0.15.9에서 감싸기를 제거).</p>
 <h3 id="preload"><span class="anchor-no">2.9.</span>플레이 중 처음 쓰는 순간에 로드하지 않는다</h3>
 <ul>
-<li class="rule-line" id="DEV-032" data-priority="P1"><span class="rule-id">DEV-032</span><span class="rule-priority">P1</span><strong>Preload Before Play · No In-game First-use Load</strong> — 플레이 중 처음 쓰이는 순간에 셰이더 프로그램 컴파일·링크, 텍스처 GPU 업로드, 오디오 디코딩, GPU 자원(렌더 타깃·복사 텍스처) 할당이 일어나지 않게 한다. 플레이에 쓰이는 것은 로딩 단계에서 실제 사용 상태(조명·그림자·안개·톤 매핑 등 변종 키가 같은 조건)로 미리 컴파일·업로드·할당하고, 플레이 중 재질의 define을 바꿔 재컴파일이 일어나게 하지 않고 uniform으로 바꾼다. 화면 크기 변경 같은 플레이 밖 동작의 재할당은 예외다. 위반 판별: 로딩 완료 이후 플레이 중에 새 셰이더 프로그램이 컴파일되거나(렌더러의 프로그램 목록이 늘거나 <code>linkProgram</code> 호출이 생긴다), 새 이펙트의 첫 사용 프레임이 이후 프레임보다 눈에 띄게 길다.</li>
+<li class="rule-line" id="DEV-032" data-priority="P1"><span class="rule-id">DEV-032</span><span class="rule-priority">P1</span><strong>Preload Before Play · No In-game First-use Load</strong> — 플레이 중 처음 쓰이는 순간에 셰이더 프로그램 컴파일·링크, 텍스처 GPU 업로드, 오디오 디코딩, GPU 자원(렌더 타깃·복사 텍스처) 할당이 일어나지 않게 한다. 플레이에 쓰이는 것은 로딩 단계에서 실제 사용 상태(조명·그림자·안개·톤 매핑 등 변종 키가 같은 조건)로 미리 컴파일·업로드·할당하고, 플레이 중 재질의 define을 바꿔 재컴파일이 일어나게 하지 않고 uniform으로 바꾼다. 화면 크기 변경 같은 플레이 밖 동작의 재할당은 예외다. 변경이 경기 중 컴파일·업로드를 만들 수 있으면 왜 만들지 않는지(예: 새 재질이 미리 준비 목록에 들어가는 위치)를 코드로 PR에 적고, 게임에 이미 있는 진단 수단으로 한 번 읽을 수 있을 때만 실제 횟수를 덧붙인다. 반복 측정은 요청받았을 때만 한다. 위반 판별: 로딩 완료 이후 플레이 중에 새 셰이더 프로그램이 컴파일되거나(렌더러의 프로그램 목록이 늘거나 <code>linkProgram</code> 호출이 생긴다), 새 이펙트의 첫 사용 프레임이 이후 프레임보다 눈에 띄게 길다.</li>
 </ul>
 <p>태그: #PreloadBeforePlay #NoInGameLoad #ShaderWarmup #FirstUseHitch</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 중간</p>
@@ -830,16 +830,16 @@ onFirstContact() {
   this.shockwavePass.uniforms.strength.value = 1; // define이 아니라 uniform
 }
 </code></pre></div>
-<p>확인 방법은 새 재질·후처리·입자를 넣는 PR마다 아래 두 가지를 관찰해 PR 본문에 적는 것이다.</p>
+<p>확인 방법은 새 재질·후처리·입자를 넣는 PR마다 아래 두 가지를 먼저 코드로 따져 PR 본문에 적는 것이다. 새 재질이 미리 준비 목록에 들어가는 위치, 플레이 중 define이 바뀌지 않는다는 점, 복사 텍스처·렌더 타깃이 로딩 때 만들어진다는 점을 코드 줄로 가리킨다. 아래 값을 게임의 진단 수단으로 한 번 읽을 수 있으면 실제 횟수로 덧붙이고(의무 아님), 첫 사용 프레임 시간 비교 같은 반복 측정은 요청받았을 때만 한다. 코드로 판단이 안 되면 먼저 그렇게 말하고 동의를 받는다. 보고에는 "코드로 판단, 미측정"과 "측정함"을 구분한다.</p>
 <ul>
-<li><strong>로딩 완료 이후 플레이 중 새 프로그램 컴파일 0회.</strong> 렌더러의 프로그램 목록(three.js의 <code>renderer.info.programs.length</code>)이 로딩 완료 시점과 플레이 중 이펙트를 모두 한 번씩 쓴 뒤에 같은지, 또는 <code>linkProgram</code> 호출 횟수가 늘지 않는지 본다.</li>
-<li><strong>첫 사용 프레임 시간.</strong> 이펙트를 처음 쓰는 프레임과 이후 프레임의 시간을 비교한다. 평균 프레임 시간만으로 통과시키지 않는다. 평균은 첫 사용 프레임 하나를 가린다.</li>
+<li><strong>로딩 완료 이후 플레이 중 새 프로그램 컴파일 0회.</strong> 읽을 수 있을 때 렌더러의 프로그램 목록(three.js의 <code>renderer.info.programs.length</code>)이 로딩 완료 시점과 플레이 중 이펙트를 모두 한 번씩 쓴 뒤에 같은지, 또는 <code>linkProgram</code> 호출 횟수가 늘지 않는지 본다.</li>
+<li><strong>첫 사용 프레임 시간.</strong> 요청받았을 때 이펙트를 처음 쓰는 프레임과 이후 프레임의 시간을 비교한다. 평균 프레임 시간만으로 통과시키지 않는다. 평균은 첫 사용 프레임 하나를 가린다.</li>
 </ul>
-<p>이 확인은 PR마다 한 번 하는 관찰이며 영구 성능 시험으로 넣지 않는다. 영구 시험은 고정 시나리오 E2E만 두고(<a href="project-management.html#verification-policy">PM-009</a>), 성능·프레임 시간을 재는 로직은 머지 전 검사에 넣지 않는다(<a href="project-management.html#verification-policy">PM-014</a>). 기능 검증과 성능 검증을 구분하는 이유는 <a href="ai-development.html#simulation-cadence">AI-012</a>와 같다.</p>
+<p>이 확인은 영구 성능 시험으로 넣지 않는다. 영구 시험은 고정 시나리오 E2E만 두고(<a href="project-management.html#verification-policy">PM-009</a>), 성능·프레임 시간을 재는 로직은 머지 전 검사에 넣지 않는다(<a href="project-management.html#verification-policy">PM-014</a>). 기능 검증과 성능 검증을 구분하는 이유는 <a href="ai-development.html#simulation-cadence">AI-012</a>와 같다.</p>
 <p>사례: bloom-takraw 0.17.4에서 화면 왜곡 쇼크웨이브 후처리 패스를 넣으면서 그 셰이더가 경기 중 첫 접촉 때 처음 컴파일되게 두었고, 성능은 평균 프레임 시간만 재서 첫 사용 프레임은 보지 않은 채 통과시켰다. 이후 휴대폰에서 렉이 제보됐다. 원인은 조사 중이며 이 컴파일이 주원인인지는 아직 확정되지 않았다.</p>
 <h3 id="draw-call-visibility"><span class="anchor-no">2.10.</span>렌더 제출량(드로우콜)을 언제든 읽을 수 있게 한다</h3>
 <ul>
-<li class="rule-line" id="DEV-033" data-priority="P1"><span class="rule-id">DEV-033</span><span class="rule-priority">P1</span><strong>Draw Call Visibility · Submission Count First</strong> — 실행 중인 게임에서 프레임당 렌더 제출량(드로우콜 수, 가능하면 셰이더 프로그램 수·텍스처 수·삼각형 수)을 디버그 수단으로 언제든 읽을 수 있게 유지한다. 새 재질·메시·입자·후처리·UI 레이어나 배칭 조건처럼 렌더 경로에 영향을 주는 변경은 대표 장면에서 드로우콜 수의 전후를 확인해 PR 본문에 적는다. 성능 문제를 조사할 때는 원인을 추측하기 전에 제출량을 먼저 읽고 개편 전 값과 비교한다. 드로우콜을 줄이는 구현은 공통 모듈(bloom-gamekit)의 수단을 쓰고 게임마다 새로 만들지 않는다. 위반 판별: 실행 중인 게임에서 드로우콜 수를 읽을 방법이 없거나, 렌더 변경 PR에 드로우콜 전후 값이 없거나, 성능 문제 보고에 제출량 수치 없이 원인이 단정돼 있다.</li>
+<li class="rule-line" id="DEV-033" data-priority="P1"><span class="rule-id">DEV-033</span><span class="rule-priority">P1</span><strong>Draw Call Visibility · Submission Count First</strong> — 실행 중인 게임에서 프레임당 렌더 제출량(드로우콜 수, 가능하면 셰이더 프로그램 수·텍스처 수·삼각형 수)을 디버그 수단으로 언제든 읽을 수 있게 유지한다. 새 재질·메시·입자·후처리·UI 레이어나 배칭 조건처럼 렌더 경로에 영향을 주는 변경은 새 물체가 어느 묶음(인스턴스·병합·배치)에 들어가고 왜 드로우콜이 늘지 않는지(또는 얼마나 느는지)를 코드로 PR 본문에 적는다. 같은 진단 수단으로 대표 장면의 전후 값을 한 번 읽을 수 있을 때만 덧붙이고 의무는 아니며, 반복 측정·분포·프레임 시간·전용 하네스는 요청받았을 때만 한다. 정적 분석으로 판단이 안 되면 먼저 그렇게 말하고 동의를 받는다. 보고에는 "코드로 판단, 미측정"과 "측정함"을 구분해 적는다. 성능 문제를 조사할 때는 원인을 추측하기 전에 제출량을 먼저 읽고 개편 전 값과 비교한다. 드로우콜을 줄이는 구현은 공통 모듈(bloom-gamekit)의 수단을 쓰고 게임마다 새로 만들지 않는다. 위반 판별: 실행 중인 게임에서 드로우콜 수를 읽을 방법이 없거나, 렌더 변경 PR에 묶음 위치·증감의 코드 근거가 없거나, 성능 문제 보고에 제출량 수치 없이 원인이 단정돼 있다.</li>
 </ul>
 <p>태그: #DrawCallVisibility #SubmissionCountFirst #RenderStats #PerfTriage</p>
 <p class="meta-line">빈도: 높음 · 나중 수정비용: 중간</p>
@@ -899,8 +899,8 @@ onFirstContact() {
 <li>패스가 늘었는가. 후처리 패스, 그림자 맵, 렌더 타깃 전환, 화면 복사가 프레임마다 몇 번인지 센다. 패스 하나는 화면 크기만큼의 픽셀 비용을 더하므로 드로우콜이 거의 그대로여도 느려질 수 있다.</li>
 </ol>
 <p>제출량이 그대로인데 느리면 정점·픽셀(fill) 비용이나 처음 쓰는 순간의 로드(<a href="#preload">DEV-032</a>)를 의심한다. 제출량이 같다는 것은 제출 횟수가 원인이 아니라는 뜻이지, 렌더가 원인이 아니라는 뜻이 아니다.</p>
-<p><strong>PR에 적는 모양.</strong> 장면, 읽은 값(드로우콜·프로그램·삼각형), 전후 비교를 한 줄로 적는다. 예: <code>대표 장면 3곳 드로우콜 41→42, 프로그램 12→13, 삼각형 변화 없음</code>.</p>
-<p>이 확인은 PR마다 한 번 하는 관찰이며, 드로우콜 수 상한을 영구 시험이나 합격 기준으로 넣지 않는다. 영구 시험은 고정 시나리오 E2E만 두고(<a href="project-management.html#verification-policy">PM-009</a>), 성능 수치를 재는 로직은 머지 전 검사에 넣지 않는다(<a href="project-management.html#verification-policy">PM-014</a>). 기능 검증과 성능 검증을 구분하는 이유는 <a href="ai-development.html#simulation-cadence">AI-012</a>와 같다.</p>
+<p><strong>PR에 적는 모양.</strong> 기본은 코드 근거 한 줄이다. 새 물체가 들어가는 묶음과 드로우콜이 늘지 않는(또는 느는) 이유를 적는다. 예: <code>새 이펙트 입자는 기존 이펙트 InstancedMesh(effects.js)의 인스턴스로 들어가 드로우콜 변화 없음. 코드로 판단, 미측정</code>. 위 수단으로 한 번 읽을 수 있으면 읽은 값을 덧붙인다(의무 아님). 예: <code>측정함: 대표 장면 3곳 드로우콜 41→42, 프로그램 12→13, 삼각형 변화 없음</code>. 반복 측정·분포·프레임 시간·전용 하네스는 요청받았을 때만 하고, 정적 분석으로 판단이 안 되면 먼저 그렇게 말하고 동의를 받는다.</p>
+<p>이 확인에서 드로우콜 수 상한을 영구 시험이나 합격 기준으로 넣지 않는다. 영구 시험은 고정 시나리오 E2E만 두고(<a href="project-management.html#verification-policy">PM-009</a>), 성능 수치를 재는 로직은 머지 전 검사에 넣지 않는다(<a href="project-management.html#verification-policy">PM-014</a>). 기능 검증과 성능 검증을 구분하는 이유는 <a href="ai-development.html#simulation-cadence">AI-012</a>와 같다.</p>
 <p>사례: bloom-takraw 0.17.4에서 화면 왜곡 후처리 패스(풀스크린 패스 1회)를 포함한 이펙트 개편을 넣은 뒤 휴대폰에서 렉이 제보됐고, 원인은 조사 중이다. 드로우콜이 원인이라는 근거는 없다. 다만 조사 시점의 main에서 게임 안에서 <code>renderer.info</code>를 읽는 화면이 없어, 개편 전후의 제출량을 같은 장면에서 맞대 볼 수 없었다. 제출량을 읽을 수 없으면 이런 제보에서 첫 단계인 범위 좁히기부터 추측에 의존하게 된다.</p>
 <h3 id="count-independent-draw-calls"><span class="anchor-no">2.11.</span>드로우콜은 개체 수·종류 수가 아니라 렌더 상태 묶음 수로 정한다</h3>
 <ul>
@@ -971,9 +971,9 @@ onFirstContact() {
 </table></div>
 <p><strong>확인 방법.</strong> 1회성 관찰이며 영구 시험이 아니다.</p>
 <ol>
-<li>대표 장면에서 개체 수를 두 값(N, N+10 또는 2N)으로 놓고 <a href="#draw-call-visibility">DEV-033</a>의 수단으로 드로우콜을 읽어 PR에 적는다. 모양: <code>N=… → draw …, N+10=… → draw …</code>.</li>
-<li>종류를 추가하는 PR은 추가 전후를 적는다. 늘었으면 어느 상태 묶음이 늘었는지 적는다. gamekit이면 <code>context.stats().mesh.flushReasons</code>와 <code>drawDispatchReasons</code>의 사유(<code>mesh</code>, <code>clip</code>, <code>depthState</code>, <code>projection</code>, <code>poseBackend</code>, <code>capacity</code> 등)를 본다.</li>
-<li>이 확인에 드로우콜 수 상한을 영구 시험이나 합격 기준으로 넣지 않는다(<a href="project-management.html#verification-policy">PM-009</a>·<a href="project-management.html#verification-policy">PM-014</a>).</li>
+<li>기본은 코드 근거다. 개체 수 N이 드로우콜 식에 들어가지 않는 이유(같은 인스턴스·병합 묶음에 들어간다 등)를 코드로 PR에 적는다. 이미 있는 <a href="#draw-call-visibility">DEV-033</a>의 수단으로 대표 장면에서 개체 수를 두 값(N, N+10 또는 2N)으로 놓고 한 번 읽을 수 있을 때만 덧붙인다(의무 아님). 모양: <code>N=… → draw …, N+10=… → draw …</code>.</li>
+<li>종류를 추가하는 PR은 새 종류가 어느 상태 묶음의 데이터로 들어가는지 코드로 적고, 읽을 수 있으면 추가 전후 값을 덧붙인다. 늘었으면 어느 상태 묶음이 늘었는지 적는다. gamekit이면 <code>context.stats().mesh.flushReasons</code>와 <code>drawDispatchReasons</code>의 사유(<code>mesh</code>, <code>clip</code>, <code>depthState</code>, <code>projection</code>, <code>poseBackend</code>, <code>capacity</code> 등)를 본다.</li>
+<li>반복 측정·분포·전용 하네스는 요청받았을 때만 한다. 이 확인에 드로우콜 수 상한을 영구 시험이나 합격 기준으로 넣지 않는다(<a href="project-management.html#verification-policy">PM-009</a>·<a href="project-management.html#verification-policy">PM-014</a>).</li>
 </ol>
 <p>구현은 공통 모듈(bloom-gamekit)의 수단을 쓰고 게임마다 새로 만들지 않는다. 배칭·인스턴싱의 기법과 비용은 <a href="../algorithms/index.html">A072</a> GPU Instancing과 <a href="../algorithms/index.html">A064</a> Render Batching에 있다. 드로우콜 감소만으로 GPU 비용이 줄었다고 판정하지 않는다(A064의 주의).</p>
 <p>사례: budmori-io <code>docs/performance-diagnostics.md</code>의 기록에서 <code>orderedMeshQuads</code>를 켜기 전후 드로우콜 평균이 밀 882마리 장면에서 1765 → 17, 혼합 1,000마리 장면에서 608 → 18이 됐다. Chromium·SwiftShader(소프트웨어 GPU)의 한 환경에서 잰 값이고, 같은 기록에서 GPU 시간은 이 환경에서 크게 줄지 않았다.</p>
@@ -1495,7 +1495,7 @@ Host가 이미 소유한 객체가 필요하다 → 소유권은 Host에 두고 
 </tr>
 <tr>
 <td>16</td>
-<td>렌더 제출량(드로우콜·프로그램·삼각형)을 실행 중 읽을 수 있나? 렌더 변경 PR에 드로우콜 전후 값이 있나?</td>
+<td>렌더 제출량(드로우콜·프로그램·삼각형)을 실행 중 읽을 수 있나? 렌더 변경 PR에 묶음 위치·증감의 코드 근거가 있나?</td>
 <td>#DrawCallVisibility #SubmissionCountFirst</td>
 </tr>
 <tr>
