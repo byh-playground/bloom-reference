@@ -10,13 +10,13 @@ AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 
 작업 전에 https://raw.githubusercontent.com/byh-playground/bloom-reference/main/AGENTS.md 를 받아 전부 읽고 규칙 줄을 따른다. 상세는 각 줄 끝 [상세] 링크 절만 읽고, 규칙 적용·위반은 ID(예: DEV-001)로 보고한다.
 ```
 
-- 진입 문서는 [AGENTS.md](AGENTS.md) 1개(규칙 줄 74개)이고 [위키 화면](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html)으로도 볼 수 있다.
+- 진입 문서는 [AGENTS.md](AGENTS.md) 1개(규칙 줄 75개)이고 [위키 화면](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html)으로도 볼 수 있다.
 - 상세 링크는 `rules/*.md` 상대 경로다. raw URL로 읽는 AI는 같은 raw 경로(`https://raw.githubusercontent.com/byh-playground/bloom-reference/main/rules/<파일>.md`)로 바꿔 읽는다.
 - 이 저장소 안에서는 `CLAUDE.md`가 `@AGENTS.md`로 자동으로 불러오므로 붙여 넣을 필요가 없다.
 
 ## 규칙 문서 원본과 생성물
 
-- 원본: 저장소 루트 `AGENTS.md`(진입 문서, 규칙 줄 전부 + 상세 링크)와 `rules/*.md` 3개(`ai-development.md`, `development.md`, `project-management.md`). 사람과 AI는 이 파일만 고칩니다. 에이전트는 `AGENTS.md`를 통째로 읽고(Claude Code는 `CLAUDE.md`의 `@AGENTS.md` import로 같은 내용을 읽음) 필요한 절만 상세 문서에서 읽습니다. 규칙 절의 첫 줄 `- [ID][우선순위] 문장`이 규칙 줄이며, 위반 보고는 이 ID로 합니다.
+- 원본: 저장소 루트 `AGENTS.md`(진입 문서, 규칙 줄 전부 + 상세 링크)와 `rules/*.md` 4개(`ai-development.md`, `gauntlet-loop.md`, `development.md`, `project-management.md`). 사람과 AI는 이 파일만 고칩니다. 에이전트는 `AGENTS.md`를 통째로 읽고(Claude Code는 `CLAUDE.md`의 `@AGENTS.md` import로 같은 내용을 읽음) 필요한 절만 상세 문서에서 읽습니다. 규칙 절의 첫 줄 `- [ID][우선순위] 문장`이 규칙 줄이며, 위반 보고는 이 ID로 합니다.
 - 생성물: `rules/index.html`(진입 문서)과 같은 이름의 `rules/*.html`. `tools/build-rules.py`가 `tools/wiki-template.html`(목차·검색·테마)에 본문을 넣어 만듭니다. 직접 수정하지 않습니다.
 - 갱신: 원본이나 변환기가 바뀐 push마다 `.github/workflows/rules-build.yml`이 HTML을 다시 생성해 같은 브랜치에 커밋합니다. 로컬 미리 보기는 `pip install -r tools/requirements.txt && python3 tools/build-rules.py`, 일치 확인은 `--check`입니다.
 - 표기 규약(4개)과 검사 항목은 `tools/build-rules.py` 머리말에 있습니다.
@@ -25,9 +25,10 @@ AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 
 
 | 자료 | 화면 열기 | HTML 원본 |
 | --- | --- | --- |
-| **에이전트 진입 문서** · 규칙 줄 74개(AI·DEV·PM) + 상세 링크 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html) | [AGENTS.md](AGENTS.md) (원본) · [HTML 생성물](rules/index.html) |
+| **에이전트 진입 문서** · 규칙 줄 75개(AI·DEV·PM) + 상세 링크 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/index.html) | [AGENTS.md](AGENTS.md) (원본) · [HTML 생성물](rules/index.html) |
 | 공통 개발 규칙 · 비용 우선순위 · 규칙 줄 DEV-001~035 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/development.html) | [rules/development.md](rules/development.md) (원본) · [HTML 생성물](rules/development.html) |
-| AI 개발 규칙 · 요구 해석·공통 모듈 개선·그래픽 자산·자동 저장 비용·검증 · 규칙 줄 AI-000~023 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
+| AI 개발 규칙 · 요구 해석·공통 모듈 개선·그래픽 자산·자동 저장 비용·검증 · 규칙 줄 AI-000~024 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/ai-development.html) | [rules/ai-development.md](rules/ai-development.md) (원본) · [HTML 생성물](rules/ai-development.html) |
+| **건틀렛 루프 · AI-025** · 독립 critic/블라인드 A/B/실재 경쟁 기준/반복 개선 · 명시 요청 시 고우선위 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/gauntlet-loop.html) | [rules/gauntlet-loop.md](rules/gauntlet-loop.md) (원본) · [HTML 생성물](rules/gauntlet-loop.html) |
 | 공통 프로젝트 관리 규칙 · 버전·Stable/Nightly·Git·원본 무빌드 배포 · 규칙 줄 PM-001~014 | [바로 보기](https://htmlpreview.github.io/?https://github.com/byh-playground/bloom-reference/blob/main/rules/project-management.html) | [rules/project-management.md](rules/project-management.md) (원본) · [HTML 생성물](rules/project-management.html) |
 
 | 코드 포맷팅·정적 검사 템플릿 · Prettier / ESLint / CI / VS Code | [복사 및 적용 안내](examples/code-quality/README.md) | [DEV-028~031](rules/development.md#code-formatting) |
@@ -78,6 +79,7 @@ AI(Claude Code, Codex 등)에게 이 저장소의 규칙을 따르게 하려면 
 | --- | --- | --- |
 | `rules/development.md` → `rules/development.html` (생성물) | `common-development-rules-priority-wiki-v14.html` (2026-10-30 Markdown 원본으로 전환, 규칙 줄 추가, 리뷰 순서 표 번호 재부여) | 2026-10-30 |
 | `rules/ai-development.md` → `rules/ai-development.html` (생성물) | AI 요청 해석·검색 비교·공통 모듈 개선·소비 게임 적용 규칙 (이 저장소에서 작성, 2026-10-30 Markdown 원본으로 전환, 규칙 줄 추가) | 2026-10-30 |
+| `rules/gauntlet-loop.md` → `rules/gauntlet-loop.html` (생성물) | 건틀렛 루프 원문·GitHub 스타 순 참고·독립 평가·블라인드 A/B 실행 규칙 (이 저장소에서 작성) | 2026-11-21 |
 | `AGENTS.md` → `rules/index.html` (생성물) | 에이전트 진입 문서 (이 저장소에서 작성, 규칙 줄은 상세 문서와 동일 문장) | 2026-10-30 |
 | `rules/project-management.md` → `rules/project-management.html` (생성물) | `common_project_management_rules.html` (원본 무빌드 배포·main/Nightly·Stable 기준선 갱신, 2026-10-30 Markdown 원본으로 전환, 규칙 줄 추가) | 2026-10-30 |
 | `rules/visual-ux.html` | 공통 UI/UX 레퍼런스 (기존 시각·UX 확장) | 2026-10-11 |

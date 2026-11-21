@@ -96,6 +96,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
     <ul class="pages">
       <li><a class="current" href="index.html">BLOOM 에이전트 작업 규칙</a></li>
       <li><a href="ai-development.html">AI 개발 규칙</a></li>
+      <li><a href="gauntlet-loop.html">건틀렛 루프 · 독립 평가 기반 반복 개선</a></li>
       <li><a href="development.html">공통 개발 규칙</a></li>
       <li><a href="project-management.html">공통 프로젝트 관리 규칙</a></li>
     </ul>
@@ -104,12 +105,13 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <li><a href="#contents">1. 목차</a></li>
       <li><a href="#terminology">2. 대전제</a></li>
       <li><a href="#done">3. 완료 조건</a></li>
-      <li><a href="#media">4. 소통 포맷</a></li>
-      <li><a href="#ai">5. 작업 순서</a></li>
-      <li><a href="#dev">6. 구조 규칙</a></li>
-      <li><a href="#pm">7. PR·버전·검증·배포</a></li>
-      <li><a href="#formatting">8. 코드 포맷팅과 정적 검사</a></li>
-      <li><a href="#refs">9. 상황별 레퍼런스</a></li>
+      <li><a href="#gauntlet">4. 건틀렛 루프 · 명시 요청 시 고우선위 적용</a></li>
+      <li><a href="#media">5. 소통 포맷</a></li>
+      <li><a href="#ai">6. 작업 순서</a></li>
+      <li><a href="#dev">7. 구조 규칙</a></li>
+      <li><a href="#pm">8. PR·버전·검증·배포</a></li>
+      <li><a href="#formatting">9. 코드 포맷팅과 정적 검사</a></li>
+      <li><a href="#refs">10. 상황별 레퍼런스</a></li>
     </ul>
   </aside>
   <main class="main">
@@ -117,14 +119,14 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
       <header class="doc-header">
         <div class="kicker">Agent Entry Document</div>
         <h1>BLOOM 에이전트 작업 규칙</h1>
-        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 74개와 상세 문서 링크.</p>
-        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 74개</span><span class="badge">상세 문서 3개</span><span class="badge">통용 용어 병기</span></div>
+        <p class="subtitle">에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 75개와 상세 문서 링크.</p>
+        <div class="meta"><span class="badge core">AGENTS.md</span><span class="badge">규칙 줄 75개</span><span class="badge">상세 문서 4개</span><span class="badge">통용 용어 병기</span></div>
       </header>
 <div class="notice"><strong>이 문서 사용법</strong><br>이 파일은 BLOOM 저장소들의 에이전트 진입 문서다. 작업 시작 시 전체를 읽는다. 규칙 1개는 <code>- [ID][우선순위] **통용 용어** — 조건→행동. 위반 판별: …</code> 1줄이고, 용어 정의·이유·예시·사례는 끝의 [상세] 링크가 가리키는 절에 있다. 규칙 위반과 적용을 보고할 때는 ID로 지정한다(예: <code>DEV-001 위반</code>). 규칙 줄은 상세 문서의 같은 줄과 문장이 같아야 하며 <code>tools/build-rules.py</code>가 다르면 실패시킨다. 규칙을 고칠 때는 상세 문서와 이 파일을 같은 PR에서 고친다. 우선순위 <code>P0/P1/P2</code>는 구조 규칙의 나중 수정 비용 순서이고, <code>-</code>는 우선순위가 없는 규칙이다. 장 순서가 읽는 순서다.</div>
 <section class="section" id="contents" data-search>
 <h2><span class="anchor-no">1.</span>목차</h2>
 <ul>
-<li><a href="#terminology">대전제</a> · <a href="#done">완료 조건</a> · <a href="#media">소통 포맷</a></li>
+<li><a href="#terminology">대전제</a> · <a href="#done">완료 조건</a> · <a href="#gauntlet">건틀렛 루프</a> · <a href="#media">소통 포맷</a></li>
 <li><a href="#ai">작업 순서와 스킬 문서</a> · <a href="#dev">구조 규칙</a></li>
 <li><a href="#pm">PR·버전·검증·배포</a> · <a href="#formatting">코드 포맷팅과 정적 검사</a> · <a href="#refs">상황별 레퍼런스</a></li>
 </ul>
@@ -148,15 +150,22 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 <li class="rule-line" id="AI-017" data-priority="-"><span class="rule-id">AI-017</span><strong>Deterministic Capture · Parameterized Scene</strong> — 관찰물은 아래 표준 절차 하나로 얻는다: 결정론적 실행(고정 dt·시드 난수)에 장면 파라미터(seed·설정·tick)를 넣어 같은 장면을 재현하고, 헤드리스 브라우저의 고정 뷰포트에서 캡처해 변경 전후를 같은 파라미터로 비교한다. 사람이 화면을 보며 찍거나 작업마다 다른 방식으로 캡처하지 않는다. 위반 판별: 관찰물에 재현 파라미터(커밋·seed·tick·뷰포트)가 없거나, 전후 비교가 다른 조건에서 이뤄졌다. <a class="rule-detail" href="ai-development.html#verification">상세</a></li>
 </ul>
 </section>
+<section class="section" id="gauntlet" data-search>
+<h2><span class="anchor-no">4.</span>건틀렛 루프 · 명시 요청 시 고우선위 적용</h2>
+<p>사용자가 실제 경쟁작과 A/B 비교, 독립 평가, 통과할 때까지의 반복 개발을 요청한 경우 <strong>구현 전에 <a href="gauntlet-loop.html">건틀렛 루프 규칙</a> 전체를 읽는다.</strong> 최초 요청이 타겟 선정뿐이면 선정까지 진행하고 개발로 넘겨짚지 않는다. 결과가 실제로 검증되지 않았다면 완료라고 선언하지 않는다. 원본: <a href="gauntlet-loop.html#scope">건틀렛 루프 · 독립 평가 기반 반복 개선</a>.</p>
+<ul>
+<li class="rule-line" id="AI-025" data-priority="-"><span class="rule-id">AI-025</span><strong>Independent Critic · Blind A/B</strong> — 사용자가 건틀렛 루프나 실재 경쟁작 기준의 반복 개선을 요청하면 실제 비교 가능한 기준을 고정하고, 구현 담당과 분리된 새 컨텍스트의 평가자가 실제 산출물을 블라인드 비교하도록 하며, 사용자 지정 평가 항목을 모두 통과할 때까지 증거 기반으로 개선한다. 평가자를 호출하지 못했거나 근거가 없으면 미통과·차단으로 기록하고 자체 평가를 독립 심사로 대체하지 않는다. 위반 판별: 개발자가 스스로 A/B 승리를 판정하거나, 실제 비교물·독립 평가·항목별 결과 없이 성공을 보고했다. <a class="rule-detail" href="gauntlet-loop.html#scope">상세</a></li>
+</ul>
+</section>
 <section class="section" id="media" data-search>
-<h2><span class="anchor-no">4.</span>소통 포맷</h2>
+<h2><span class="anchor-no">5.</span>소통 포맷</h2>
 <p>보고·문서·기획을 쓸 때 내용 유형에 맞는 매체를 고른다. 유형별 표는 원본: <a href="ai-development.html#media">AI 개발 규칙 · 소통 포맷</a>.</p>
 <ul>
 <li class="rule-line" id="AI-018" data-priority="-"><span class="rule-id">AI-018</span><strong>Cognitive Fit · Media Richness · Executable Specification</strong> — 소통 포맷은 내용 유형에 맞춘다: 느낌·방향처럼 해석이 갈리는 것일수록 풍부한 매체(무드보드·참고 작품·이미지)로, 규칙·계약·설정·API처럼 확정된 것일수록 간결한 매체(코드·스키마·실행 가능한 목업 그대로 + 의도·제약 1~2줄)로 한다. 시각 결과는 이미지, 시간에 따른 변화는 스토리보드·키프레임·영상과 상태 다이어그램, 구조·관계는 코드로 그린 다이어그램, 개별 값 조회는 표, 패턴·추세는 차트, 절차는 번호 목록이다. 한 메시지에 여러 유형이 있으면 유형마다 나눠 쓴다. 위반 판별: 코드로 적을 수 있는 규칙·계약을 산문으로 적었거나, 시각 결과·구조·느낌을 문단으로만 설명했다. <a class="rule-detail" href="ai-development.html#media">상세</a></li>
 </ul>
 </section>
 <section class="section" id="ai" data-search>
-<h2><span class="anchor-no">5.</span>작업 순서</h2>
+<h2><span class="anchor-no">6.</span>작업 순서</h2>
 <p>AI 작업의 순서와 판단 기준. 원본: <a href="ai-development.html">AI 개발 규칙</a>.</p>
 <ul>
 <li class="rule-line" id="AI-024" data-priority="-"><span class="rule-id">AI-024</span><strong>Progressive Disclosure · Table of Contents</strong> — 스킬은 메타데이터에 사용 조건을, SKILL.md에 핵심 절차와 직접 연결된 참고 자료의 선택 기준을 둔다. 100줄을 넘는 참고 문서는 앞에 목차를 두고 필요한 절을 찾게 하며, 필수 지시를 생략하지 않는다. AGENTS.md는 상시 지시를 간결히 두고 긴 문서에 앞 목차를 두되 명시된 전체 읽기 의무는 유지한다. 위반 판별: 긴 참고 문서에 목차가 없거나 필요한 자료를 찾을 경로가 없거나 목차를 이유로 필수 지시를 건너뛴다. <a class="rule-detail" href="ai-development.html#skill-documents">상세</a></li>
@@ -180,7 +189,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="dev" data-search>
-<h2><span class="anchor-no">6.</span>구조 규칙</h2>
+<h2><span class="anchor-no">7.</span>구조 규칙</h2>
 <p>코드 구조·설계 원칙. 나중 수정 비용이 큰 순서(P0 → P1 → P2). 원본: <a href="development.html">공통 개발 규칙</a>.</p>
 <h4 id="p0-초기에-반드시-잡기">P0 — 초기에 반드시 잡기</h4>
 <ul>
@@ -227,7 +236,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="pm" data-search>
-<h2><span class="anchor-no">7.</span>PR·버전·검증·배포</h2>
+<h2><span class="anchor-no">8.</span>PR·버전·검증·배포</h2>
 <p>개발 외 운영 규칙. 원본: <a href="project-management.html">공통 프로젝트 관리 규칙</a>.</p>
 <ul>
 <li class="rule-line" id="PM-001" data-priority="-"><span class="rule-id">PM-001</span><strong>SemVer (제품 세대 기준 MAJOR)</strong> — 버전 판정은 제품 세대 변경 → MAJOR, 비호환 변경 → MINOR, 호환되는 의미 있는 변경 → PATCH, 외부 동작·계약이 같은 내부 정리 → 버전 유지 순서로 한다. 위반 판별: 순수 리팩터링·문서 수정에 PATCH를 올렸거나, 비호환 변경에 PATCH만 올렸다. <a class="rule-detail" href="project-management.html#version-decision">상세</a></li>
@@ -247,7 +256,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="formatting" data-search>
-<h2><span class="anchor-no">8.</span>코드 포맷팅과 정적 검사</h2>
+<h2><span class="anchor-no">9.</span>코드 포맷팅과 정적 검사</h2>
 <p>원본: <a href="development.html#code-formatting">공통 개발 규칙</a>. <a href="examples/code-quality/README.md">설정 템플릿</a>.</p>
 <ul>
 <li class="rule-line" id="DEV-028" data-priority="-"><span class="rule-id">DEV-028</span><strong>Prettier · Single Formatting Authority</strong> — 관리 대상 JS·HTML(인라인 script/style 포함)·CSS·JSON·Markdown은 공통 Prettier 설정(100자·공백 4칸·세미콜론·작은따옴표·trailing comma all·중괄호 공백·화살표 인수 괄호·LF)으로 포맷팅하고, 스타일 검사 규칙을 ESLint에 중복 정의하지 않는다. 위반 판별: 대상 파일에 다른 포맷이 적용됐거나 서로 다른 포맷터가 충돌한다. <a class="rule-detail" href="development.html#code-formatting">상세</a></li>
@@ -257,7 +266,7 @@ li.rule-line a.rule-detail{font-size:12px;margin-left:6px}
 </ul>
 </section>
 <section class="section" id="refs" data-search>
-<h2><span class="anchor-no">9.</span>상황별 레퍼런스</h2>
+<h2><span class="anchor-no">10.</span>상황별 레퍼런스</h2>
 <p>아래 문서는 해당 작업을 할 때만 읽는다. 원본은 각 HTML이다.</p>
 <div class="table-wrap"><table>
 <thead>

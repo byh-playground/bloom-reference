@@ -2,6 +2,8 @@
 
 @AGENTS.md
 
+> **건틀렛 루프 고우선위:** 사용자가 실제 경쟁작에 대한 건틀렛/A·B 평가/승리할 때까지의 반복 개발을 명시한 경우, 개발 전에 AGENTS.md의 AI-025와 [rules/gauntlet-loop.md](rules/gauntlet-loop.md) **전체**를 읽고 따른다. 구현자는 독립 심사를 스스로 대신하지 않으며, 다른 에이전트를 실제 호출할 수 없으면 BLOCKED로 기록한다. 사용자가 타겟 선정만 요청했다면 선정 단계에서 멈춘다.
+
 - 위 진입 문서(`AGENTS.md`)의 규칙 줄이 모든 작업의 기본 규칙이다. 규칙 위반·적용은 ID로 보고한다(예: `DEV-001 위반`). 상세는 규칙 줄 끝의 [상세] 링크 절만 읽는다.
 - 규칙 문서(`AGENTS.md`, `rules/*.md`)는 Markdown이 원본이고 `rules/*.html`(`AGENTS.md`는 `rules/index.html`)은 `tools/build-rules.py`의 생성물입니다. 규칙을 고칠 때는 상세 문서의 규칙 줄과 `AGENTS.md`의 같은 줄을 함께 고칩니다(변환기가 불일치를 실패로 처리). 생성물은 직접 고치지 않습니다. 원본을 고쳐 push하면 `rules-build` Action이 HTML을 재생성해 커밋합니다. 로컬 확인은 `python3 tools/build-rules.py`(변환) 또는 `--check`(일치 확인)입니다.
 - 그 밖의 문서와 실험의 원본은 각 HTML 파일입니다. 같은 내용을 Markdown으로 중복 관리하지 않습니다.
