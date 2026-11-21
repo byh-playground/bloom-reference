@@ -3,7 +3,7 @@ title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
 subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 75개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 75개, 상세 문서 3개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 75개, 상세 문서 4개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
