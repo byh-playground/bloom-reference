@@ -41,6 +41,7 @@ REPO_BLOB = "https://github.com/byh-playground/bloom-reference/blob/main/"
 PAGES = [
     ("AGENTS.md", "rules/index.html"),
     ("rules/ai-development.md", "rules/ai-development.html"),
+    ("rules/gauntlet-loop.md", "rules/gauntlet-loop.html"),
     ("rules/development.md", "rules/development.html"),
     ("rules/project-management.md", "rules/project-management.html"),
 ]
