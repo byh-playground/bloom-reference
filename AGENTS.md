@@ -1,9 +1,9 @@
 ---
 title: BLOOM 에이전트 작업 규칙
 kicker: Agent Entry Document
-subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 75개와 상세 문서 링크.
+subtitle: 에이전트가 작업 전에 통째로 읽는 진입 문서. 매번 따라야 하는 규칙 줄 76개와 상세 문서 링크.
 brand_small: 진입 문서
-badges: AGENTS.md*, 규칙 줄 75개, 상세 문서 4개, 통용 용어 병기
+badges: AGENTS.md*, 규칙 줄 76개, 상세 문서 4개, 통용 용어 병기
 search_placeholder: 규칙 검색 (예: SSOT, Given-When-Then, Signal, 180초)
 footer: BLOOM Reference · 진입 문서. 원본은 저장소 루트의 AGENTS.md.
 ---
@@ -67,6 +67,7 @@ AI 작업의 순서와 판단 기준. 원본: [AI 개발 규칙](rules/ai-develo
 - [AI-021][-] **Reuse Before Build · Don't Reinvent the Wheel** — 기능이나 검증·측정 수단(장면 재현·캡처·리플레이·계측)을 새로 만들기 전에 공통 모듈(bloom-gamekit)의 "하려는 일 → 모듈" 색인에서 같은 일을 하는 모듈을 먼저 찾아 쓰고, 작업 보고에 확인한 모듈을 적는다. 모듈이 모자라면 게임에서 우회하거나 새로 짜지 않고 AI-009로 모듈을 고친다. 같은 일을 하는 모듈이 없을 때만 새로 만들고, 다른 게임에도 쓰일 일이면 AI-009의 Rule of Three로 모듈화를 판단한다. 위반 판별: 공통 모듈에 같은 기능이 있는데 게임 코드나 임시 스크립트에 같은 일을 하는 구현이 새로 생겼거나, 작업 보고에 확인한 모듈이 없다. [상세](rules/ai-development.md#module-first)
 - [AI-010][-] **SSOT(원본) · Derived Artifact 비커밋 · Memoization** — 기하로 렌더하는 SVG 정적 벡터 아트는 원본 SVG만 자산으로 포함하고, 공통 브라우저 로더가 시작 시 1회 컴파일·캐시하며, 생성된 메시를 배포물에 넣지 않고, 원본과 렌더를 나란히 비교한다. 위반 판별: Base64 메시나 generated resources가 번들에 있거나, 프레임마다 SVG를 파싱한다. [상세](rules/ai-development.md#svg-assets)
 - [AI-020][-] **Sprite Sheet · SVG 우선 · Visual Review** — 파츠를 조립하는 신규 게임 그래픽은 편집 가능한 SVG 파츠 시트를 기본으로 하고, 원하는 표현이 SVG로 어려우면 투명 PNG 파츠 시트를 사용한다. 작업 중에 분리 파츠·조립 모습·실제 표시 크기를 담은 원격 HTML 목업 링크를 사용자에게 보내고, 받은 피드백을 반영하며 허용된 범위에서 검증과 통합까지 진행한다. 사용자가 승인을 선행 조건으로 명시한 단계에서는 그 승인을 기다린다. 위반 판별: PNG를 선택한 이유가 없거나, 작업 중 목업 링크를 전달하지 않았거나, 명시된 승인 조건을 어겼다. [상세](rules/ai-development.md#sprite-production)
+- [AI-026][-] **Maker–Checker Review Loop · 완벽한 검증이 아니라 할 수 있는 데까지** — 애니메이션·이펙트·소리·화면처럼 느낌으로 판단하는 개선, 또는 사용자가 "검수 루프"(검수루프)를 돌려 달라고 한 작업은 방향 확인 → 비교 시안 → 사용자 승인 → 적용 → 구현자와 분리된 새 컨텍스트 검수자의 승인 → 머지 → 사용자 확인·다음 후보 순서로 하며, 검수자는 승인한 시안을 품질 기준으로 직접 본 문제만 승인 조건과 함께 반려하고, 확인하지 못한 항목은 표시만 하고 진행을 막지 않는다. 요청이 없으면 버그 수정·리팩터링·수치 변경·한 줄 수정에는 적용하지 않는다. 위반 판별: 승인한 기준 없이 적용했거나, 검수자 승인 없이 머지했거나, 구현자가 스스로 합격을 줬거나, 미확인 항목 때문에 승인된 개선이 머지되지 않았다. [상세](rules/ai-development.md#review-loop)
 - [AI-011][-] **Dirty Flag · Debounce(maxWait) · Profile Before Optimizing** — 자동 저장은 지속 상태의 revision/dirty가 바뀔 때만 묶어서(maxWait 상한 포함) 하고, 직렬화·검증과 전체 복원을 분리하며, 큰 직렬화와 동기 I/O를 렌더 경로에서 호출하지 않고, 비용을 실측한다. 위반 판별: 프레임 함수에서 변경 확인 없이 전체 스냅샷 직렬화나 localStorage.setItem을 호출한다. [상세](rules/ai-development.md#autosave)
 - [AI-012][-] **Fixed Timestep / Sub-stepping · Functional ≠ Non-functional** — 논리 틱은 총 dt로 1회 갱신하고 이동·충돌처럼 세분화가 필요한 작업만 물리 하위 단계로 반복하며, 빈도 × 대상 수 × 중첩으로 총량을 계산하고 실측한다. 기능 E2E 통과를 성능 근거로 쓰지 않는다. 위반 판별: AI·생성/소멸·전체 인덱스 재구축이 물리 하위 단계 횟수만큼 반복된다. [상세](rules/ai-development.md#simulation-cadence)
 - [AI-019][-] **Prior Art(내부) · Algorithm Reference First · Write Back** — 성능·최적화 작업(공간 인덱스·충돌·렌더 제출·캐시·스냅샷·스케줄링)을 시작하기 전에 알고리즘 레퍼런스(`algorithms/index.html`)에서 같은 문제의 항목·적용 상태·비교 기록과 그 저장소의 성능 기록 문서를 먼저 읽고 PR에 항목 ID로 인용한다. 기록된 결론과 반대 방향으로 구조를 바꿀 때는 같은 조건에서 후보 수·틱 시간·결과 동등성을 전후 비교해 이기는 근거를 남기고, 채택·기각과 수치를 레퍼런스 항목에 되돌려 적는다. 위반 판별: 최적화 PR에 레퍼런스 항목 인용이 없거나, 레퍼런스 결론과 반대로 구조를 바꾸면서 같은 조건 비교가 없거나, 결과가 레퍼런스에 반영되지 않았다. [상세](rules/ai-development.md#algorithm-reference)
