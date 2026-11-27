@@ -53,35 +53,23 @@ unit.applyDamage(damage);
 // unit이 발행한 상태 변화만 구독
 ```
 
-### Checkbox 상태와 Radio 상태를 구조적으로 구분 {#state-machine}
+### 가능한 상태와 전이로 불변식을 지킨다 {#state-machine}
 
-- [DEV-002][P0] **Make Illegal States Unrepresentable · State Machine** — 동시에 성립할 수 있는 상태는 독립 boolean으로, 상호배타적인 택 1 상태는 enum/state machine으로 정의한다. 위반 판별: 서로 배타적이어야 하는 boolean 필드가 2개 이상 있다.
+- [DEV-002][P0] **Make Illegal States Unrepresentable · State Machine** — 동시에 성립할 수 있는 독립 상태는 boolean으로, 상호배타 상태는 하나의 상태명과 상태별 유효 데이터로 표현한다. 요구사항을 탐색하는 동안에는 확정한 동작에 필요한 최소 상태와 전이를 둔다. 상태를 다루는 리팩토링은 가능한 상태·허용 전이·불변식부터 점검하고, 상태 소유자가 허용 조건을 만족한 전이만 적용하도록 한다. 위반 판별: 배타 상태를 여러 boolean으로 표현하거나, 상태에 맞지 않는 데이터나 허용되지 않은 전이가 실행·복원·재시도 중 생길 수 있다.
 
 태그: #StateMachine #MakeIllegalStatesUnrepresentable
 
 빈도: 높음 · 나중 수정비용: 매우 큼
 
-동시에 성립 가능한 상태는 flag로, 상호배타적인 택 1 상태는 enum/state machine으로 정의한다. 택 1 상태를 여러 boolean을 켜고 끄는 방식으로 구현하지 않는다.
+요구사항을 탐색하는 초기에는 확정한 동작에 필요한 최소 상태와 전이부터 구현한다. 선택됨과 중독됨은 서로 독립인 boolean으로 둘 수 있고, 한 번에 한 단계만 진행하는 행동은 하나의 상태명을 갖는다.
 
-**나쁜 예**
+상태를 다루는 리팩토링은 실제 실행 경로에서 가능한 상태, 상태마다 유효한 데이터, 전이를 일으키는 사건과 허용 조건, 어느 전이 뒤에도 유지해야 할 불변식부터 확인한다. 정상 진행과 함께 취소·실패·중복 요청·재시도·저장 복원 중 해당하는 경로를 확인한다.
 
-```js
-isIdle = false;
-isMoving = true;
-isAttacking = true;
-isStunned = true;
-```
-존재하면 안 되는 조합이 구조적으로 가능하다.
+상태 소유자가 현재 상태와 전이 조건을 확인한 뒤 다음 상태와 그 상태에 필요한 데이터를 함께 적용한다. 저장값과 외부 입력도 같은 상태·데이터 계약으로 검증한다. 전이가 실패하거나 같은 요청을 다시 받아도 상태와 관련 자원은 기존 불변식을 지켜야 한다.
 
-**좋은 예**
+**쌀콩팡! 검은콩 탑승 사례**
 
-```js
-state = UnitState.MOVING;
-
-isSelected = true;
-isPoisoned = true;
-```
-Radio 상태는 하나만, Checkbox 상태는 독립 flag로 둔다.
+검은콩은 행군·복귀·탑승·대기 중 하나의 상태를 가진다. 탑승은 포구가 비어 있을 때만 할 수 있고, 발사 시각은 탑승 상태에만 있다. 탑승과 대기는 같은 포구 점유를 이어받으며, 한 포구를 동시에 점유하는 검은콩은 최대 한 마리다. 복원할 때도 한 포구에 두 마리가 들어 있는 저장값을 거부한다. [검은콩 포구 점유 수정 PR](https://github.com/byh-playground/rally-frontier/pull/447)
 
 ### 관계의 종류에 따라 구현 방식을 구분한다 {#composition}
 
